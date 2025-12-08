@@ -11,11 +11,15 @@ body {
 
 /* Header */
 header {
-    background: linear-gradient(90deg, #4CAF50, #2E8B57);
+    background: linear-gradient(90deg, #4A90E2, #357ABD); /* blu gradiente */
     color: white;
     padding: 40px 20px;
     text-align: center;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+header h1 {
+    color: white; /* titolo bianco */
 }
 
 nav a {
@@ -42,7 +46,7 @@ section {
     box-shadow: 0 6px 12px rgba(0,0,0,0.1);
 }
 
-h1, h2 {
+h2 {
     color: #2E8B57;
 }
 
@@ -55,7 +59,7 @@ ul li {
 .btn {
     display: inline-block;
     padding: 12px 28px;
-    background: #4CAF50;
+    background: #4A90E2; /* pulsante blu */
     color: white;
     text-decoration: none;
     font-weight: bold;
@@ -64,14 +68,14 @@ ul li {
 }
 
 .btn:hover {
-    background: #2E8B57;
+    background: #357ABD;
     transform: translateY(-3px);
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
 /* Footer */
 footer {
-    background: #2E8B57;
+    background: #357ABD; /* footer blu scuro */
     color: white;
     padding: 30px 20px;
     text-align: center;
