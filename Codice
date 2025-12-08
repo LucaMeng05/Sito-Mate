@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Il mio sito</title>
+    <style>
+        body { font-family: Arial; text-align: center; }
+        h1 { color: #2c3e50; }
+    </style>
+</head>
+<body>
+    <h1>Benvenuto nel mio sito!</h1>
+    <p>Questo è un paragrafo di esempio.</p>
+</body>
+</html>
