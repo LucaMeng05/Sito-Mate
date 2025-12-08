@@ -1,14 +1,25 @@
 <!DOCTYPE html>
-<html>
+<html lang="it">
 <head>
-    <title>Il mio sito</title>
-    <style>
-        body { font-family: Arial; text-align: center; }
-        h1 { color: #2c3e50; }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Il Mio Sito</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Benvenuto nel mio sito!</h1>
-    <p>Questo è un paragrafo di esempio.</p>
+    <header>
+        <h1>Benvenuto nel Mio Sito!</h1>
+        <p>Questo è un sito web base, pronto da pubblicare su Netlify.</p>
+        <a href="#contatti" class="btn">Contattami</a>
+    </header>
+
+    <section id="contatti">
+        <h2>Contatti</h2>
+        <p>Email: esempio@email.com</p>
+    </section>
+
+    <footer>
+        <p>© 2025 Il Mio Sito</p>
+    </footer>
 </body>
 </html>
