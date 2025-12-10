@@ -1,5 +1,4 @@
-/* Font e colori generali */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Roboto+Mono&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
 body {
     font-family: 'Roboto', Arial, sans-serif;
@@ -10,7 +9,6 @@ body {
     padding-bottom: 50px;
 }
 
-/* Header moderno */
 header {
     position: fixed;
     top: 0;
@@ -34,7 +32,6 @@ header nav a {
     text-decoration: none;
     font-weight: 600;
     margin-right: 20px;
-    transition: all 0.3s ease;
 }
 
 header nav a:hover {
@@ -42,7 +39,6 @@ header nav a:hover {
     transform: scale(1.1);
 }
 
-/* Pulsante login Google */
 #googleLoginBtn {
     background: #4285F4;
     color: white;
@@ -57,10 +53,8 @@ header nav a:hover {
 #googleLoginBtn:hover {
     background: #3367D6;
     transform: translateY(-2px);
-    box-shadow: 0 3px 6px rgba(0,0,0,0.3);
 }
 
-/* Box centrale */
 section.welcome-box, #sequenceBox {
     max-width: 700px;
     margin: 50px auto;
@@ -71,12 +65,10 @@ section.welcome-box, #sequenceBox {
     box-shadow: 0 6px 15px rgba(0,0,0,0.1);
 }
 
-/* Box sequenze */
 #sequenceBox {
     display: none;
 }
 
-/* Input e bottoni sequenze */
 input[type="text"] {
     width: 150px;
     padding: 8px 12px;
@@ -98,7 +90,6 @@ button {
     cursor: pointer;
     margin-top: 10px;
     margin-right: 10px;
-    transition: all 0.3s ease;
 }
 
 button:hover {
@@ -106,7 +97,6 @@ button:hover {
     transform: translateY(-2px);
 }
 
-/* Feedback e ELO */
 #feedback {
     font-weight: bold;
     margin-top: 15px;
@@ -124,7 +114,6 @@ button:hover {
     margin-bottom: 15px;
 }
 
-/* Footer */
 footer {
     position: fixed;
     bottom: 0;
@@ -138,7 +127,6 @@ footer {
     box-shadow: 0 -2px 6px rgba(0,0,0,0.2);
 }
 
-/* Pulsanti sequenze allineati */
 .sequence-buttons {
     display: flex;
     justify-content: center;
