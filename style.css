@@ -6,8 +6,8 @@ body {
     background: white;
     color: black;
     margin: 0;
-    padding-top: 90px;    /* spazio per header fisso */
-    padding-bottom: 70px; /* spazio per footer fisso */
+    padding-top: 60px;    /* spazio per header fisso più stretto */
+    padding-bottom: 50px; /* spazio per footer fisso più stretto */
 
     /* Sfondo creativo con linee colorate */
     background-image:
@@ -16,7 +16,7 @@ body {
         repeating-linear-gradient(45deg, rgba(0,200,100,0.18), rgba(0,200,100,0.18) 2px, transparent 2px, transparent 150px);
 }
 
-/* Header fisso */
+/* Header fisso e centrato */
 header {
     position: fixed;
     top: 0;
@@ -24,20 +24,18 @@ header {
     width: 100%;
     background: #000;
     color: white;
-    padding: 18px 20px;
+    padding: 10px 20px; /* più stretto */
     text-align: center;
     box-shadow: 0 3px 6px rgba(0,0,0,0.25);
     z-index: 1000;
-}
-
-header h1 {
-    margin: 0;
-    color: white;
+    display: flex;
+    justify-content: center; /* centra il contenuto orizzontalmente */
+    align-items: center;     /* centra verticalmente */
+    gap: 20px;               /* spazio tra i link */
 }
 
 nav a {
     color: white;
-    margin: 0 15px;
     text-decoration: none;
     font-weight: 600;
     transition: all 0.3s ease;
@@ -86,7 +84,7 @@ ul li {
     box-shadow: 0 4px 8px rgba(0,0,0,0.3);
 }
 
-/* Footer fisso */
+/* Footer fisso e centrato */
 footer {
     position: fixed;
     bottom: 0;
@@ -94,7 +92,7 @@ footer {
     width: 100%;
     background: #000;
     color: white;
-    padding: 15px 20px;
+    padding: 8px 20px; /* ancora più stretto */
     text-align: center;
     font-size: 14px;
     box-shadow: 0 -2px 6px rgba(0,0,0,0.25);
