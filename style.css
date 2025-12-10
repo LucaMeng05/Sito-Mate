@@ -3,28 +3,34 @@
 
 body {
     font-family: 'Roboto', Arial, sans-serif;
-    background: linear-gradient(135deg, #dbe6f6, #c5796d); /* sfondo moderno creativo */
-    color: #000;
+    background: white;
     margin: 0;
     padding: 0;
+
+    /* Linee colorate casuali come pattern */
+    background-image:
+        repeating-linear-gradient(120deg, rgba(255,0,0,0.18), rgba(255,0,0,0.18) 2px, transparent 2px, transparent 120px),
+        repeating-linear-gradient(200deg, rgba(0,150,255,0.18), rgba(0,150,255,0.18) 2px, transparent 2px, transparent 180px),
+        repeating-linear-gradient(45deg, rgba(0,200,100,0.18), rgba(0,200,100,0.18) 2px, transparent 2px, transparent 150px);
 }
 
 /* Header */
 header {
-    background: #000; /* fascia superiore nera */
+    background: #000;
     color: white;
-    padding: 40px 20px;
+    padding: 18px 20px;     /* più stretto */
     text-align: center;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.25);
 }
 
 header h1 {
+    margin: 0;
     color: white;
 }
 
 nav a {
     color: white;
-    margin: 0 20px;
+    margin: 0 15px;
     text-decoration: none;
     font-weight: 600;
     transition: all 0.3s ease;
@@ -35,20 +41,19 @@ nav a:hover {
     transform: scale(1.1);
 }
 
-/* Sezioni */
+/* Box centrale */
 section {
-    padding: 60px 20px;
+    padding: 50px 20px;
     max-width: 900px;
-    margin: auto;
-    background: white;         /* box centrale bianco */
-    color: black;              /* scritte nere */
-    margin-bottom: 40px;
+    margin: 40px auto;
+    background: white;
+    color: black;
     border-radius: 12px;
-    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.12);
 }
 
 h2 {
-    color: #1a1a1a; /* nero quasi pieno */
+    color: #111;
 }
 
 ul li {
@@ -59,8 +64,8 @@ ul li {
 /* Pulsanti */
 .btn {
     display: inline-block;
-    padding: 12px 28px;
-    background: #000; /* pulsante nero */
+    padding: 10px 24px;
+    background: #000;
     color: white;
     text-decoration: none;
     font-weight: bold;
@@ -76,10 +81,10 @@ ul li {
 
 /* Footer */
 footer {
-    background: #000; /* fascia inferiore nera */
+    background: #000;
     color: white;
-    padding: 30px 20px;
+    padding: 15px 20px;      /* più stretto */
     text-align: center;
     font-size: 14px;
-    box-shadow: 0 -2px 6px rgba(0,0,0,0.3);
+    box-shadow: 0 -2px 6px rgba(0,0,0,0.25);
 }
