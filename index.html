@@ -29,26 +29,23 @@
         </p>
     </section>
 
-    <!-- Box login / registrazione -->
+    <!-- Box login Google -->
     <section id="authBox" style="max-width:400px; margin:40px auto; padding:20px; border:1px solid #ddd; border-radius:10px; text-align:center; background:#f9f9f9;">
-        <h3>Login / Registrazione</h3>
-        <input type="email" id="email" placeholder="Email" style="width:90%; margin:5px 0; padding:8px;">
-        <input type="password" id="password" placeholder="Password" style="width:90%; margin:5px 0; padding:8px;">
-        <div style="margin:10px 0;">
-            <button onclick="loginUser()" style="padding:8px 20px; margin-right:5px;">Login</button>
-            <button onclick="registerUser()" style="padding:8px 20px;">Registrati</button>
-        </div>
-        <p id="authFeedback" style="color:red; font-weight:bold;"></p>
+        <h3>Login con Google</h3>
+        <button id="googleLoginBtn" style="padding:10px 20px; font-size:16px;">Accedi con Google</button>
+        <p id="authFeedback" style="color:red; font-weight:bold; margin-top:10px;"></p>
     </section>
 
     <!-- Box sequenza casuale (nascosto finché l’utente non fa login) -->
     <section id="sequenceBox" style="max-width:700px; margin:40px auto; padding:25px 20px; text-align:center; border:2px solid #333; border-radius:12px; background:#f9f9f9; display:none;">
         <h3>Sequenza casuale</h3>
+        <p id="eloUtente" style="font-size:18px; font-weight:bold; margin-bottom:15px;"></p>
         <p id="sequenzaBox" style="font-size:22px; font-weight:bold; margin:20px 0;">Caricamento...</p>
         <input type="text" id="rispostaUtente" placeholder="Inserisci la risposta" style="padding:8px 12px; font-size:16px; width:120px; text-align:center;">
-        <button onclick="controllaRisposta()" style="padding:8px 20px; margin-left:10px;">Invia</button>
+        <button id="inviaRispostaBtn" style="padding:8px 20px; margin-left:10px;">Invia</button>
         <p id="feedback" style="margin-top:15px; font-weight:bold;"></p>
-        <button onclick="generaSequenzaHome()" style="padding:8px 20px; font-size:16px; margin-top:10px;">Nuova sequenza</button>
+        <button id="nuovaSequenzaBtn" style="padding:8px 20px; font-size:16px; margin-top:10px;">Nuova sequenza</button>
+        <button id="logoutBtn" style="padding:8px 20px; font-size:16px; margin-top:10px; display:block; margin-left:auto; margin-right:auto;">Logout</button>
     </section>
 
 </main>
@@ -59,3 +56,4 @@
 
 </body>
 </html>
+
