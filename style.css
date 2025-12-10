@@ -3,23 +3,23 @@
 
 body {
     font-family: 'Roboto', Arial, sans-serif;
-    background: #f0f4f8;
-    color: #333;
+    background: linear-gradient(135deg, #dbe6f6, #c5796d); /* sfondo moderno creativo */
+    color: #000;
     margin: 0;
     padding: 0;
 }
 
 /* Header */
 header {
-    background: linear-gradient(90deg, #4A90E2, #357ABD); /* blu gradiente */
+    background: #000; /* fascia superiore nera */
     color: white;
     padding: 40px 20px;
     text-align: center;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
 }
 
 header h1 {
-    color: white; /* titolo bianco */
+    color: white;
 }
 
 nav a {
@@ -40,14 +40,15 @@ section {
     padding: 60px 20px;
     max-width: 900px;
     margin: auto;
-    background: white;
+    background: white;         /* box centrale bianco */
+    color: black;              /* scritte nere */
     margin-bottom: 40px;
     border-radius: 12px;
-    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
 }
 
 h2 {
-    color: #2E8B57;
+    color: #1a1a1a; /* nero quasi pieno */
 }
 
 ul li {
@@ -59,7 +60,7 @@ ul li {
 .btn {
     display: inline-block;
     padding: 12px 28px;
-    background: #4A90E2; /* pulsante blu */
+    background: #000; /* pulsante nero */
     color: white;
     text-decoration: none;
     font-weight: bold;
@@ -68,17 +69,17 @@ ul li {
 }
 
 .btn:hover {
-    background: #357ABD;
+    background: #333;
     transform: translateY(-3px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
 }
 
 /* Footer */
 footer {
-    background: #357ABD; /* footer blu scuro */
+    background: #000; /* fascia inferiore nera */
     color: white;
     padding: 30px 20px;
     text-align: center;
     font-size: 14px;
-    box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 -2px 6px rgba(0,0,0,0.3);
 }
