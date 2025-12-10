@@ -9,12 +9,11 @@ body {
     padding-top: 60px;    /* spazio per header fisso */
     padding-bottom: 50px; /* spazio per footer fisso */
 
-    /* Sfondo con linee sottili e non sovrapposte */
+    /* Sfondo tipo GeoGebra: griglia leggera */
     background-image:
-        linear-gradient(45deg, rgba(255,0,0,0.1) 1px, transparent 1px),
-        linear-gradient(135deg, rgba(0,150,255,0.1) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,200,100,0.1) 1px, transparent 1px);
-    background-size: 40px 40px, 50px 50px, 60px 60px; /* distanze diverse per effetto pattern */
+        linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px);
+    background-size: 40px 40px; /* distanza tra le linee */
 }
 
 /* Header fisso e centrato */
@@ -25,24 +24,22 @@ header {
     width: 100%;
     background: #000;
     color: white;
-    padding: 8px 20px;
+    padding: 8px 0; /* header più stretto */
     text-align: center;
     box-shadow: 0 3px 6px rgba(0,0,0,0.25);
     z-index: 1000;
 }
 
-/* Navbar link */
+/* Navbar centrata */
 header nav {
-    display: flex;
-    justify-content: center; /* centra i link */
-    gap: 60px;              /* distanza tra i link */
-    align-items: center;
+    display: inline-block; /* mantiene i link centrati */
 }
 
 header nav a {
     color: white;
     text-decoration: none;
     font-weight: 600;
+    margin: 0 40px; /* distanza tra i link */
     transition: all 0.3s ease;
 }
 
@@ -97,7 +94,7 @@ footer {
     width: 100%;
     background: #000;
     color: white;
-    padding: 8px 20px;
+    padding: 8px 0; /* più stretto */
     text-align: center;
     font-size: 14px;
     box-shadow: 0 -2px 6px rgba(0,0,0,0.25);
