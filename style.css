@@ -1,37 +1,39 @@
-/* Font e colori */
+/* Font e colori generali */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Roboto+Mono&display=swap');
 
 body {
     font-family: 'Roboto', Arial, sans-serif;
-    background: white;
-    color: black;
+    background: #f8f8f8;
+    color: #111;
     margin: 0;
-    padding-top: 60px;
+    padding-top: 70px;
     padding-bottom: 50px;
-    background-image:
-        linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px);
-    background-size: 40px 40px;
 }
 
+/* Header moderno */
 header {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    background: #000;
+    background: #222;
     color: white;
-    padding: 8px 0;
-    text-align: center;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.25);
+    padding: 10px 20px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.3);
     z-index: 1000;
+}
+
+header nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 header nav a {
     color: white;
     text-decoration: none;
     font-weight: 600;
-    margin: 0 40px;
+    margin-right: 20px;
     transition: all 0.3s ease;
 }
 
@@ -40,47 +42,78 @@ header nav a:hover {
     transform: scale(1.1);
 }
 
-section {
-    padding: 50px 20px;
-    max-width: 900px;
-    margin: 40px auto;
-    background: white;
-    color: black;
-    border-radius: 12px;
-    box-shadow: 0 6px 12px rgba(0,0,0,0.12);
-    text-align: center;
+/* Pulsante login Google */
+#googleLoginBtn {
+    background: #4285F4;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 8px 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
+#googleLoginBtn:hover {
+    background: #3367D6;
+    transform: translateY(-2px);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+}
+
+/* Box centrale */
+section.welcome-box {
+    max-width: 700px;
+    margin: 50px auto;
+    padding: 30px 20px;
+    text-align: center;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+}
+
+/* Box sequenze */
+#sequenceBox {
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 25px 20px;
+    text-align: center;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    display: none;
+}
+
+/* Input e bottoni sequenze */
 input[type="text"] {
     width: 120px;
     padding: 8px 12px;
     font-size: 16px;
     text-align: center;
-    border-radius: 6px;
+    border-radius: 8px;
     border: 1px solid #ccc;
+    margin-top: 10px;
 }
 
 button {
     padding: 8px 20px;
     font-size: 16px;
-    border-radius: 6px;
+    border-radius: 8px;
     border: none;
-    background: #000;
+    background: #222;
     color: white;
     font-weight: bold;
     cursor: pointer;
-    transition: all 0.3s ease;
     margin-top: 10px;
+    transition: all 0.3s ease;
 }
 
 button:hover {
-    background: #333;
+    background: #555;
     transform: translateY(-2px);
-    box-shadow: 0 3px 6px rgba(0,0,0,0.3);
 }
 
 /* Feedback e ELO */
-#feedback, #authFeedback {
+#feedback {
     font-weight: bold;
     margin-top: 10px;
 }
@@ -91,15 +124,10 @@ button:hover {
     color: #111;
     background: #f0f0f0;
     border: 2px solid #333;
-    border-radius: 10px;
+    border-radius: 12px;
     padding: 10px 15px;
     display: inline-block;
     margin-bottom: 15px;
-}
-
-/* Nascondi box sequenze all'inizio */
-#sequenceBox {
-    display: none;
 }
 
 /* Footer */
@@ -108,12 +136,10 @@ footer {
     bottom: 0;
     left: 0;
     width: 100%;
-    background: #000;
+    background: #222;
     color: white;
     padding: 8px 0;
     text-align: center;
     font-size: 14px;
-    box-shadow: 0 -2px 6px rgba(0,0,0,0.25);
+    box-shadow: 0 -2px 6px rgba(0,0,0,0.2);
 }
-
-
