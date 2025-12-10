@@ -1,0 +1,42 @@
+[
+  {
+    "sequence": [1, 2, 3, 4],
+    "answer": 5
+  },
+  {
+    "sequence": [2, 4, 6, 8],
+    "answer": 10
+  },
+  {
+    "sequence": [3, 9, 27],
+    "answer": 81
+  },
+  {
+    "sequence": [5, 10, 15, 20],
+    "answer": 25
+  },
+  {
+    "sequence": [1, 1, 2, 3, 5],
+    "answer": 8
+  },
+  {
+    "sequence": [7, 14, 21],
+    "answer": 28
+  },
+  {
+    "sequence": [10, 7, 4, 1],
+    "answer": -2
+  },
+  {
+    "sequence": [1, 4, 9, 16],
+    "answer": 25
+  },
+  {
+    "sequence": [2, 3, 5, 8],
+    "answer": 13
+  },
+  {
+    "sequence": [100, 50, 25],
+    "answer": 12.5
+  }
+]
