@@ -6,14 +6,16 @@ body {
     background: white;
     color: black;
     margin: 0;
-    padding-top: 60px;    /* spazio per header fisso più stretto */
-    padding-bottom: 50px; /* spazio per footer fisso più stretto */
+    padding-top: 60px;    /* spazio per header fisso */
+    padding-bottom: 50px; /* spazio per footer fisso */
 
-    /* Sfondo creativo con linee colorate */
+    /* Sfondo con più linee colorate per riempire meglio */
     background-image:
-        repeating-linear-gradient(120deg, rgba(255,0,0,0.18), rgba(255,0,0,0.18) 2px, transparent 2px, transparent 120px),
-        repeating-linear-gradient(200deg, rgba(0,150,255,0.18), rgba(0,150,255,0.18) 2px, transparent 2px, transparent 180px),
-        repeating-linear-gradient(45deg, rgba(0,200,100,0.18), rgba(0,200,100,0.18) 2px, transparent 2px, transparent 150px);
+        repeating-linear-gradient(120deg, rgba(255,0,0,0.18), rgba(255,0,0,0.18) 2px, transparent 2px, transparent 80px),
+        repeating-linear-gradient(200deg, rgba(0,150,255,0.18), rgba(0,150,255,0.18) 2px, transparent 2px, transparent 100px),
+        repeating-linear-gradient(45deg, rgba(0,200,100,0.18), rgba(0,200,100,0.18) 2px, transparent 2px, transparent 90px),
+        repeating-linear-gradient(75deg, rgba(255,165,0,0.18), rgba(255,165,0,0.18) 2px, transparent 2px, transparent 120px),
+        repeating-linear-gradient(160deg, rgba(128,0,128,0.18), rgba(128,0,128,0.18) 2px, transparent 2px, transparent 150px);
 }
 
 /* Header fisso e centrato */
@@ -24,29 +26,33 @@ header {
     width: 100%;
     background: #000;
     color: white;
-    padding: 10px 20px; /* più stretto */
+    padding: 8px 20px; /* più stretto */
     text-align: center;
     box-shadow: 0 3px 6px rgba(0,0,0,0.25);
     z-index: 1000;
-    display: flex;
-    justify-content: center; /* centra il contenuto orizzontalmente */
-    align-items: center;     /* centra verticalmente */
-    gap: 20px;               /* spazio tra i link */
 }
 
-nav a {
+/* Navbar link */
+header nav {
+    display: flex;
+    justify-content: center; /* centra la navbar */
+    gap: 60px;              /* distanza tra i link */
+    align-items: center;
+}
+
+header nav a {
     color: white;
     text-decoration: none;
     font-weight: 600;
     transition: all 0.3s ease;
 }
 
-nav a:hover {
+header nav a:hover {
     color: #FFD700;
     transform: scale(1.1);
 }
 
-/* Box centrale */
+/* Box centrali */
 section {
     padding: 50px 20px;
     max-width: 900px;
@@ -92,7 +98,7 @@ footer {
     width: 100%;
     background: #000;
     color: white;
-    padding: 8px 20px; /* ancora più stretto */
+    padding: 8px 20px; /* più stretto */
     text-align: center;
     font-size: 14px;
     box-shadow: 0 -2px 6px rgba(0,0,0,0.25);
