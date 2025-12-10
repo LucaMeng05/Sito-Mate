@@ -5,15 +5,15 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebas
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-// Config Firebase
+// Config Firebase aggiornata
 const firebaseConfig = {
-  apiKey: "AIzaSyC5pgyTCP68eOssT8Mf2bs3Cm5U1JKJ5qI",
-  authDomain: "mathrain-989bd.firebaseapp.com",
-  projectId: "mathrain-989bd",
-  storageBucket: "mathrain-989bd.appspot.com",
-  messagingSenderId: "1092877767794",
-  appId: "1:1092877767794:web:48ed807fc73216b9279eeb",
-  measurementId: "G-JCYVBY9R4H"
+  apiKey: "AIzaSyBzmwF02AuyFnvUZSZbta5Sx-xEMWHcYU4",
+  authDomain: "math-c4f91.firebaseapp.com",
+  projectId: "math-c4f91",
+  storageBucket: "math-c4f91.firebasestorage.app",
+  messagingSenderId: "222559643526",
+  appId: "1:222559643526:web:566ef9854fdb15e8776e07",
+  measurementId: "G-SXX6P84M4F"
 };
 
 // Initialize Firebase
@@ -117,5 +117,3 @@ function mostraSequenze() {
     document.getElementById('sequenceBox').style.display = 'block';
     generaSequenzaHome();
 }
-
-
