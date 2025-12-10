@@ -1,12 +1,12 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-import { getDatabase, ref, get, set, update } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+import { getDatabase, ref, get, set, update, onValue } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
 // Config Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyBzmwF02AuyFnvUZSZbta5Sx-xEMWHcYU4",
   authDomain: "math-c4f91.firebaseapp.com",
-  databaseURL: "https://math-c4f91-default-rtdb.firebaseio.com",
+  databaseURL: "https://math-c4f91-default-rtdb.europe-west1.firebasedatabase.app/",
   projectId: "math-c4f91",
   storageBucket: "math-c4f91.firebasestorage.app",
   messagingSenderId: "222559643526",
@@ -50,14 +50,22 @@ async function caricaElo() {
     const eloRef = ref(db, 'utenti/' + user.uid + '/elo');
     const snapshot = await get(eloRef);
 
-    let elo = 1000;
-    if (snapshot.exists()) {
-        elo = snapshot.val();
-    } else {
-        await set(eloRef, elo);
+    if (!snapshot.exists()) {
+        await set(eloRef, 1000);
     }
+    eloDisplay.innerText = `ELO: ${snapshot.exists() ? snapshot.val() : 1000}`;
+}
 
-    eloDisplay.innerText = `ELO: ${elo}`;
+function ascoltaElo() {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const eloRef = ref(db, 'utenti/' + user.uid + '/elo');
+    onValue(eloRef, (snapshot) => {
+        if (snapshot.exists()) {
+            eloDisplay.innerText = `ELO: ${snapshot.val()}`;
+        }
+    });
 }
 
 async function aggiornaElo(delta) {
@@ -75,8 +83,7 @@ async function aggiornaElo(delta) {
         nuovoElo += delta;
     }
 
-    await set(eloRef, nuovoElo); // Qui ora funziona perché le regole permettono la scrittura
-    eloDisplay.innerText = `ELO: ${nuovoElo}`;
+    await set(eloRef, nuovoElo);
 }
 
 function generaSequenzaHome() {
@@ -96,19 +103,23 @@ async function controllaRisposta() {
     const userAnswer = Number(rispostaInput.value);
     const feedbackBox = document.getElementById('feedback');
 
+    let delta = 0;
     if (userAnswer === sequenzaCorrente.answer) {
+        delta = 20;
         feedbackBox.innerText = '✅ Corretto!';
-        await aggiornaElo(20);
     } else {
+        delta = -10;
         feedbackBox.innerText = `❌ Sbagliato! La risposta corretta è: ${sequenzaCorrente.answer}`;
-        await aggiornaElo(-10);
     }
+
+    await aggiornaElo(delta);
 }
 
 function mostraSequenze() {
     authBox.style.display = 'none';
     sequenceBox.style.display = 'block';
     caricaElo();
+    ascoltaElo();
     generaSequenzaHome();
 }
 
