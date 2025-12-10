@@ -9,18 +9,18 @@
 </head>
 <body>
 
-<header style="text-align:center; padding:15px 0; background:#000; color:#fff; position:fixed; top:0; width:100%; z-index:1000;">
+<header>
     <nav>
-        <a href="index.html" style="margin:0 20px; color:#fff; text-decoration:none;">Home</a>
-        <a href="problemi.html" style="margin:0 20px; color:#fff; text-decoration:none;">Problemi</a>
-        <a href="blog.html" style="margin:0 20px; color:#fff; text-decoration:none;">Blog</a>
+        <a href="index.html">Home</a>
+        <a href="problemi.html">Problemi</a>
+        <a href="blog.html">Blog</a>
     </nav>
 </header>
 
-<main style="padding-top:80px;">
+<main>
 
     <!-- Box centrale di benvenuto -->
-    <section style="max-width:700px; margin: 50px auto; padding: 30px 20px; text-align:center; border:1px solid #ddd; border-radius:12px; background:#fff;">
+    <section>
         <h2>Benvenuto su MathRain</h2>
         <p>
             Ciao! Sono Luca Meng Rainero, studente universitario al Politecnico di Torino.
@@ -30,30 +30,29 @@
     </section>
 
     <!-- Box login Google -->
-    <section id="authBox" style="max-width:400px; margin:40px auto; padding:20px; border:1px solid #ddd; border-radius:10px; text-align:center; background:#f9f9f9;">
+    <section id="authBox">
         <h3>Login con Google</h3>
-        <button id="googleLoginBtn" style="padding:10px 20px; font-size:16px;">Accedi con Google</button>
-        <p id="authFeedback" style="color:red; font-weight:bold; margin-top:10px;"></p>
+        <button id="googleLoginBtn">Accedi con Google</button>
+        <p id="authFeedback"></p>
     </section>
 
-    <!-- Box sequenza casuale (nascosto finché l’utente non fa login) -->
-    <section id="sequenceBox" style="max-width:700px; margin:40px auto; padding:25px 20px; text-align:center; border:2px solid #333; border-radius:12px; background:#f9f9f9; display:none;">
+    <!-- Box sequenza casuale -->
+    <section id="sequenceBox">
         <h3>Sequenza casuale</h3>
-        <p id="eloUtente" style="font-size:18px; font-weight:bold; margin-bottom:15px;"></p>
-        <p id="sequenzaBox" style="font-size:22px; font-weight:bold; margin:20px 0;">Caricamento...</p>
-        <input type="text" id="rispostaUtente" placeholder="Inserisci la risposta" style="padding:8px 12px; font-size:16px; width:120px; text-align:center;">
-        <button id="inviaRispostaBtn" style="padding:8px 20px; margin-left:10px;">Invia</button>
-        <p id="feedback" style="margin-top:15px; font-weight:bold;"></p>
-        <button id="nuovaSequenzaBtn" style="padding:8px 20px; font-size:16px; margin-top:10px;">Nuova sequenza</button>
-        <button id="logoutBtn" style="padding:8px 20px; font-size:16px; margin-top:10px; display:block; margin-left:auto; margin-right:auto;">Logout</button>
+        <p id="eloUtente"></p>
+        <p id="sequenzaBox">Caricamento...</p>
+        <input type="text" id="rispostaUtente" placeholder="Inserisci la risposta">
+        <button id="inviaRispostaBtn">Invia</button>
+        <p id="feedback"></p>
+        <button id="nuovaSequenzaBtn">Nuova sequenza</button>
+        <button id="logoutBtn">Logout</button>
     </section>
 
 </main>
 
-<footer style="text-align:center; padding:10px 0; background:#000; color:#fff; position:fixed; bottom:0; width:100%;">
+<footer>
     <p>© 2025 MathRain</p>
 </footer>
 
 </body>
 </html>
-
