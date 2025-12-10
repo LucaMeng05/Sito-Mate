@@ -75,7 +75,7 @@ async function aggiornaElo(delta) {
         nuovoElo += delta;
     }
 
-    await set(eloRef, nuovoElo);
+    await set(eloRef, nuovoElo); // Qui ora funziona perché le regole permettono la scrittura
     eloDisplay.innerText = `ELO: ${nuovoElo}`;
 }
 
