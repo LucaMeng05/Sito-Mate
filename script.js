@@ -106,6 +106,9 @@ function generaSequenzaHome() {
 async function controllaRisposta() {
     if (!sequenzaCorrente) return;
 
+    const user = auth.currentUser;
+    if (!user) return;
+
     const userAnswer = Number(rispostaInput.value);
     const feedbackBox = document.getElementById('feedback');
 
@@ -114,18 +117,32 @@ async function controllaRisposta() {
         return;
     }
 
+    // Carica ELO utente
+    const userRef = ref(db, 'utenti/' + user.uid + '/elo');
+    const snapshot = await get(userRef);
+    let eloUtente = snapshot.exists() ? snapshot.val() : 1000;
+
+    // ELO del problema
+    const eloProblema = sequenzaCorrente.elo || 100;
+
+    // Calcola var con parte intera della radice
+    const segno = eloProblema > eloUtente ? 1 : -1;
+    const varElo = segno * (Math.floor(Math.sqrt(Math.abs(eloUtente - eloProblema))) - 1);
+
+    // Calcola delta
     let delta = 0;
     if (userAnswer === sequenzaCorrente.answer) {
-        delta = 20;
-        feedbackBox.innerText = '✅ Corretto!';
+        delta = 20 + varElo;       // risposta corretta
+        feedbackBox.innerText = `✅ Corretto! +${delta} ELO`;
     } else {
-        delta = -10;
-        feedbackBox.innerText = `❌ Sbagliato! La risposta corretta è: ${sequenzaCorrente.answer}`;
+        delta = -20 + varElo;      // risposta sbagliata
+        feedbackBox.innerText = `❌ Sbagliato! La risposta corretta è: ${sequenzaCorrente.answer} (${delta} ELO)`;
     }
 
+    // Aggiorna ELO
     await aggiornaElo(delta);
 
-    // Disabilita il pulsante Invio finché non clicchi "Nuova sequenza"
+    // Disabilita pulsante Invio finché non clicchi Nuova sequenza
     inviaBtn.disabled = true;
     inviaBtn.style.opacity = 0.5;
 }
