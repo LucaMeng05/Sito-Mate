@@ -1,11 +1,12 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+import { getDatabase, ref, get, set, update } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
 // Config Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyBzmwF02AuyFnvUZSZbta5Sx-xEMWHcYU4",
   authDomain: "math-c4f91.firebaseapp.com",
+  databaseURL: "https://math-c4f91-default-rtdb.firebaseio.com",
   projectId: "math-c4f91",
   storageBucket: "math-c4f91.firebasestorage.app",
   messagingSenderId: "222559643526",
@@ -16,7 +17,7 @@ const firebaseConfig = {
 // Inizializzazione Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app);
+const db = getDatabase(app);
 const provider = new GoogleAuthProvider();
 
 // ELEMENTI HTML
@@ -46,15 +47,16 @@ async function caricaElo() {
     const user = auth.currentUser;
     if (!user) return;
 
-    const userRef = doc(db, 'utenti', user.uid);
-    const docSnap = await getDoc(userRef);
+    const eloRef = ref(db, 'utenti/' + user.uid + '/elo');
+    const snapshot = await get(eloRef);
 
     let elo = 1000;
-    if (!docSnap.exists()) {
-        await setDoc(userRef, { elo: elo });
+    if (snapshot.exists()) {
+        elo = snapshot.val();
     } else {
-        elo = docSnap.data().elo;
+        await set(eloRef, elo);
     }
+
     eloDisplay.innerText = `ELO: ${elo}`;
 }
 
@@ -62,19 +64,18 @@ async function aggiornaElo(delta) {
     const user = auth.currentUser;
     if (!user) return;
 
-    const userRef = doc(db, 'utenti', user.uid);
-    const docSnap = await getDoc(userRef);
+    const eloRef = ref(db, 'utenti/' + user.uid + '/elo');
+    const snapshot = await get(eloRef);
 
     let nuovoElo = 1000;
-    if (docSnap.exists()) {
-        nuovoElo = docSnap.data().elo + delta;
+    if (snapshot.exists()) {
+        nuovoElo = snapshot.val() + delta;
         if (nuovoElo < 0) nuovoElo = 0;
-        await updateDoc(userRef, { elo: nuovoElo });
     } else {
         nuovoElo += delta;
-        await setDoc(userRef, { elo: nuovoElo });
     }
 
+    await set(eloRef, nuovoElo);
     eloDisplay.innerText = `ELO: ${nuovoElo}`;
 }
 
@@ -115,4 +116,32 @@ function mostraSequenze() {
 googleLoginBtn.addEventListener('click', async () => {
     try {
         await signInWithPopup(auth, provider);
-        feedback.innerText = ''
+        feedback.innerText = '';
+    } catch (error) {
+        feedback.innerText = error.message;
+    }
+});
+
+// LOGOUT
+logoutBtn.addEventListener('click', () => {
+    signOut(auth).then(() => {
+        authBox.style.display = 'block';
+        sequenceBox.style.display = 'none';
+        feedback.innerText = '';
+    });
+});
+
+// STATO AUTENTICAZIONE
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        mostraSequenze();
+    } else {
+        authBox.style.display = 'block';
+        sequenceBox.style.display = 'none';
+        feedback.innerText = '';
+    }
+});
+
+// EVENTI PULSANTI
+inviaBtn.addEventListener('click', controllaRisposta);
+nuovaSequenzaBtn.addEventListener('click', generaSequenzaHome);
