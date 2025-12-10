@@ -3,7 +3,7 @@
 
 body {
     font-family: 'Roboto', Arial, sans-serif;
-    background: #f8f8f8;
+    background: #f0f4f8;
     color: #111;
     margin: 0;
     padding-top: 70px;
@@ -61,7 +61,7 @@ header nav a:hover {
 }
 
 /* Box centrale */
-section.welcome-box {
+section.welcome-box, #sequenceBox {
     max-width: 700px;
     margin: 50px auto;
     padding: 30px 20px;
@@ -73,19 +73,12 @@ section.welcome-box {
 
 /* Box sequenze */
 #sequenceBox {
-    max-width: 700px;
-    margin: 40px auto;
-    padding: 25px 20px;
-    text-align: center;
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
     display: none;
 }
 
 /* Input e bottoni sequenze */
 input[type="text"] {
-    width: 120px;
+    width: 150px;
     padding: 8px 12px;
     font-size: 16px;
     text-align: center;
@@ -99,23 +92,24 @@ button {
     font-size: 16px;
     border-radius: 8px;
     border: none;
-    background: #222;
+    background: #4285F4;
     color: white;
     font-weight: bold;
     cursor: pointer;
     margin-top: 10px;
+    margin-right: 10px;
     transition: all 0.3s ease;
 }
 
 button:hover {
-    background: #555;
+    background: #3367D6;
     transform: translateY(-2px);
 }
 
 /* Feedback e ELO */
 #feedback {
     font-weight: bold;
-    margin-top: 10px;
+    margin-top: 15px;
 }
 
 #eloUtente {
@@ -142,4 +136,12 @@ footer {
     text-align: center;
     font-size: 14px;
     box-shadow: 0 -2px 6px rgba(0,0,0,0.2);
+}
+
+/* Pulsanti sequenze allineati */
+.sequence-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
 }
