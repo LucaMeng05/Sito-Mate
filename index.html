@@ -5,46 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MathRain - Home</title>
     <link rel="stylesheet" href="style.css">
-    <script src="script.js" defer></script>
+    <script type="module" src="script.js" defer></script>
 </head>
 <body>
-    <header style="text-align:center; padding:15px 0; background:#000; color:#fff; position:fixed; top:0; width:100%; z-index:1000;">
-        <nav>
-            <a href="index.html" style="margin:0 20px; color:#fff; text-decoration:none;">Home</a>
-            <a href="problemi.html" style="margin:0 20px; color:#fff; text-decoration:none;">Problemi</a>
-            <a href="blog.html" style="margin:0 20px; color:#fff; text-decoration:none;">Blog</a>
-        </nav>
-    </header>
 
-    <main style="padding-top:80px;">
-        <!-- Box centrale sottile -->
-        <section style="max-width:700px; margin: 50px auto; padding: 30px 20px; text-align:center; border:1px solid #ddd; border-radius:12px; background:#fff;">
-            <h2>Benvenuto su MathRain</h2>
-            <p>
-                Ciao! Sono Luca Meng Rainero, studente universitario al Politecnico di Torino.
-                Ho creato questo sito per condividere i miei problemi di matematica in stile olimpiade,
-                che ho ideato nel corso del tempo. Spero che troverai interessante e stimolante esplorare i contenuti!
-            </p>
-        </section>
+<header style="text-align:center; padding:15px 0; background:#000; color:#fff; position:fixed; top:0; width:100%; z-index:1000;">
+    <nav>
+        <a href="index.html" style="margin:0 20px; color:#fff; text-decoration:none;">Home</a>
+        <a href="problemi.html" style="margin:0 20px; color:#fff; text-decoration:none;">Problemi</a>
+        <a href="blog.html" style="margin:0 20px; color:#fff; text-decoration:none;">Blog</a>
+    </nav>
+</header>
 
-        <!-- Box sequenza casuale -->
-        <section style="max-width:700px; margin: 40px auto; padding: 25px 20px; text-align:center; border:2px solid #333; border-radius:12px; background:#f9f9f9;">
-            <h3>Sequenza casuale</h3>
-            <p id="sequenzaBox" style="font-size:22px; font-weight:bold; margin:20px 0;">Caricamento...</p>
+<main style="padding-top:80px;">
 
-            <div style="margin-top:15px;">
-                <input type="text" id="rispostaUtente" placeholder="Inserisci la risposta" style="padding:8px 12px; font-size:16px; width:120px; text-align:center;">
-                <button onclick="controllaRisposta()" style="padding:8px 20px; font-size:16px; margin-left:10px;">Invia</button>
-            </div>
-            <p id="feedback" style="margin-top:15px; font-weight:bold;"></p>
+    <!-- Box centrale di benvenuto -->
+    <section style="max-width:700px; margin: 50px auto; padding: 30px 20px; text-align:center; border:1px solid #ddd; border-radius:12px; background:#fff;">
+        <h2>Benvenuto su MathRain</h2>
+        <p>
+            Ciao! Sono Luca Meng Rainero, studente universitario al Politecnico di Torino.
+            Ho creato questo sito per condividere i miei problemi di matematica in stile olimpiade,
+            che ho ideato nel corso del tempo. Spero che troverai interessante e stimolante esplorare i contenuti!
+        </p>
+    </section>
 
-            <button onclick="generaSequenzaHome()" style="padding:8px 20px; font-size:16px; margin-top:10px;">Nuova sequenza</button>
-        </section>
-    </main>
+    <!-- Box login / registrazione -->
+    <section id="authBox" style="max-width:400px; margin:40px auto; padding:20px; border:1px solid #ddd; border-radius:10px; text-align:center; background:#f9f9f9;">
+        <h3>Login / Registrazione</h3>
+        <input type="email" id="email" placeholder="Email" style="width:90%; margin:5px 0; padding:8px;">
+        <input type="password" id="password" placeholder="Password" style="width:90%; margin:5px 0; padding:8px;">
+        <div style="margin:10px 0;">
+            <button onclick="loginUser()" style="padding:8px 20px; margin-right:5px;">Login</button>
+            <button onclick="registerUser()" style="padding:8px 20px;">Registrati</button>
+        </div>
+        <p id="authFeedback" style="color:red; font-weight:bold;"></p>
+    </section>
 
-    <footer style="text-align:center; padding:10px 0; background:#000; color:#fff; position:fixed; bottom:0; width:100%;">
-        <p>© 2025 MathRain</p>
-    </footer>
+    <!-- Box sequenza casuale (nascosto finché l’utente non fa login) -->
+    <section id="sequenceBox" style="max-width:700px; margin:40px auto; padding:25px 20px; text-align:center; border:2px solid #333; border-radius:12px; background:#f9f9f9; display:none;">
+        <h3>Sequenza casuale</h3>
+        <p id="sequenzaBox" style="font-size:22px; font-weight:bold; margin:20px 0;">Caricamento...</p>
+        <input type="text" id="rispostaUtente" placeholder="Inserisci la risposta" style="padding:8px 12px; font-size:16px; width:120px; text-align:center;">
+        <button onclick="controllaRisposta()" style="padding:8px 20px; margin-left:10px;">Invia</button>
+        <p id="feedback" style="margin-top:15px; font-weight:bold;"></p>
+        <button onclick="generaSequenzaHome()" style="padding:8px 20px; font-size:16px; margin-top:10px;">Nuova sequenza</button>
+    </section>
+
+</main>
+
+<footer style="text-align:center; padding:10px 0; background:#000; color:#fff; position:fixed; bottom:0; width:100%;">
+    <p>© 2025 MathRain</p>
+</footer>
+
 </body>
 </html>
-
