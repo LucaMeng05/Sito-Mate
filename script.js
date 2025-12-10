@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-import { getDatabase, ref, get, set, update, onValue } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+import { getDatabase, ref, get, set, onValue } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
 // Config Firebase
 const firebaseConfig = {
@@ -29,7 +29,6 @@ const sequenzaBox = document.getElementById('sequenzaBox');
 const rispostaInput = document.getElementById('rispostaUtente');
 const inviaBtn = document.getElementById('inviaRispostaBtn');
 const nuovaSequenzaBtn = document.getElementById('nuovaSequenzaBtn');
-const googleLoginBtn = document.getElementById('googleLoginBtn');
 const logoutBtn = document.getElementById('logoutBtn');
 
 // SEQUENZE
@@ -94,14 +93,26 @@ function generaSequenzaHome() {
     const index = Math.floor(Math.random() * sequenze.length);
     sequenzaCorrente = sequenze[index];
     sequenzaBox.innerText = sequenzaCorrente.sequence.join(', ') + ', ?';
+    
     rispostaInput.value = '';
+    rispostaInput.focus();
     document.getElementById('feedback').innerText = '';
+
+    // Riabilita il pulsante Invio
+    inviaBtn.disabled = false;
+    inviaBtn.style.opacity = 1;
 }
 
 async function controllaRisposta() {
     if (!sequenzaCorrente) return;
+
     const userAnswer = Number(rispostaInput.value);
     const feedbackBox = document.getElementById('feedback');
+
+    if (isNaN(userAnswer)) {
+        feedbackBox.innerText = '⚠ Inserisci un numero valido';
+        return;
+    }
 
     let delta = 0;
     if (userAnswer === sequenzaCorrente.answer) {
@@ -113,6 +124,10 @@ async function controllaRisposta() {
     }
 
     await aggiornaElo(delta);
+
+    // Disabilita il pulsante Invio finché non clicchi "Nuova sequenza"
+    inviaBtn.disabled = true;
+    inviaBtn.style.opacity = 0.5;
 }
 
 function mostraSequenze() {
