@@ -1,11 +1,10 @@
 // script.js
 
-// Import Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-// CONFIGURAZIONE FIREBASE
+// CONFIG FIREBASE
 const firebaseConfig = {
   apiKey: "AIzaSyBzmwF02AuyFnvUZSZbta5Sx-xEMWHcYU4",
   authDomain: "math-c4f91.firebaseapp.com",
@@ -16,7 +15,6 @@ const firebaseConfig = {
   measurementId: "G-SXX6P84M4F"
 };
 
-// INITIALIZE FIREBASE
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
@@ -41,10 +39,11 @@ let sequenzaCorrente = null;
 // CARICA JSON DELLE SEQUENZE
 fetch('sequences.json')
   .then(res => res.json())
-  .then(data => { sequenze = data; })
+  .then(data => sequenze = data)
   .catch(err => console.error('Errore caricamento JSON:', err));
 
-// FUNZIONE: GENERA SEQUENZA CASUALE
+// FUNZIONI
+
 function generaSequenzaHome() {
     if (sequenze.length === 0) return;
     const index = Math.floor(Math.random() * sequenze.length);
@@ -54,10 +53,8 @@ function generaSequenzaHome() {
     document.getElementById('feedback').innerText = '';
 }
 
-// FUNZIONE: CONTROLLA RISPOSTA
 function controllaRisposta() {
     if (!sequenzaCorrente) return;
-
     const userAnswer = Number(rispostaInput.value);
     const feedbackBox = document.getElementById('feedback');
 
@@ -70,7 +67,23 @@ function controllaRisposta() {
     }
 }
 
-// FUNZIONE: AGGIORNA ELO
+async function caricaElo() {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const userRef = doc(db, 'utenti', user.uid);
+    const docSnap = await getDoc(userRef);
+
+    let elo = 1000;
+    if (!docSnap.exists()) {
+        await setDoc(userRef, { elo: elo });
+    } else {
+        elo = docSnap.data().elo;
+    }
+
+    eloDisplay.innerText = `ELO: ${elo}`;
+}
+
 async function aggiornaElo(delta) {
     const user = auth.currentUser;
     if (!user) return;
@@ -87,27 +100,9 @@ async function aggiornaElo(delta) {
         await setDoc(userRef, { elo: nuovoElo });
     }
 
-    // Aggiorna display HTML
     eloDisplay.innerText = `ELO: ${nuovoElo}`;
 }
 
-// FUNZIONE: CARICA ELO
-async function caricaElo() {
-    const user = auth.currentUser;
-    if (!user) return;
-
-    const userRef = doc(db, 'utenti', user.uid);
-    const docSnap = await getDoc(userRef);
-
-    if (!docSnap.exists()) {
-        await setDoc(userRef, { elo: 1000 });
-        eloDisplay.innerText = "ELO: 1000";
-    } else {
-        eloDisplay.innerText = `ELO: ${docSnap.data().elo}`;
-    }
-}
-
-// FUNZIONE: MOSTRA BOX SEQUENZE
 function mostraSequenze() {
     authBox.style.display = 'none';
     sequenceBox.style.display = 'block';
