@@ -1,42 +1,52 @@
 [
   {
     "sequence": [1, 2, 3, 4],
-    "answer": 5
+    "answer": 5,
+    "elo": 100
   },
   {
     "sequence": [2, 4, 6, 8],
-    "answer": 10
+    "answer": 10,
+    "elo": 120
   },
   {
     "sequence": [3, 9, 27],
-    "answer": 81
+    "answer": 81,
+    "elo": 150
   },
   {
     "sequence": [5, 10, 15, 20],
-    "answer": 25
+    "answer": 25,
+    "elo": 120
   },
   {
     "sequence": [1, 1, 2, 3, 5],
-    "answer": 8
+    "answer": 8,
+    "elo": 180
   },
   {
     "sequence": [7, 14, 21],
-    "answer": 28
+    "answer": 28,
+    "elo": 130
   },
   {
     "sequence": [10, 7, 4, 1],
-    "answer": -2
+    "answer": -2,
+    "elo": 160
   },
   {
     "sequence": [1, 4, 9, 16],
-    "answer": 25
+    "answer": 25,
+    "elo": 140
   },
   {
     "sequence": [2, 3, 5, 8],
-    "answer": 13
+    "answer": 13,
+    "elo": 170
   },
   {
     "sequence": [100, 50, 25],
-    "answer": 12.5
+    "answer": 12.5,
+    "elo": 200
   }
 ]
