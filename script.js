@@ -1,10 +1,8 @@
-// script.js
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-// CONFIG FIREBASE
+// Config Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyBzmwF02AuyFnvUZSZbta5Sx-xEMWHcYU4",
   authDomain: "math-c4f91.firebaseapp.com",
@@ -53,17 +51,17 @@ function generaSequenzaHome() {
     document.getElementById('feedback').innerText = '';
 }
 
-function controllaRisposta() {
+async function controllaRisposta() {
     if (!sequenzaCorrente) return;
     const userAnswer = Number(rispostaInput.value);
     const feedbackBox = document.getElementById('feedback');
 
     if (userAnswer === sequenzaCorrente.answer) {
         feedbackBox.innerText = '✅ Corretto!';
-        aggiornaElo(20);
+        await aggiornaElo(20);
     } else {
         feedbackBox.innerText = `❌ Sbagliato! La risposta corretta è: ${sequenzaCorrente.answer}`;
-        aggiornaElo(-10);
+        await aggiornaElo(-10);
     }
 }
 
@@ -100,6 +98,7 @@ async function aggiornaElo(delta) {
         await setDoc(userRef, { elo: nuovoElo });
     }
 
+    // Aggiorna il badge HTML
     eloDisplay.innerText = `ELO: ${nuovoElo}`;
 }
 
@@ -113,10 +112,7 @@ function mostraSequenze() {
 // LOGIN GOOGLE
 googleLoginBtn.addEventListener('click', async () => {
     try {
-        const result = await signInWithPopup(auth, provider);
-        const user = result.user;
-        feedback.style.color = "green";
-        feedback.innerText = `Login effettuato! Benvenuto, ${user.displayName}`;
+        await signInWithPopup(auth, provider);
     } catch (error) {
         feedback.style.color = "red";
         feedback.innerText = error.message;
