@@ -11,16 +11,21 @@
 
 <header>
     <nav>
-        <a href="index.html">Home</a>
-        <a href="problemi.html">Problemi</a>
-        <a href="blog.html">Blog</a>
+        <div class="nav-left">
+            <a href="index.html">Home</a>
+            <a href="problemi.html">Problemi</a>
+            <a href="blog.html">Blog</a>
+        </div>
+        <div class="nav-right" id="loginContainer">
+            <button id="googleLoginBtn">Accedi con Google</button>
+        </div>
     </nav>
 </header>
 
 <main>
 
     <!-- Box centrale di benvenuto -->
-    <section>
+    <section class="welcome-box">
         <h2>Benvenuto su MathRain</h2>
         <p>
             Ciao! Sono Luca Meng Rainero, studente universitario al Politecnico di Torino.
@@ -29,16 +34,8 @@
         </p>
     </section>
 
-    <!-- Box login Google -->
-    <section id="authBox">
-        <h3>Login con Google</h3>
-        <button id="googleLoginBtn">Accedi con Google</button>
-        <p id="authFeedback"></p>
-    </section>
-
     <!-- Box sequenza casuale -->
     <section id="sequenceBox">
-        <h3>Sequenza casuale</h3>
         <p id="eloUtente"></p>
         <p id="sequenzaBox">Caricamento...</p>
         <input type="text" id="rispostaUtente" placeholder="Inserisci la risposta">
