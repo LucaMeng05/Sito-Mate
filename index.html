@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MathRain - Home</title>
     <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
 </head>
 <body>
     <header>
@@ -19,10 +20,17 @@
     <section style="max-width:700px; margin: 50px auto; padding: 30px 20px;">
         <h2>Benvenuto su MathRain</h2>
         <p>
-            Ciao! Sono Luca Meng Rainero, studente universitario al Politecnico di Torino. 
-            Ho creato questo sito per condividere i miei problemi di matematica in stile olimpiade, 
+            Ciao! Sono Luca Meng Rainero, studente universitario al Politecnico di Torino.
+            Ho creato questo sito per condividere i miei problemi di matematica in stile olimpiade,
             che ho ideato nel corso del tempo. Spero che troverai interessante e stimolante esplorare i contenuti!
         </p>
+    </section>
+
+    <!-- BOX CON SEQUENZA CASUALE -->
+    <section style="max-width:700px; margin: 40px auto; padding: 25px 20px; text-align:center; border: 2px solid #333; border-radius:12px;">
+        <h3>Sequenza casuale</h3>
+        <p id="sequenzaBox" style="font-size:22px; font-weight:bold; margin:20px 0;">Caricamento...</p>
+        <button onclick="generaSequenzaHome()" style="padding:8px 20px; font-size:16px;">Nuova sequenza</button>
     </section>
 
     <footer>
@@ -30,3 +38,4 @@
     </footer>
 </body>
 </html>
+
