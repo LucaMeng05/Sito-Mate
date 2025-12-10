@@ -5,7 +5,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebas
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-// Config Firebase
+// CONFIGURAZIONE FIREBASE
 const firebaseConfig = {
   apiKey: "AIzaSyBzmwF02AuyFnvUZSZbta5Sx-xEMWHcYU4",
   authDomain: "math-c4f91.firebaseapp.com",
@@ -16,7 +16,7 @@ const firebaseConfig = {
   measurementId: "G-SXX6P84M4F"
 };
 
-// Initialize Firebase
+// INITIALIZE FIREBASE
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
@@ -44,25 +44,24 @@ fetch('sequences.json')
   .then(data => { sequenze = data; })
   .catch(err => console.error('Errore caricamento JSON:', err));
 
-// GENERA SEQUENZA CASUALE
+// FUNZIONE: GENERA SEQUENZA CASUALE
 function generaSequenzaHome() {
     if (sequenze.length === 0) return;
-    let index = Math.floor(Math.random() * sequenze.length);
+    const index = Math.floor(Math.random() * sequenze.length);
     sequenzaCorrente = sequenze[index];
     sequenzaBox.innerText = sequenzaCorrente.sequence.join(', ') + ', ?';
+    rispostaInput.value = '';
+    document.getElementById('feedback').innerText = '';
 }
 
-// CONTROLLA RISPOSTA
+// FUNZIONE: CONTROLLA RISPOSTA
 function controllaRisposta() {
-    let userAnswer = rispostaInput.value;
-    let feedbackBox = document.getElementById('feedback');
+    if (!sequenzaCorrente) return;
 
-    if (!sequenzaCorrente) {
-        feedbackBox.innerText = 'Nessuna sequenza caricata.';
-        return;
-    }
+    const userAnswer = Number(rispostaInput.value);
+    const feedbackBox = document.getElementById('feedback');
 
-    if (Number(userAnswer) === sequenzaCorrente.answer) {
+    if (userAnswer === sequenzaCorrente.answer) {
         feedbackBox.innerText = '✅ Corretto!';
         aggiornaElo(20);
     } else {
@@ -71,25 +70,48 @@ function controllaRisposta() {
     }
 }
 
-// AGGIORNA ELO UTENTE IN FIRESTORE
+// FUNZIONE: AGGIORNA ELO
 async function aggiornaElo(delta) {
     const user = auth.currentUser;
     if (!user) return;
 
     const userRef = doc(db, 'utenti', user.uid);
     const docSnap = await getDoc(userRef);
+
+    let nuovoElo = 1000;
     if (docSnap.exists()) {
-        let nuovoElo = docSnap.data().elo + delta;
+        nuovoElo = docSnap.data().elo + delta;
         if (nuovoElo < 0) nuovoElo = 0;
         await updateDoc(userRef, { elo: nuovoElo });
-        eloDisplay.innerText = `ELO: ${nuovoElo}`;
+    } else {
+        await setDoc(userRef, { elo: nuovoElo });
+    }
+
+    // Aggiorna display HTML
+    eloDisplay.innerText = `ELO: ${nuovoElo}`;
+}
+
+// FUNZIONE: CARICA ELO
+async function caricaElo() {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const userRef = doc(db, 'utenti', user.uid);
+    const docSnap = await getDoc(userRef);
+
+    if (!docSnap.exists()) {
+        await setDoc(userRef, { elo: 1000 });
+        eloDisplay.innerText = "ELO: 1000";
+    } else {
+        eloDisplay.innerText = `ELO: ${docSnap.data().elo}`;
     }
 }
 
-// MOSTRA BOX SEQUENZE DOPO LOGIN
+// FUNZIONE: MOSTRA BOX SEQUENZE
 function mostraSequenze() {
     authBox.style.display = 'none';
     sequenceBox.style.display = 'block';
+    caricaElo();
     generaSequenzaHome();
 }
 
@@ -99,7 +121,7 @@ googleLoginBtn.addEventListener('click', async () => {
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
         feedback.style.color = "green";
-        feedback.innerText = "Login effettuato!";
+        feedback.innerText = `Login effettuato! Benvenuto, ${user.displayName}`;
     } catch (error) {
         feedback.style.color = "red";
         feedback.innerText = error.message;
@@ -118,20 +140,7 @@ logoutBtn.addEventListener('click', () => {
 // STATO AUTENTICAZIONE
 onAuthStateChanged(auth, async (user) => {
     if (user) {
-        authBox.style.display = 'none';
-        sequenceBox.style.display = 'block';
-
-        // Controlla se utente esiste in Firestore
-        const userRef = doc(db, 'utenti', user.uid);
-        const docSnap = await getDoc(userRef);
-        if (!docSnap.exists()) {
-            await setDoc(userRef, { elo: 1000 });
-            eloDisplay.innerText = "ELO: 1000";
-        } else {
-            eloDisplay.innerText = "ELO: " + docSnap.data().elo;
-        }
-
-        generaSequenzaHome();
+        mostraSequenze();
     } else {
         authBox.style.display = 'block';
         sequenceBox.style.display = 'none';
