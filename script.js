@@ -23,7 +23,7 @@ const provider = new GoogleAuthProvider();
 const authBox = document.getElementById('loginContainer');
 const sequenceBox = document.getElementById('sequenceBox');
 const eloDisplay = document.getElementById('eloUtente');
-const feedback = document.getElementById('authFeedback') || document.createElement('p');
+const feedback = document.getElementById('authFeedback');
 const sequenzaBox = document.getElementById('sequenzaBox');
 const rispostaInput = document.getElementById('rispostaUtente');
 const inviaBtn = document.getElementById('inviaRispostaBtn');
@@ -42,9 +42,47 @@ fetch('sequences.json')
   .catch(err => console.error('Errore caricamento JSON:', err));
 
 // FUNZIONI
+async function caricaElo() {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const userRef = doc(db, 'utenti', user.uid);
+    const docSnap = await getDoc(userRef);
+
+    let elo = 1000;
+    if (!docSnap.exists()) {
+        await setDoc(userRef, { elo: elo });
+    } else {
+        elo = docSnap.data().elo;
+    }
+    eloDisplay.innerText = `ELO: ${elo}`;
+}
+
+async function aggiornaElo(delta) {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const userRef = doc(db, 'utenti', user.uid);
+    const docSnap = await getDoc(userRef);
+
+    let nuovoElo = 1000;
+    if (docSnap.exists()) {
+        nuovoElo = docSnap.data().elo + delta;
+        if (nuovoElo < 0) nuovoElo = 0;
+        await updateDoc(userRef, { elo: nuovoElo });
+    } else {
+        nuovoElo += delta;
+        await setDoc(userRef, { elo: nuovoElo });
+    }
+
+    eloDisplay.innerText = `ELO: ${nuovoElo}`;
+}
 
 function generaSequenzaHome() {
-    if (sequenze.length === 0) return;
+    if (sequenze.length === 0) {
+        sequenzaBox.innerText = 'Nessuna sequenza disponibile';
+        return;
+    }
     const index = Math.floor(Math.random() * sequenze.length);
     sequenzaCorrente = sequenze[index];
     sequenzaBox.innerText = sequenzaCorrente.sequence.join(', ') + ', ?';
@@ -66,43 +104,6 @@ async function controllaRisposta() {
     }
 }
 
-async function caricaElo() {
-    const user = auth.currentUser;
-    if (!user) return;
-
-    const userRef = doc(db, 'utenti', user.uid);
-    const docSnap = await getDoc(userRef);
-
-    let elo = 1000;
-    if (!docSnap.exists()) {
-        await setDoc(userRef, { elo: elo });
-    } else {
-        elo = docSnap.data().elo;
-    }
-
-    eloDisplay.innerText = `ELO: ${elo}`;
-}
-
-async function aggiornaElo(delta) {
-    const user = auth.currentUser;
-    if (!user) return;
-
-    const userRef = doc(db, 'utenti', user.uid);
-    const docSnap = await getDoc(userRef);
-
-    let nuovoElo = 1000;
-    if (docSnap.exists()) {
-        nuovoElo = docSnap.data().elo + delta;
-        if (nuovoElo < 0) nuovoElo = 0;
-        await updateDoc(userRef, { elo: nuovoElo });
-    } else {
-        await setDoc(userRef, { elo: nuovoElo });
-    }
-
-    // Aggiorna il badge HTML
-    eloDisplay.innerText = `ELO: ${nuovoElo}`;
-}
-
 function mostraSequenze() {
     authBox.style.display = 'none';
     sequenceBox.style.display = 'block';
@@ -114,31 +115,4 @@ function mostraSequenze() {
 googleLoginBtn.addEventListener('click', async () => {
     try {
         await signInWithPopup(auth, provider);
-    } catch (error) {
-        feedback.style.color = "red";
-        feedback.innerText = error.message;
-    }
-});
-
-// LOGOUT
-logoutBtn.addEventListener('click', () => {
-    signOut(auth).then(() => {
-        authBox.style.display = 'block';
-        sequenceBox.style.display = 'none';
-        feedback.innerText = '';
-    });
-});
-
-// STATO AUTENTICAZIONE
-onAuthStateChanged(auth, async (user) => {
-    if (user) {
-        mostraSequenze();
-    } else {
-        authBox.style.display = 'block';
-        sequenceBox.style.display = 'none';
-    }
-});
-
-// EVENTI PULSANTI
-inviaBtn.addEventListener('click', controllaRisposta);
-nuovaSequenzaBtn.addEventListener('click', generaSequenzaHome);
+        feedback.innerText = ''
