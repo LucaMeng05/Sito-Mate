@@ -9,13 +9,12 @@ body {
     padding-top: 60px;    /* spazio per header fisso */
     padding-bottom: 50px; /* spazio per footer fisso */
 
-    /* Sfondo con più linee colorate per riempire meglio */
+    /* Sfondo con linee sottili e non sovrapposte */
     background-image:
-        repeating-linear-gradient(120deg, rgba(255,0,0,0.18), rgba(255,0,0,0.18) 2px, transparent 2px, transparent 80px),
-        repeating-linear-gradient(200deg, rgba(0,150,255,0.18), rgba(0,150,255,0.18) 2px, transparent 2px, transparent 100px),
-        repeating-linear-gradient(45deg, rgba(0,200,100,0.18), rgba(0,200,100,0.18) 2px, transparent 2px, transparent 90px),
-        repeating-linear-gradient(75deg, rgba(255,165,0,0.18), rgba(255,165,0,0.18) 2px, transparent 2px, transparent 120px),
-        repeating-linear-gradient(160deg, rgba(128,0,128,0.18), rgba(128,0,128,0.18) 2px, transparent 2px, transparent 150px);
+        linear-gradient(45deg, rgba(255,0,0,0.1) 1px, transparent 1px),
+        linear-gradient(135deg, rgba(0,150,255,0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,200,100,0.1) 1px, transparent 1px);
+    background-size: 40px 40px, 50px 50px, 60px 60px; /* distanze diverse per effetto pattern */
 }
 
 /* Header fisso e centrato */
@@ -26,7 +25,7 @@ header {
     width: 100%;
     background: #000;
     color: white;
-    padding: 8px 20px; /* più stretto */
+    padding: 8px 20px;
     text-align: center;
     box-shadow: 0 3px 6px rgba(0,0,0,0.25);
     z-index: 1000;
@@ -35,7 +34,7 @@ header {
 /* Navbar link */
 header nav {
     display: flex;
-    justify-content: center; /* centra la navbar */
+    justify-content: center; /* centra i link */
     gap: 60px;              /* distanza tra i link */
     align-items: center;
 }
@@ -98,7 +97,7 @@ footer {
     width: 100%;
     background: #000;
     color: white;
-    padding: 8px 20px; /* più stretto */
+    padding: 8px 20px;
     text-align: center;
     font-size: 14px;
     box-shadow: 0 -2px 6px rgba(0,0,0,0.25);
