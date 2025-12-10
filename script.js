@@ -13,16 +13,17 @@ const firebaseConfig = {
   measurementId: "G-SXX6P84M4F"
 };
 
+// Inizializzazione Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
 // ELEMENTI HTML
-const authBox = document.getElementById('authBox');
+const authBox = document.getElementById('loginContainer');
 const sequenceBox = document.getElementById('sequenceBox');
 const eloDisplay = document.getElementById('eloUtente');
-const feedback = document.getElementById('authFeedback');
+const feedback = document.getElementById('authFeedback') || document.createElement('p');
 const sequenzaBox = document.getElementById('sequenzaBox');
 const rispostaInput = document.getElementById('rispostaUtente');
 const inviaBtn = document.getElementById('inviaRispostaBtn');
