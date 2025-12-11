@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
 const firebaseConfig = {
@@ -17,24 +17,43 @@ const auth = getAuth(app);
 const db = getDatabase(app);
 const provider = new GoogleAuthProvider();
 
+const loginModal = document.getElementById("loginModal");
+const googleLoginBtn = document.getElementById("googleLoginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
 const eloDisplay = document.getElementById("eloUtenteStat");
 const ctx = document.getElementById('eloChart').getContext('2d');
 
 let userUid = null;
 let chart = null;
 
-// Login
-async function login() {
+// Login con Google
+googleLoginBtn.addEventListener("click", async () => {
   try {
-    const result = await signInWithPopup(auth, provider);
-    userUid = result.user.uid;
-    caricaStatistiche();
-  } catch(err){ console.error(err); }
-}
+    await signInWithPopup(auth, provider);
+  } catch(err) {
+    console.error("Login error:", err);
+    alert("Errore nel login. Riprova.");
+  }
+});
 
+// Logout
+logoutBtn.addEventListener("click", async () => {
+  try {
+    await signOut(auth);
+  } catch(err) {
+    console.error("Logout error:", err);
+  }
+});
+
+// Controllo stato autenticazione
 onAuthStateChanged(auth, async user => {
-  if(!user) await login();
-  else {
+  if (!user) {
+    loginModal.classList.add("active");
+    userUid = null;
+    eloDisplay.textContent = "ELO: --";
+    if (chart) chart.destroy();
+  } else {
+    loginModal.classList.remove("active");
     userUid = user.uid;
     caricaStatistiche();
   }
@@ -58,8 +77,11 @@ async function caricaStatistiche(){
 
 // Crea grafico
 function creaGrafico(storicoELO){
-  const giorni = Object.keys(storicoELO);
-  const valori = Object.values(storicoELO);
+  // Prendi solo ultime 30 variazioni
+  const chiavi = Object.keys(storicoELO).map(Number).sort((a,b) => a-b);
+  const ultime30 = chiavi.slice(-30);
+  
+  const valori = ultime30.map(chiave => storicoELO[chiave]);
   
   if(chart) {
     chart.destroy();
@@ -68,15 +90,16 @@ function creaGrafico(storicoELO){
   chart = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: giorni.map(g => `Giorno ${g}`),
+      labels: ultime30.map((_, i) => i + 1), // Numeri 1-30 invece di "Giorno X"
       datasets: [{
-        label: 'ELO',
         data: valori,
         borderColor: '#4a6fa5',
         backgroundColor: 'rgba(74, 111, 165, 0.1)',
-        borderWidth: 3,
+        borderWidth: 2,
         fill: true,
-        tension: 0.2
+        tension: 0.2,
+        pointRadius: 3,
+        pointBackgroundColor: '#4a6fa5'
       }]
     },
     options: {
@@ -85,9 +108,11 @@ function creaGrafico(storicoELO){
       plugins: {
         legend: { display: false },
         tooltip: {
-          backgroundColor: 'rgba(0, 0, 0, 0.8)',
-          titleFont: { family: "'Georgia', serif", size: 14 },
-          bodyFont: { family: "'Georgia', serif", size: 14 }
+          callbacks: {
+            label: function(context) {
+              return `ELO: ${context.raw}`;
+            }
+          }
         }
       },
       scales: {
@@ -98,7 +123,7 @@ function creaGrafico(storicoELO){
             drawBorder: false
           },
           ticks: {
-            font: { family: "'Georgia', serif", size: 12 }
+            font: { size: 11 }
           }
         },
         x: {
@@ -107,7 +132,7 @@ function creaGrafico(storicoELO){
             drawBorder: false
           },
           ticks: {
-            font: { family: "'Georgia', serif", size: 12 }
+            font: { size: 11 }
           }
         }
       }
