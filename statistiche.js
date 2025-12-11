@@ -84,7 +84,7 @@ async function caricaStatistiche(){
   }
 }
 
-// Carica classifica top 10 - VERSIONE CORRETTA
+// Carica classifica top 10 + utente corrente
 async function caricaClassifica(){
   if(!userUid) {
     console.log("User UID non disponibile");
@@ -103,32 +103,24 @@ async function caricaClassifica(){
     }
     
     const utenti = snap.val();
-    console.log("Dati ricevuti:", utenti);
-    
     const classificaArray = [];
     
-    // Converti oggetto in array con controllo errori
+    // Converti oggetto in array
     for (const [uid, dati] of Object.entries(utenti)) {
       try {
-        // Controlla che dati sia un oggetto valido
-        if (dati && typeof dati === 'object') {
-          const elo = Number(dati.elo) || 1000;
-          const nome = dati.nome || "Utente";
-          const email = dati.email || "Anonimo";
-          
+        if (dati && typeof dati === 'object' && dati.elo) {
           classificaArray.push({
             uid: uid,
-            nome: nome,
-            email: email,
-            elo: elo
+            nome: dati.nome || "Utente",
+            email: dati.email || "Anonimo",
+            elo: Number(dati.elo) || 1000,
+            prefissoM: dati.prefissoM || false
           });
         }
       } catch (err) {
         console.error(`Errore nel parsing dell'utente ${uid}:`, err);
       }
     }
-    
-    console.log("Utenti trovati:", classificaArray.length);
     
     if (classificaArray.length === 0) {
       classificaContainer.innerHTML = '<div class="loading">Nessun utente in classifica</div>';
@@ -138,31 +130,63 @@ async function caricaClassifica(){
     // Ordina per ELO (decrescente)
     classificaArray.sort((a, b) => b.elo - a.elo);
     
-    // Prendi top 10
-    const top10 = classificaArray.slice(0, 10);
+    // Trova posizione utente corrente
+    const userIndex = classificaArray.findIndex(u => u.uid === userUid);
+    const userPosition = userIndex + 1;
+    
+    // Se utente non è nei top 10, aggiungilo come 11°
+    let classificaVisualizzata;
+    if (userPosition > 10 && userPosition <= classificaArray.length) {
+      classificaVisualizzata = classificaArray.slice(0, 10);
+      // Aggiungi riga separatrice e utente corrente
+      classificaVisualizzata.push({
+        uid: "separator",
+        nome: "...",
+        elo: null,
+        isSeparator: true
+      });
+      
+      const userData = classificaArray[userIndex];
+      classificaVisualizzata.push(userData);
+    } else {
+      classificaVisualizzata = classificaArray.slice(0, 10);
+    }
     
     // Mostra classifica
-    mostraClassifica(top10);
+    mostraClassifica(classificaVisualizzata, userPosition);
     
   } catch(err) {
     console.error("Errore caricamento classifica:", err);
-    classificaContainer.innerHTML = '<div class="loading">Errore: ' + err.message + '</div>';
+    classificaContainer.innerHTML = '<div class="loading">Errore caricamento classifica</div>';
   }
 }
 
 // Mostra classifica
-function mostraClassifica(top10) {
-  if(top10.length === 0) {
+function mostraClassifica(classificaUtenti, userPosition) {
+  if(classificaUtenti.length === 0) {
     classificaContainer.innerHTML = '<div class="loading">Nessun utente in classifica</div>';
     return;
   }
   
   let html = '';
+  let posizioneMostrata = 0;
   
-  top10.forEach((utente, index) => {
-    const posizione = index + 1;
+  classificaUtenti.forEach((utente, index) => {
+    // Se è un separatore
+    if (utente.isSeparator) {
+      html += `
+        <div class="classifica-item" style="justify-content: center; opacity: 0.5; font-size: 12px; padding: 8px 16px;">
+          · · ·
+        </div>
+      `;
+      return;
+    }
+    
+    posizioneMostrata++;
     const isCurrentUser = utente.uid === userUid;
-    const posizioneClass = posizione === 1 ? 'oro' : posizione === 2 ? 'argento' : posizione === 3 ? 'bronzo' : '';
+    const posizioneClass = posizioneMostrata === 1 ? 'oro' : 
+                          posizioneMostrata === 2 ? 'argento' : 
+                          posizioneMostrata === 3 ? 'bronzo' : '';
     
     // Estrai nome
     let nomeMostrato = utente.nome;
@@ -170,11 +194,20 @@ function mostraClassifica(top10) {
       nomeMostrato = utente.email.split('@')[0];
     }
     
+    // Determina posizione da mostrare
+    let posizioneDaMostrare = posizioneMostrata;
+    if (isCurrentUser && userPosition > 10) {
+      posizioneDaMostrare = userPosition;
+    }
+    
     html += `
-      <div class="classifica-item ${isCurrentUser ? 'current-user' : ''}">
-        <span class="posizione ${posizioneClass}">${posizione}.</span>
+      <div class="classifica-item ${isCurrentUser ? 'current-user' : ''} ${userPosition > 10 && isCurrentUser ? 'outside-top' : ''}">
+        <span class="posizione ${posizioneClass}">${posizioneDaMostrare}.</span>
         <div class="utente-info">
-          <div class="utente-nome" title="${nomeMostrato}">${nomeMostrato}</div>
+          <div class="utente-nome" title="${nomeMostrato}">
+            ${utente.prefissoM ? '<span class="utente-prefisso">M</span>' : ''}
+            ${nomeMostrato}
+          </div>
         </div>
         <div class="utente-elo">
           <span class="utente-elo-valore">${utente.elo}</span>
@@ -184,7 +217,6 @@ function mostraClassifica(top10) {
   });
   
   classificaContainer.innerHTML = html;
-  console.log("Classifica visualizzata:", top10.length, "utenti");
 }
 
 // Crea grafico personale
@@ -205,13 +237,15 @@ function creaGrafico(storicoELO){
       labels: ultime30.map((_, i) => i + 1),
       datasets: [{
         data: valori,
-        borderColor: '#4a6fa5',
-        backgroundColor: 'rgba(74, 111, 165, 0.1)',
+        borderColor: '#4f46e5',
+        backgroundColor: 'rgba(79, 70, 229, 0.08)',
         borderWidth: 2,
         fill: true,
         tension: 0.2,
         pointRadius: 3,
-        pointBackgroundColor: '#4a6fa5'
+        pointBackgroundColor: '#4f46e5',
+        pointBorderColor: '#ffffff',
+        pointBorderWidth: 1
       }]
     },
     options: {
@@ -220,41 +254,36 @@ function creaGrafico(storicoELO){
       plugins: {
         legend: { display: false },
         tooltip: {
-          callbacks: {
-            label: function(context) {
-              return `ELO: ${context.raw}`;
-            }
-          }
+          backgroundColor: 'rgba(17, 24, 39, 0.9)',
+          titleFont: { size: 13 },
+          bodyFont: { size: 14 },
+          padding: 10,
+          cornerRadius: 6
         }
       },
       scales: {
         y: {
           beginAtZero: false,
           grid: { 
-            color: 'rgba(0,0,0,0.1)',
+            color: 'rgba(0,0,0,0.05)',
             drawBorder: false
           },
           ticks: {
-            font: { size: 11 }
+            font: { size: 11 },
+            color: '#6b7280'
           }
         },
         x: {
           grid: { 
-            color: 'rgba(0,0,0,0.1)',
+            color: 'rgba(0,0,0,0.05)',
             drawBorder: false
           },
           ticks: {
-            font: { size: 11 }
+            font: { size: 11 },
+            color: '#6b7280'
           }
         }
       }
     }
   });
 }
-
-// Test: Carica classifica anche se ci sono errori
-setTimeout(() => {
-  if(userUid) {
-    caricaClassifica();
-  }
-}, 2000);
