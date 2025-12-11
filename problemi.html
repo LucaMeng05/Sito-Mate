@@ -7,43 +7,37 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <header class="main-header">
-            <nav class="nav-center">
-                <a href="index.html">Home</a>
-                <a href="problemi.html" class="active">Problemi</a>
-                <a href="statistiche.html">Statistiche</a>
-            </nav>
-        </header>
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <h3>Login Richiesto</h3>
+            <p>Accedi con Google per continuare</p>
+            <button id="googleLoginBtn">Accedi con Google</button>
+        </div>
+    </div>
 
+    <!-- Fixed Header -->
+    <header class="fixed-header">
+        <nav class="nav-center">
+            <a href="index.html">Home</a>
+            <a href="problemi.html">Problemi</a>
+            <a href="statistiche.html">Statistiche</a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
         <main class="main-content">
             <div class="card">
-                <h2 class="card-title">Problemi in PDF</h2>
-                
-                <div class="pdf-list-container">
-                    <div class="pdf-item">
-                        <a href="pdf/Geometria.pdf" target="_blank" class="pdf-link">
-                            <span class="pdf-icon">📐</span>
-                            <span class="pdf-title">Geometria</span>
-                        </a>
-                    </div>
-                    
-                    <div class="pdf-item">
-                        <a href="pdf/Algebra.pdf" target="_blank" class="pdf-link">
-                            <span class="pdf-icon">🔢</span>
-                            <span class="pdf-title">Algebra</span>
-                        </a>
-                    </div>
-                    
-                    <div class="pdf-item">
-                        <a href="pdf/Combinatoria.pdf" target="_blank" class="pdf-link">
-                            <span class="pdf-icon">🎲</span>
-                            <span class="pdf-title">Combinatoria</span>
-                        </a>
-                    </div>
+                <div class="links-container">
+                    <a href="pdf/Geometria.pdf" target="_blank" class="simple-link">Geometria</a>
+                    <a href="pdf/Algebra.pdf" target="_blank" class="simple-link">Algebra</a>
+                    <a href="pdf/Combinatoria.pdf" target="_blank" class="simple-link">Combinatoria</a>
                 </div>
             </div>
         </main>
     </div>
+
+    <script type="module" src="script-login.js"></script>
 </body>
 </html>
