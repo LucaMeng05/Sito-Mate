@@ -7,26 +7,43 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="container">
+        <header class="main-header">
+            <nav class="nav-center">
+                <a href="index.html">Home</a>
+                <a href="problemi.html" class="active">Problemi</a>
+                <a href="statistiche.html">Statistiche</a>
+            </nav>
+        </header>
 
-<header>
-    <nav class="nav-center">
-        <a href="index.html">Home</a>
-        <a href="problemi.html" class="active">Problemi</a>
-        <a href="statistiche.html">Statistiche</a>
-    </nav>
-</header>
-
-<main>
-    <section class="content-box">
-        <h2>Problemi in PDF</h2>
-
-        <ul class="pdf-list">
-            <li><a href="pdf/Geometria.pdf" target="_blank">📐 Geometria</a></li>
-            <li><a href="pdf/Algebra.pdf" target="_blank">🔢 Algebra</a></li>
-            <li><a href="pdf/Combinatoria.pdf" target="_blank">🎲 Combinatoria</a></li>
-        </ul>
-    </section>
-</main>
-
+        <main class="main-content">
+            <div class="card">
+                <h2 class="card-title">Problemi in PDF</h2>
+                
+                <div class="pdf-list-container">
+                    <div class="pdf-item">
+                        <a href="pdf/Geometria.pdf" target="_blank" class="pdf-link">
+                            <span class="pdf-icon">📐</span>
+                            <span class="pdf-title">Geometria</span>
+                        </a>
+                    </div>
+                    
+                    <div class="pdf-item">
+                        <a href="pdf/Algebra.pdf" target="_blank" class="pdf-link">
+                            <span class="pdf-icon">🔢</span>
+                            <span class="pdf-title">Algebra</span>
+                        </a>
+                    </div>
+                    
+                    <div class="pdf-item">
+                        <a href="pdf/Combinatoria.pdf" target="_blank" class="pdf-link">
+                            <span class="pdf-icon">🎲</span>
+                            <span class="pdf-title">Combinatoria</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
 </body>
 </html>
