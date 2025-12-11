@@ -3,35 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MathRain - Home</title>
+    <title>Math Sequences</title>
     <link rel="stylesheet" href="style.css">
-    <script type="module" src="script.js" defer></script>
 </head>
 <body>
+    <div class="container">
+        <header>
+            <h1>Math Sequences</h1>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="statistiche.html">Statistiche</a>
+            </nav>
+        </header>
 
-<header>
-    <nav class="nav-center">
-        <a href="index.html" class="active">Home</a>
-        <a href="problemi.html">Problemi</a>
-        <a href="statistiche.html">Statistiche</a>
-    </nav>
-</header>
-
-<main>
-    <section id="sequenceBox">
         <div id="eloContainer">
-            <span id="eloUtente">ELO: 0</span>
+            <span id="eloUtente">ELO: 1000</span>
             <span id="eloDelta"></span>
         </div>
 
-        <p id="sequenzaBox">Caricamento...</p>
+        <main>
+            <div class="card">
+                <h2>Indovina il prossimo numero</h2>
+                <div id="sequenzaBox" class="sequenza-box">Caricamento...</div>
+                
+                <div class="input-group">
+                    <input type="number" id="rispostaUtente" placeholder="Risposta">
+                    <div>
+                        <button id="inviaRispostaBtn">Invia</button>
+                        <button id="nuovaSequenzaBtn">Nuova</button>
+                    </div>
+                </div>
+                
+                <div id="feedback" class="feedback"></div>
+            </div>
+        </main>
+    </div>
 
-        <input type="text" id="rispostaUtente" placeholder="Inserisci la risposta">
-        <button id="inviaRispostaBtn">Invia</button>
-        <p id="feedback"></p>
-        <button id="nuovaSequenzaBtn">Nuova sequenza</button>
-    </section>
-</main>
-
+    <script type="module" src="script.js"></script>
 </body>
 </html>
