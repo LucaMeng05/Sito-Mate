@@ -3,46 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MathRain</title>
+    <title>MathRain - Home</title>
     <link rel="stylesheet" href="style.css">
     <script type="module" src="script.js" defer></script>
 </head>
-
 <body>
 
 <header>
-    <nav>
-        <div class="nav-center">
-            <a href="index.html">Home</a>
-            <a href="problemi.html">Problemi</a>
-            <a href="blog.html">Blog</a>
-        </div>
+    <nav class="nav-center">
+        <a href="index.html" class="active">Home</a>
+        <a href="problemi.html">Problemi</a>
+        <a href="statistiche.html">Statistiche</a>
     </nav>
 </header>
 
 <main>
 
+    <!-- Welcome Box -->
     <section class="welcome-box">
         <h2>Benvenuto su MathRain</h2>
-        <p>Allenati con sequenze matematiche e migliora il tuo ELO!</p>
+        <p>
+            Ciao! Sono Luca Meng Rainero, studente universitario al Politecnico di Torino.
+            Ho creato questo sito per condividere i miei problemi di matematica in stile olimpiade.
+        </p>
     </section>
 
+    <!-- Sequenze -->
     <section id="sequenceBox">
-
-    <div id="eloContainer">
-    <span id="eloUtente" data-value="0">ELO: 0</span>
-    <span id="eloDelta"></span>
-</div>
-
+        <div id="eloContainer">
+            <span id="eloUtente" data-value="0">ELO: 0</span>
+            <span id="eloDelta"></span>
+        </div>
 
         <p id="sequenzaBox">Caricamento...</p>
 
-        <input type="text" id="rispostaUtente" placeholder="Risposta">
-
+        <input type="text" id="rispostaUtente" placeholder="Inserisci la risposta">
         <button id="inviaRispostaBtn">Invia</button>
-
         <p id="feedback"></p>
-
         <button id="nuovaSequenzaBtn">Nuova sequenza</button>
     </section>
 
