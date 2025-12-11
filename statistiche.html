@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MathSite - Statistiche</title>
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<header>
+    <nav class="nav-center">
+        <a href="index.html">Home</a>
+        <a href="problemi.html">Problemi</a>
+        <a href="statistiche.html" class="active">Statistiche</a>
+    </nav>
+</header>
+
+<main>
+    <section class="content-box">
+
+        <h2>Statistiche</h2>
+
+        <!-- Logout -->
+        <button id="logoutBtn" class="logout-btn">Logout</button>
+
+        <!-- Grafico -->
+        <h3>ELO nel tempo</h3>
+        <canvas id="eloChart" width="400" height="250"></canvas>
+
+    </section>
+</main>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+
+    // CONFIG FIREBASE (metti la tua se non già presente)
+    const firebaseConfig = {
+        apiKey: "AIzaSyBzmwF02AuyFnvUZSZbta5Sx-xEMWHcYU4",
+        authDomain: "math-c4f91.firebaseapp.com",
+        projectId: "math-c4f91",
+        storageBucket: "math-c4f91.firebasestorage.app",
+        messagingSenderId: "222559643526",
+        appId: "1:222559643526:web:566ef9854fdb15e8776e07",
+        databaseURL: "https://math-c4f91-default-rtdb.europe-west1.firebasedatabase.app/"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    logoutBtn.addEventListener("click", () => {
+        signOut(auth).then(() => {
+            window.location.href = "index.html";
+        });
+    });
+
+    onAuthStateChanged(auth, (user) => {
+        if (!user) {
+            window.location.href = "index.html"; // login obbligatorio
+        } else {
+            caricaGrafico(user.uid);
+        }
+    });
+
+    // --- CARICA GRAFICO ---
+    function caricaGrafico(uid) {
+        const eloRef = ref(db, "utenti/" + uid + "/storicoELO");
+
+        onValue(eloRef, snapshot => {
+            const data = snapshot.val();
+            if (!data) return;
+
+            const labels = Object.keys(data);
+            const values = Object.values(data);
+
+            new Chart(document.getElementById("eloChart"), {
+                type: "line",
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: "ELO",
+                        data: values,
+                        borderWidth: 3,
+                        borderColor: "black",
+                        fill: false,
+                        tension: 0.2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: false
+                        }
+                    }
+                }
+            });
+        });
+    }
+</script>
+
+</body>
+</html>
