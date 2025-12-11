@@ -1,145 +1,138 @@
+/* Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
 body {
-    font-family: 'Roboto', Arial, sans-serif;
-    background: #f0f4f8;
-    color: #111;
+    font-family: 'Roboto', sans-serif;
+    background: #f3f3f3;
     margin: 0;
-    padding-top: 70px;
-    padding-bottom: 50px;
+    padding: 0;
+    padding-top: 80px;
 }
 
-header nav {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    height: 60px;
+/* HEADER */
+header {
     background: #222;
     color: white;
-    padding: 10px 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 12px 0;
     box-shadow: 0 3px 6px rgba(0,0,0,0.3);
     z-index: 1000;
 }
 
-.nav-left {
+nav {
     display: flex;
-    gap: 30px;
+    justify-content: center;
+    align-items: center;
+    position: relative;
 }
 
-.nav-left a {
+.nav-center a {
     color: white;
+    margin: 0 18px;
     text-decoration: none;
-    font-weight: 600;
+    font-weight: bold;
+    transition: 0.3s;
 }
 
-.nav-left a:hover {
+.nav-center a:hover {
     color: #FFD700;
     transform: scale(1.1);
 }
 
-.nav-right {
+/* USER INFO (ELO) */
+#userInfo {
     position: absolute;
-    right: 20px;
+    right: 25px;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
-#googleLoginBtn {
-    background: #4285F4;
-    color: white;
-    border: none;
-    border-radius: 25px;
-    padding: 8px 20px;
+#eloUtente {
+    background: #eee;
+    padding: 10px 16px;
+    border-radius: 14px;
+    border: 2px solid #333;
+    font-size: 18px;
     font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
+    transition: transform 0.4s ease;
 }
 
-#googleLoginBtn:hover {
-    background: #3367D6;
-    transform: translateY(-2px);
+.elo-anim {
+    animation: pulseElo 0.6s ease;
 }
 
-section.welcome-box, #sequenceBox {
+@keyframes pulseElo {
+    0% { transform: scale(1); color: black; }
+    30% { transform: scale(1.25); color: #3cb371; }
+    100% { transform: scale(1); color: black; }
+}
+
+/* Welcome box */
+.welcome-box {
     max-width: 700px;
-    margin: 50px auto;
-    padding: 30px 20px;
-    text-align: center;
+    margin: 40px auto;
     background: white;
+    padding: 28px;
     border-radius: 15px;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
+/* Sequence box */
 #sequenceBox {
+    max-width: 700px;
+    margin: 40px auto;
+    background: white;
+    padding: 25px;
+    text-align: center;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     display: none;
 }
 
 input[type="text"] {
     width: 150px;
-    padding: 8px 12px;
-    font-size: 16px;
-    text-align: center;
-    border-radius: 8px;
-    border: 1px solid #ccc;
+    padding: 10px;
+    font-size: 18px;
     margin-top: 10px;
+    border-radius: 8px;
+    border: 1px solid #bbb;
+    text-align: center;
 }
 
 button {
-    padding: 8px 20px;
-    font-size: 16px;
-    border-radius: 8px;
-    border: none;
-    background: #4285F4;
+    padding: 10px 25px;
+    font-size: 17px;
+    background: #222;
     color: white;
-    font-weight: bold;
-    cursor: pointer;
+    border: none;
     margin-top: 10px;
-    margin-right: 10px;
-    transition: all 0.3s ease;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
-button:hover:not(:disabled) {
-    background: #3367D6;
+button:hover {
+    background: #555;
     transform: translateY(-2px);
 }
 
-button:disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
-}
-
 #feedback {
+    margin-top: 10px;
     font-weight: bold;
-    margin-top: 15px;
-}
-
-#eloUtente {
     font-size: 18px;
-    font-weight: bold;
-    color: #111;
-    background: #f0f0f0;
-    border: 2px solid #333;
-    border-radius: 12px;
-    padding: 10px 15px;
-    display: inline-block;
-    margin-bottom: 15px;
 }
 
+/* FOOTER */
 footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
     background: #222;
     color: white;
-    padding: 8px 0;
     text-align: center;
-    font-size: 14px;
-    box-shadow: 0 -2px 6px rgba(0,0,0,0.2);
-}
-
-.sequence-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    flex-wrap: wrap;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 8px 0;
 }
