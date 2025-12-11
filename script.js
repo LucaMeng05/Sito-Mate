@@ -18,7 +18,11 @@ const db = getDatabase(app);
 const provider = new GoogleAuthProvider();
 
 const loginModal = document.getElementById("loginModal");
+const difficultyModal = document.getElementById("difficultyModal");
 const googleLoginBtn = document.getElementById("googleLoginBtn");
+const closeDifficultyBtn = document.getElementById("closeDifficultyBtn");
+const scegliDifficoltaBtn = document.getElementById("scegliDifficoltaBtn");
+const diffOptions = document.querySelectorAll('.diff-option');
 const sequenzaEl = document.getElementById("sequenzaBox");
 const rispostaInput = document.getElementById("rispostaUtente");
 const inviaBtn = document.getElementById("inviaRispostaBtn");
@@ -26,7 +30,6 @@ const nuovaSequenzaBtn = document.getElementById("nuovaSequenzaBtn");
 const feedback = document.getElementById("feedback");
 const eloDisplay = document.getElementById("eloUtente");
 const eloDelta = document.getElementById("eloDelta");
-const diffButtons = document.querySelectorAll('.diff-btn');
 
 let sequenze = [];
 let sequenzaCorrente = null;
@@ -56,6 +59,26 @@ googleLoginBtn.addEventListener("click", async () => {
   }
 });
 
+// Apri modal difficoltà
+scegliDifficoltaBtn.addEventListener("click", () => {
+  difficultyModal.classList.add("active");
+});
+
+// Chiudi modal difficoltà
+closeDifficultyBtn.addEventListener("click", () => {
+  difficultyModal.classList.remove("active");
+});
+
+// Chiudi modal cliccando fuori
+window.addEventListener("click", (event) => {
+  if (event.target === difficultyModal) {
+    difficultyModal.classList.remove("active");
+  }
+  if (event.target === loginModal) {
+    // Non chiudere login modal (obbligatorio)
+  }
+});
+
 // Controllo stato autenticazione
 onAuthStateChanged(auth, async user => {
   if (!user) {
@@ -64,13 +87,23 @@ onAuthStateChanged(auth, async user => {
     sequenzaEl.innerText = "Login richiesto";
     inviaBtn.disabled = true;
     nuovaSequenzaBtn.disabled = true;
-    diffButtons.forEach(btn => btn.disabled = true);
+    scegliDifficoltaBtn.disabled = true;
   } else {
     loginModal.classList.remove("active");
     userUid = user.uid;
+    
+    // Salva nome utente nel database
+    const userRef = ref(db, 'utenti/' + userUid);
+    const snap = await get(userRef);
+    if (!snap.exists() || !snap.val().nome) {
+      const nome = user.displayName || user.email.split('@')[0];
+      const email = user.email || "";
+      await update(userRef, { nome: nome, email: email });
+    }
+    
     caricaElo();
-    sequenzaEl.innerText = "Seleziona una difficoltà";
-    diffButtons.forEach(btn => btn.disabled = false);
+    sequenzaEl.innerText = "Scegli difficoltà";
+    scegliDifficoltaBtn.disabled = false;
   }
 });
 
@@ -88,17 +121,11 @@ async function caricaElo(){
 }
 
 // Seleziona difficoltà
-diffButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    // Rimuovi active da tutti i bottoni
-    diffButtons.forEach(b => b.classList.remove('active'));
-    
-    // Aggiungi active al bottone cliccato
-    btn.classList.add('active');
-    
-    currentDifficulty = btn.dataset.difficulty;
-    const minElo = parseInt(btn.dataset.min);
-    const maxElo = parseInt(btn.dataset.max);
+diffOptions.forEach(option => {
+  option.addEventListener('click', () => {
+    currentDifficulty = option.dataset.difficulty;
+    const minElo = parseInt(option.dataset.min);
+    const maxElo = parseInt(option.dataset.max);
     
     // Filtra sequenze per difficoltà
     sequenzeFiltrate = sequenze.filter(seq => {
@@ -110,15 +137,18 @@ diffButtons.forEach(btn => {
       sequenzaEl.innerText = "Nessuna sequenza disponibile per questa difficoltà";
       inviaBtn.disabled = true;
       nuovaSequenzaBtn.disabled = true;
-      return;
+    } else {
+      // Abilita bottoni
+      inviaBtn.disabled = false;
+      nuovaSequenzaBtn.disabled = false;
+      
+      // Genera prima sequenza
+      generaSequenza();
     }
     
-    // Abilita bottoni
-    inviaBtn.disabled = false;
-    nuovaSequenzaBtn.disabled = false;
-    
-    // Genera prima sequenza
-    generaSequenza();
+    // Chiudi modal
+    difficultyModal.classList.remove("active");
+    sequenzaEl.focus({preventScroll: true});
   });
 });
 
@@ -135,7 +165,11 @@ function generaSequenza(){
   rispostaInput.value = "";
   feedback.innerText = "";
   inviaBtn.disabled = false;
-  rispostaInput.focus();
+  
+  // Focus sull'input senza spostare la pagina
+  setTimeout(() => {
+    rispostaInput.focus({preventScroll: true});
+  }, 100);
 }
 
 // Controlla risposta
@@ -217,7 +251,6 @@ function animaElo(oldElo, newElo, delta) {
   
   let current = oldElo;
   const duration = 800;
-  const step = (newElo - oldElo) / (duration / 30);
   const startTime = Date.now();
   
   function update() {
@@ -228,7 +261,8 @@ function animaElo(oldElo, newElo, delta) {
       return;
     }
     
-    current = oldElo + (newElo - oldElo) * (elapsed / duration);
+    const progress = elapsed / duration;
+    current = oldElo + (newElo - oldElo) * progress;
     eloDisplay.textContent = `ELO: ${Math.round(current)}`;
     requestAnimationFrame(update);
   }
