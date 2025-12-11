@@ -312,8 +312,8 @@
     "difficulty": "Estremo"
   },
   {
-    "sequence": [2, 7, 15, 26],
-    "answer": 40,
+    "sequence": [1, 1, 3, 5, 11],
+    "answer": 21,
     "elo": 1850,
     "difficulty": "Estremo"
   },
@@ -389,9 +389,9 @@
     "elo": 1975,
     "difficulty": "Estremo"
   },
-  {
-    "sequence": [5, 12, 22, 35],
-    "answer": 51,
+   {
+    "sequence": [1, 2, 5, 10, 13],
+    "answer": 26,
     "elo": 1975,
     "difficulty": "Estremo"
   },
@@ -402,8 +402,8 @@
     "difficulty": "Estremo"
   },
   {
-    "sequence": [4, 11, 21, 34],
-    "answer": 50,
+    "sequence": [12, 211, 11222, 22211111],
+    "answer": 1111122222222,
     "elo": 1975,
     "difficulty": "Estremo"
   },
@@ -446,12 +446,6 @@
   {
     "sequence": [3, 10, 24, 52],
     "answer": 108,
-    "elo": 2050,
-    "difficulty": "Bot"
-  },
-  {
-    "sequence": [1, 2, 5, 10, 13],
-    "answer": 26,
     "elo": 2050,
     "difficulty": "Bot"
   },
