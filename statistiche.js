@@ -21,6 +21,7 @@ const eloDisplay = document.getElementById("eloUtenteStat");
 const ctx = document.getElementById('eloChart').getContext('2d');
 
 let userUid = null;
+let chart = null;
 
 // Login
 async function login() {
@@ -60,32 +61,54 @@ function creaGrafico(storicoELO){
   const giorni = Object.keys(storicoELO);
   const valori = Object.values(storicoELO);
   
-  new Chart(ctx, {
+  if(chart) {
+    chart.destroy();
+  }
+  
+  chart = new Chart(ctx, {
     type: 'line',
     data: {
       labels: giorni.map(g => `Giorno ${g}`),
       datasets: [{
         label: 'ELO',
         data: valori,
-        borderColor: '#667eea',
-        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+        borderColor: '#4a6fa5',
+        backgroundColor: 'rgba(74, 111, 165, 0.1)',
         borderWidth: 3,
         fill: true,
-        tension: 0.4
+        tension: 0.2
       }]
     },
     options: {
       responsive: true,
+      maintainAspectRatio: false,
       plugins: {
-        legend: { display: false }
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          titleFont: { family: "'Georgia', serif", size: 14 },
+          bodyFont: { family: "'Georgia', serif", size: 14 }
+        }
       },
       scales: {
         y: {
           beginAtZero: false,
-          grid: { color: 'rgba(0,0,0,0.1)' }
+          grid: { 
+            color: 'rgba(0,0,0,0.1)',
+            drawBorder: false
+          },
+          ticks: {
+            font: { family: "'Georgia', serif", size: 12 }
+          }
         },
         x: {
-          grid: { color: 'rgba(0,0,0,0.1)' }
+          grid: { 
+            color: 'rgba(0,0,0,0.1)',
+            drawBorder: false
+          },
+          ticks: {
+            font: { family: "'Georgia', serif", size: 12 }
+          }
         }
       }
     }
