@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MathSite - Statistiche</title>
+    <title>MathRain - Statistiche</title>
     <link rel="stylesheet" href="style.css">
 
-    <!-- Chart.js CDN -->
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -21,7 +21,6 @@
 
 <main>
     <section class="content-box">
-
         <h2>Statistiche</h2>
 
         <!-- Logout -->
@@ -30,81 +29,117 @@
         <!-- Grafico -->
         <h3>ELO nel tempo</h3>
         <canvas id="eloChart" width="400" height="250"></canvas>
-
     </section>
 </main>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-    import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import { getDatabase, ref, get, set, onValue, push } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
-    // CONFIG FIREBASE (metti la tua se non già presente)
-    const firebaseConfig = {
-        apiKey: "AIzaSyBzmwF02AuyFnvUZSZbta5Sx-xEMWHcYU4",
-        authDomain: "math-c4f91.firebaseapp.com",
-        projectId: "math-c4f91",
-        storageBucket: "math-c4f91.firebasestorage.app",
-        messagingSenderId: "222559643526",
-        appId: "1:222559643526:web:566ef9854fdb15e8776e07",
-        databaseURL: "https://math-c4f91-default-rtdb.europe-west1.firebasedatabase.app/"
-    };
+// Config Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyBzmwF02AuyFnvUZSZbta5Sx-xEMWHcYU4",
+    authDomain: "math-c4f91.firebaseapp.com",
+    databaseURL: "https://math-c4f91-default-rtdb.europe-west1.firebasedatabase.app/",
+    projectId: "math-c4f91",
+    storageBucket: "math-c4f91.firebasestorage.app",
+    messagingSenderId: "222559643526",
+    appId: "1:222559643526:web:566ef9854fdb15e8776e07"
+};
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getDatabase(app);
+// Init Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+const provider = new GoogleAuthProvider();
 
-    const logoutBtn = document.getElementById("logoutBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+const ctx = document.getElementById("eloChart").getContext("2d");
 
-    logoutBtn.addEventListener("click", () => {
-        signOut(auth).then(() => {
-            window.location.href = "index.html";
-        });
-    });
+let chart;
 
-    onAuthStateChanged(auth, (user) => {
-        if (!user) {
-            window.location.href = "index.html"; // login obbligatorio
-        } else {
-            caricaGrafico(user.uid);
-        }
-    });
-
-    // --- CARICA GRAFICO ---
-    function caricaGrafico(uid) {
-        const eloRef = ref(db, "utenti/" + uid + "/storicoELO");
-
-        onValue(eloRef, snapshot => {
-            const data = snapshot.val();
-            if (!data) return;
-
-            const labels = Object.keys(data);
-            const values = Object.values(data);
-
-            new Chart(document.getElementById("eloChart"), {
-                type: "line",
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: "ELO",
-                        data: values,
-                        borderWidth: 3,
-                        borderColor: "black",
-                        fill: false,
-                        tension: 0.2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: false
-                        }
-                    }
-                }
-            });
-        });
+// --- LOGIN OBBLIGATORIO ---
+async function loginIfNeeded() {
+    try {
+        await signInWithPopup(auth, provider);
+    } catch(e) {
+        console.error("Login fallito", e);
     }
+}
+
+// --- LOGOUT ---
+logoutBtn.addEventListener("click", async () => {
+    await signOut(auth);
+    await loginIfNeeded();
+});
+
+// --- STATO AUTENTICAZIONE ---
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+        await loginIfNeeded();
+    } else {
+        // Controlla se esiste l’ELO
+        const userRef = ref(db, "utenti/" + user.uid);
+        const snap = await get(userRef);
+        if (!snap.exists()) {
+            await set(userRef, { elo: 1000, storicoELO: { 0: 1000 } });
+        } else if (!snap.val().storicoELO) {
+            await update(userRef, { storicoELO: { 0: 1000 } });
+        }
+        caricaGrafico(user.uid);
+    }
+});
+
+// --- CARICA GRAFICO ---
+function caricaGrafico(uid) {
+    const eloRef = ref(db, "utenti/" + uid + "/storicoELO");
+    onValue(eloRef, snapshot => {
+        const data = snapshot.val();
+        if (!data) return;
+
+        // Ordina i giorni
+        const giorni = Object.keys(data).sort((a,b)=>a-b);
+        const valori = giorni.map(g => data[g]);
+
+        // Se chart già esiste
+        if (chart) {
+            chart.data.labels = giorni;
+            chart.data.datasets[0].data = valori;
+            chart.update();
+            return;
+        }
+
+        chart = new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: giorni,
+                datasets: [{
+                    label: "ELO",
+                    data: valori,
+                    borderWidth: 3,
+                    borderColor: "black",
+                    fill: false,
+                    tension: 0.2,
+                    pointBackgroundColor: valori.map((v,i) => {
+                        if(i===0) return "#000"; // giorno 0
+                        const delta = v - valori[i-1];
+                        return delta>=0 ? "#2ecc71" : "#e74c3c";
+                    })
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { beginAtZero: false }
+                }
+            }
+        });
+    });
+}
 </script>
 
 </body>
