@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+import { getDatabase, ref, get, query, orderByChild, limitToLast } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBzmwF02AuyFnvUZSZbta5Sx-xEMWHcYU4",
@@ -21,10 +21,12 @@ const loginModal = document.getElementById("loginModal");
 const googleLoginBtn = document.getElementById("googleLoginBtn");
 const logoutBtn = document.getElementById("logoutBtn");
 const eloDisplay = document.getElementById("eloUtenteStat");
+const classificaContainer = document.getElementById("classifica");
 const ctx = document.getElementById('eloChart').getContext('2d');
 
 let userUid = null;
 let chart = null;
+let classificaInterval = null;
 
 // Login con Google
 googleLoginBtn.addEventListener("click", async () => {
@@ -52,14 +54,21 @@ onAuthStateChanged(auth, async user => {
     userUid = null;
     eloDisplay.textContent = "ELO: --";
     if (chart) chart.destroy();
+    if (classificaInterval) clearInterval(classificaInterval);
+    classificaContainer.innerHTML = '<div class="loading">Login richiesto</div>';
   } else {
     loginModal.classList.remove("active");
     userUid = user.uid;
     caricaStatistiche();
+    caricaClassifica();
+    
+    // Aggiorna classifica ogni 30 secondi
+    if (classificaInterval) clearInterval(classificaInterval);
+    classificaInterval = setInterval(caricaClassifica, 30000);
   }
 });
 
-// Carica statistiche
+// Carica statistiche personali
 async function caricaStatistiche(){
   if(!userUid) return;
   const userRef = ref(db,'utenti/'+userUid);
@@ -75,7 +84,85 @@ async function caricaStatistiche(){
   }
 }
 
-// Crea grafico
+// Carica classifica top 10
+async function caricaClassifica(){
+  if(!userUid) return;
+  
+  try {
+    const utentiRef = ref(db, 'utenti');
+    const snap = await get(utentiRef);
+    
+    if(snap.exists()){
+      const utenti = snap.val();
+      const classificaArray = [];
+      
+      // Converti oggetto in array
+      Object.entries(utenti).forEach(([uid, dati]) => {
+        if(dati.elo) {
+          classificaArray.push({
+            uid: uid,
+            nome: dati.nome || "Utente",
+            email: dati.email || "Anonimo",
+            elo: dati.elo || 1000,
+            storicoELO: dati.storicoELO || {}
+          });
+        }
+      });
+      
+      // Ordina per ELO (decrescente)
+      classificaArray.sort((a, b) => b.elo - a.elo);
+      
+      // Prendi top 10
+      const top10 = classificaArray.slice(0, 10);
+      
+      // Mostra classifica
+      mostraClassifica(top10);
+    } else {
+      classificaContainer.innerHTML = '<div class="loading">Nessun utente trovato</div>';
+    }
+  } catch(err) {
+    console.error("Errore caricamento classifica:", err);
+    classificaContainer.innerHTML = '<div class="loading">Errore caricamento classifica</div>';
+  }
+}
+
+// Mostra classifica
+function mostraClassifica(top10) {
+  if(top10.length === 0) {
+    classificaContainer.innerHTML = '<div class="loading">Nessun utente in classifica</div>';
+    return;
+  }
+  
+  let html = '';
+  
+  top10.forEach((utente, index) => {
+    const posizione = index + 1;
+    const isCurrentUser = utente.uid === userUid;
+    const posizioneClass = posizione === 1 ? 'oro' : posizione === 2 ? 'argento' : posizione === 3 ? 'bronzo' : '';
+    
+    // Estrai nome dall'email
+    let nomeMostrato = utente.nome;
+    if(nomeMostrato === "Utente" && utente.email && utente.email !== "Anonimo") {
+      nomeMostrato = utente.email.split('@')[0];
+    }
+    
+    html += `
+      <div class="classifica-item ${isCurrentUser ? 'current-user' : ''}">
+        <span class="posizione ${posizioneClass}">${posizione}.</span>
+        <div class="utente-info">
+          <div class="utente-nome" title="${nomeMostrato}">${nomeMostrato}</div>
+        </div>
+        <div class="utente-elo">
+          ELO: <span class="utente-elo-valore">${utente.elo}</span>
+        </div>
+      </div>
+    `;
+  });
+  
+  classificaContainer.innerHTML = html;
+}
+
+// Crea grafico personale
 function creaGrafico(storicoELO){
   // Prendi solo ultime 30 variazioni
   const chiavi = Object.keys(storicoELO).map(Number).sort((a,b) => a-b);
@@ -90,7 +177,7 @@ function creaGrafico(storicoELO){
   chart = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: ultime30.map((_, i) => i + 1), // Numeri 1-30 invece di "Giorno X"
+      labels: ultime30.map((_, i) => i + 1),
       datasets: [{
         data: valori,
         borderColor: '#4a6fa5',
