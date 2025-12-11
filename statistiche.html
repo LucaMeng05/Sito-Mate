@@ -14,24 +14,22 @@
         <a href="index.html">Home</a>
         <a href="problemi.html">Problemi</a>
         <a href="statistiche.html" class="active">Statistiche</a>
+        <button id="googleLoginBtn" class="login-btn">Accedi con Google</button>
     </nav>
 </header>
 
 <main>
     <section class="content-box">
-        <h2>Statistiche</h2>
-        <button id="logoutBtn" class="logout-btn">Logout</button>
-        <h3>ELO nel tempo</h3>
         <canvas id="eloChart" width="400" height="250"></canvas>
     </section>
 </main>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-import { getDatabase, ref, get, set, onValue, update } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import { getDatabase, ref, get, set, update, onValue } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
-// Firebase config
+// Config
 const firebaseConfig = {
     apiKey: "AIzaSyBzmwF02AuyFnvUZSZbta5Sx-xEMWHcYU4",
     authDomain: "math-c4f91.firebaseapp.com",
@@ -47,50 +45,45 @@ const auth = getAuth(app);
 const db = getDatabase(app);
 const provider = new GoogleAuthProvider();
 
-const logoutBtn = document.getElementById("logoutBtn");
+const loginBtn = document.getElementById("googleLoginBtn");
 const ctx = document.getElementById("eloChart").getContext("2d");
 let chart;
+let userUid = null;
 
-// --- LOGIN OBBLIGATORIO ---
+// LOGIN
 async function login() {
     try {
-        await signInWithPopup(auth, provider);
+        const result = await signInWithPopup(auth, provider);
+        userUid = result.user.uid;
+        loginBtn.style.display = "none";
+        caricaGrafico(userUid);
     } catch(err) {
-        console.error("Login fallito:", err);
+        console.error("Login fallito", err);
     }
 }
 
-// --- LOGOUT ---
-logoutBtn.addEventListener("click", async () => {
-    await signOut(auth);
-    await login(); // subito login obbligatorio
-});
+loginBtn.addEventListener("click", login);
 
-// --- STATO AUTENTICAZIONE ---
+// STATO AUTH
 onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-        await login();
+    if(!user) {
+        loginBtn.style.display = "inline-block";
     } else {
-        const userRef = ref(db, "utenti/" + user.uid);
-        const snap = await get(userRef);
-        if (!snap.exists()) {
-            await set(userRef, { elo: 1000, storicoELO: { 0: 1000 } });
-        } else if (!snap.val().storicoELO) {
-            await update(userRef, { storicoELO: { 0: 1000 } });
-        }
-        caricaGrafico(user.uid);
+        userUid = user.uid;
+        loginBtn.style.display = "none";
+        caricaGrafico(userUid);
     }
 });
 
-// --- CARICA GRAFICO ---
-function caricaGrafico(uid) {
-    const eloRef = ref(db, "utenti/" + uid + "/storicoELO");
-    onValue(eloRef, snapshot => {
+// CARICA GRAFICO
+function caricaGrafico(uid){
+    const eloRef = ref(db, "utenti/"+uid+"/storicoELO");
+    onValue(eloRef, snapshot=>{
         const data = snapshot.val();
-        if (!data) return;
+        if(!data) return;
 
         const giorni = Object.keys(data).sort((a,b)=>a-b);
-        const valori = giorni.map(g => data[g]);
+        const valori = giorni.map(g=>data[g]);
 
         if(chart){
             chart.data.labels = giorni;
@@ -100,26 +93,26 @@ function caricaGrafico(uid) {
         }
 
         chart = new Chart(ctx, {
-            type: "line",
-            data: {
+            type:"line",
+            data:{
                 labels: giorni,
-                datasets: [{
-                    label: "ELO",
+                datasets:[{
+                    label:"ELO",
                     data: valori,
-                    borderWidth: 3,
                     borderColor: "black",
-                    fill: false,
-                    tension: 0.2,
-                    pointBackgroundColor: valori.map((v,i) => {
+                    borderWidth:3,
+                    fill:false,
+                    tension:0.2,
+                    pointBackgroundColor: valori.map((v,i)=>{
                         if(i===0) return "#000";
-                        return v - valori[i-1] >= 0 ? "#2ecc71" : "#e74c3c";
+                        return v - valori[i-1]>=0 ? "#2ecc71" : "#e74c3c";
                     })
                 }]
             },
-            options: {
-                responsive: true,
-                plugins: { legend: { display: false } },
-                scales: { y: { beginAtZero: false } }
+            options:{
+                responsive:true,
+                plugins:{legend:{display:false}},
+                scales:{y:{beginAtZero:false}}
             }
         });
     });
