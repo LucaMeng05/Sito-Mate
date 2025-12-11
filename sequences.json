@@ -161,10 +161,10 @@
     "elo": 1500,
     "difficulty": "Intermedio"
   },
-  {
-    "sequence": [10, 5, 8, 4, 7, 3.5],
-    "answer": 6.5,
-    "elo": 1550,
+     {
+    "sequence": [1, 2, 5, 10, 13],
+    "answer": 26,
+    "elo": 1575,
     "difficulty": "Intermedio"
   },
   {
@@ -389,12 +389,6 @@
     "elo": 1975,
     "difficulty": "Estremo"
   },
-   {
-    "sequence": [1, 2, 5, 10, 13],
-    "answer": 26,
-    "elo": 1975,
-    "difficulty": "Estremo"
-  },
   {
     "sequence": [2, 8, 18, 32],
     "answer": 50,
@@ -416,6 +410,12 @@
   {
     "sequence": [5, 14, 32, 68],
     "answer": 140,
+    "elo": 2000,
+    "difficulty": "Estremo"
+  },
+    {
+    "sequence": [2, 2, 10, 14, 26],
+    "answer": 34
     "elo": 2000,
     "difficulty": "Estremo"
   },
