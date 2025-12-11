@@ -320,59 +320,62 @@ body {
     margin: 16px 0; /* Ridotto */
 }
 
+/* ... (continua dal punto 1) ... */
+
 .answer-input {
-    width: 100%;
-    padding: 12px 14px; /* Ridotto */
-    font-size: 15px; /* Ridotto */
-    border: 1px solid #d1d5db;
-    border-radius: 7px; /* Ridotto */
-    text-align: center;
-    outline: none;
-    margin-bottom: 16px; /* Ridotto */
-    font-family: 'Inter', sans-serif;
-    background: #fafbfc;
-    transition: all 0.2s;
+    width: 100%;
+    padding: 12px 14px; /* Ridotto */
+    font-size: 15px; /* Ridotto */
+    border: 1px solid #d1d5db;
+    border-radius: 7px; /* Ridotto */
+    text-align: center;
+    outline: none;
+    margin-bottom: 16px; /* Ridotto */
+    font-family: 'Inter', sans-serif;
+    background: #fafbfc;
+    transition: all 0.2s;
 }
 
 .answer-input:focus {
-    border-color: #4f46e5;
-    background: white;
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    border-color: #4f46e5;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
-/* Button rows compact */
+/* Button rows compact (Contenitore Invia/Nuova) */
 .button-row.compact {
-    display: flex;
-    gap: 10px; /* Ridotto */
-    margin-bottom: 10px; /* Ridotto */
+    display: flex; /* <-- Affianca i bottoni */
+    gap: 10px; /* Ridotto */
+    margin-bottom: 10px; /* Ridotto */
 }
 
 .btn.compact {
-    padding: 11px; /* Ridotto */
-    font-size: 14px; /* Ridotto */
+    padding: 11px; /* Ridotto */
+    font-size: 14px; /* Ridotto */
 }
 
 .difficulty-row {
-    margin-top: 8px; /* Ridotto */
+    margin-top: 8px; /* Ridotto */
 }
 
 .button-row {
-    display: flex;
-    gap: 10px; /* Ridotto */
+    display: flex;
+    gap: 10px; /* Ridotto */
 }
 
 .btn {
-    flex: 1;
-    padding: 12px; /* Ridotto */
-    font-size: 14px; /* Ridotto */
-    font-weight: 500;
-    border: none;
-    border-radius: 7px; /* Ridotto */
-    cursor: pointer;
-    transition: all 0.2s;
-    letter-spacing: -0.01em;
+    flex: 1; /* <-- Rende Invia e Nuova larghi circa il 50% */
+    padding: 12px; /* Ridotto */
+    font-size: 14px; /* Ridotto */
+    font-weight: 500;
+    border: none;
+    border-radius: 7px; /* Ridotto */
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: -0.01em;
 }
 
+/* ... (continua al punto 3) ... */
 .submit-btn {
     background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
     color: white;
