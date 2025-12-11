@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-import { getDatabase, ref, get, query, orderByChild, limitToLast } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBzmwF02AuyFnvUZSZbta5Sx-xEMWHcYU4",
@@ -62,9 +62,9 @@ onAuthStateChanged(auth, async user => {
     caricaStatistiche();
     caricaClassifica();
     
-    // Aggiorna classifica ogni 30 secondi
+    // Aggiorna classifica ogni 10 secondi
     if (classificaInterval) clearInterval(classificaInterval);
-    classificaInterval = setInterval(caricaClassifica, 30000);
+    classificaInterval = setInterval(caricaClassifica, 10000);
   }
 });
 
@@ -97,17 +97,16 @@ async function caricaClassifica(){
       const classificaArray = [];
       
       // Converti oggetto in array
-      Object.entries(utenti).forEach(([uid, dati]) => {
-        if(dati.elo) {
+      for (const [uid, dati] of Object.entries(utenti)) {
+        if (dati && typeof dati === 'object' && dati.elo) {
           classificaArray.push({
             uid: uid,
             nome: dati.nome || "Utente",
             email: dati.email || "Anonimo",
-            elo: dati.elo || 1000,
-            storicoELO: dati.storicoELO || {}
+            elo: dati.elo || 1000
           });
         }
-      });
+      }
       
       // Ordina per ELO (decrescente)
       classificaArray.sort((a, b) => b.elo - a.elo);
@@ -140,7 +139,7 @@ function mostraClassifica(top10) {
     const isCurrentUser = utente.uid === userUid;
     const posizioneClass = posizione === 1 ? 'oro' : posizione === 2 ? 'argento' : posizione === 3 ? 'bronzo' : '';
     
-    // Estrai nome dall'email
+    // Estrai nome
     let nomeMostrato = utente.nome;
     if(nomeMostrato === "Utente" && utente.email && utente.email !== "Anonimo") {
       nomeMostrato = utente.email.split('@')[0];
@@ -153,7 +152,7 @@ function mostraClassifica(top10) {
           <div class="utente-nome" title="${nomeMostrato}">${nomeMostrato}</div>
         </div>
         <div class="utente-elo">
-          ELO: <span class="utente-elo-valore">${utente.elo}</span>
+          <span class="utente-elo-valore">${utente.elo}</span>
         </div>
       </div>
     `;
