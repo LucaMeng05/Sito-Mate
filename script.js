@@ -26,16 +26,25 @@ const nuovaSequenzaBtn = document.getElementById("nuovaSequenzaBtn");
 const feedback = document.getElementById("feedback");
 const eloDisplay = document.getElementById("eloUtente");
 const eloDelta = document.getElementById("eloDelta");
+const diffButtons = document.querySelectorAll('.diff-btn');
 
 let sequenze = [];
 let sequenzaCorrente = null;
 let userUid = null;
+let currentDifficulty = null;
+let sequenzeFiltrate = [];
 
 // Carica sequenze
 fetch('sequences.json')
   .then(res => res.json())
-  .then(data => sequenze = data)
-  .catch(() => sequenze = []);
+  .then(data => {
+    sequenze = data;
+    console.log(`Caricate ${sequenze.length} sequenze`);
+  })
+  .catch(err => {
+    console.error("Errore caricamento sequenze:", err);
+    sequenze = [];
+  });
 
 // Login con Google
 googleLoginBtn.addEventListener("click", async () => {
@@ -50,17 +59,18 @@ googleLoginBtn.addEventListener("click", async () => {
 // Controllo stato autenticazione
 onAuthStateChanged(auth, async user => {
   if (!user) {
-    // Mostra modal login
     loginModal.classList.add("active");
     userUid = null;
     sequenzaEl.innerText = "Login richiesto";
     inviaBtn.disabled = true;
+    nuovaSequenzaBtn.disabled = true;
+    diffButtons.forEach(btn => btn.disabled = true);
   } else {
-    // Nascondi modal login
     loginModal.classList.remove("active");
     userUid = user.uid;
     caricaElo();
-    generaSequenzaHome();
+    sequenzaEl.innerText = "Seleziona una difficoltà";
+    diffButtons.forEach(btn => btn.disabled = false);
   }
 });
 
@@ -77,14 +87,50 @@ async function caricaElo(){
   }
 }
 
-// Genera sequenza
-function generaSequenzaHome(){
-  if(sequenze.length===0) {
+// Seleziona difficoltà
+diffButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    // Rimuovi active da tutti i bottoni
+    diffButtons.forEach(b => b.classList.remove('active'));
+    
+    // Aggiungi active al bottone cliccato
+    btn.classList.add('active');
+    
+    currentDifficulty = btn.dataset.difficulty;
+    const minElo = parseInt(btn.dataset.min);
+    const maxElo = parseInt(btn.dataset.max);
+    
+    // Filtra sequenze per difficoltà
+    sequenzeFiltrate = sequenze.filter(seq => {
+      const eloSeq = seq.elo || 1000;
+      return eloSeq >= minElo && eloSeq <= maxElo;
+    });
+    
+    if (sequenzeFiltrate.length === 0) {
+      sequenzaEl.innerText = "Nessuna sequenza disponibile per questa difficoltà";
+      inviaBtn.disabled = true;
+      nuovaSequenzaBtn.disabled = true;
+      return;
+    }
+    
+    // Abilita bottoni
+    inviaBtn.disabled = false;
+    nuovaSequenzaBtn.disabled = false;
+    
+    // Genera prima sequenza
+    generaSequenza();
+  });
+});
+
+// Genera sequenza casuale dalla difficoltà selezionata
+function generaSequenza(){
+  if(sequenzeFiltrate.length === 0) {
     sequenzaEl.innerText = "Nessuna sequenza disponibile";
     return;
   }
-  const index = Math.floor(Math.random()*sequenze.length);
-  sequenzaCorrente = sequenze[index];
+  
+  const index = Math.floor(Math.random() * sequenzeFiltrate.length);
+  sequenzaCorrente = sequenzeFiltrate[index];
   sequenzaEl.innerText = sequenzaCorrente.sequence.join(", ") + ", ?";
   rispostaInput.value = "";
   feedback.innerText = "";
@@ -96,20 +142,26 @@ function generaSequenzaHome(){
 inviaBtn.addEventListener("click", async ()=>{
   if(!sequenzaCorrente) return;
   const userAnswer = Number(rispostaInput.value);
-  const corretto = userAnswer===sequenzaCorrente.answer;
+  const corretto = userAnswer === sequenzaCorrente.answer;
   inviaBtn.disabled = true;
 
   const delta = calcolaDeltaElo(corretto);
   await aggiornaElo(delta);
 
-  feedback.innerText = corretto ? "✓ Corretto" : `✗ Sbagliato (${sequenzaCorrente.answer})`;
+  feedback.innerText = corretto ? "✓ Corretto" : "✗ Sbagliato";
   feedback.style.color = corretto ? "#276749" : "#c53030";
   feedback.style.borderColor = corretto ? "#9ae6b4" : "#fc8181";
   feedback.style.backgroundColor = corretto ? "#f0fff4" : "#fff5f5";
 });
 
-// Nuova sequenza
-nuovaSequenzaBtn.addEventListener("click", ()=>generaSequenzaHome());
+// Nuova sequenza (stessa difficoltà)
+nuovaSequenzaBtn.addEventListener("click", ()=>{
+  if(currentDifficulty && sequenzeFiltrate.length > 0) {
+    generaSequenza();
+  } else {
+    sequenzaEl.innerText = "Seleziona prima una difficoltà";
+  }
+});
 
 // Tasto Enter per inviare
 rispostaInput.addEventListener("keypress", (e) => {
@@ -123,20 +175,20 @@ function calcolaDeltaElo(corretto){
   const eloUtente = Number(eloDisplay.textContent.replace("ELO: ",""));
   const eloProblema = sequenzaCorrente.elo || 1000;
   let diff = eloProblema - eloUtente;
-  let segno = diff>=0?1:-1;
-  let varDelta = segno*Math.floor(Math.abs(diff)**0.5);
-  if(Math.abs(varDelta)>400) varDelta=400;
-  return corretto?19+varDelta:-20+varDelta;
+  let segno = diff >= 0 ? 1 : -1;
+  let varDelta = segno * Math.floor(Math.abs(diff) ** 0.5);
+  if(Math.abs(varDelta) > 400) varDelta = 400;
+  return corretto ? 19 + varDelta : -20 + varDelta;
 }
 
 // Aggiorna ELO
 async function aggiornaElo(delta){
   const userRef = ref(db,'utenti/'+userUid);
   const snap = await get(userRef);
-  const elo = snap.val().elo||1000;
-  const nuovoElo = Math.max(0, elo+delta);
+  const elo = snap.val().elo || 1000;
+  const nuovoElo = Math.max(0, elo + delta);
 
-  let storico = snap.val().storicoELO||{0:1000};
+  let storico = snap.val().storicoELO || {0:1000};
   const ultimoIndex = Math.max(...Object.keys(storico).map(Number));
   const nuovoIndex = ultimoIndex + 1;
   
