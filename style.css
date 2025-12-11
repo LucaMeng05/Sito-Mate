@@ -340,16 +340,19 @@ body {
     box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
-/* Button rows compact */
+/* Button rows compact - centrati e più piccoli */
 .button-row.compact {
     display: flex;
-    gap: 10px; /* Ridotto */
-    margin-bottom: 10px; /* Ridotto */
+    justify-content: center; /* centra i pulsanti */
+    gap: 12px; /* distanza tra i pulsanti */
+    margin-bottom: 10px;
 }
 
 .btn.compact {
-    padding: 11px; /* Ridotto */
-    font-size: 14px; /* Ridotto */
+    flex: none; /* impedisce ai pulsanti di allargarsi */
+    width: 100px; /* larghezza fissa */
+    padding: 8px 0; /* meno padding verticale */
+    font-size: 13px; /* più piccolo */
 }
 
 .difficulty-row {
