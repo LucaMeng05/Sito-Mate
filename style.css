@@ -1,4 +1,4 @@
-/* Fonts */
+/* FONT */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
 body {
@@ -21,90 +21,46 @@ header {
     z-index: 1000;
 }
 
-nav {
+nav.nav-center {
     display: flex;
     justify-content: center;
-    align-items: center;
+    gap: 30px;
 }
 
-.nav-center a {
+nav.nav-center a {
     color: white;
-    margin: 0 18px;
+    font-size: 18px;
+    font-weight: 600;
     text-decoration: none;
-    font-weight: bold;
     transition: 0.3s;
 }
 
-.nav-center a:hover {
+nav.nav-center a:hover,
+nav.nav-center a.active {
     color: #FFD700;
     transform: scale(1.1);
 }
 
-/* Welcome box */
-.welcome-box {
-    max-width: 700px;
-    margin: 40px auto;
-    background: white;
-    padding: 28px;
-    border-radius: 15px;
-    text-align: center;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
-
-/* Sequence box */
+/* WELCOME BOX / CONTENT BOX / SEQUENCE BOX */
+.welcome-box,
+.content-box,
 #sequenceBox {
     max-width: 700px;
     margin: 40px auto;
     background: white;
-    padding: 25px;
+    padding: 25px 30px;
     text-align: center;
     border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    display: none;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
 }
 
-/* ELO container */
-#eloContainer {
-    position: relative;
-    height: 30px;
-    margin-bottom: 15px;
+/* H2 */
+h2 {
+    font-weight: 700;
+    margin-bottom: 20px;
 }
 
-#eloUtente {
-    font-size: 22px;
-    font-weight: bold;
-    display: inline-block;
-    color: #000;
-}
-
-/* ELO Δ appears fixed on the right side */
-#eloDelta {
-    position: absolute;
-    right: 0;
-    top: 0;
-    font-size: 20px;
-    font-weight: bold;
-    opacity: 0;
-    transition: opacity 0.4s ease;
-}
-
-/* No scaling animations */
-.elo-gain, .elo-loss {
-    animation: none;
-}
-
-/* Fade color animations only */
-@keyframes fadeGreen {
-    0% { color: #2ecc71; }
-    100% { color: #000; }
-}
-
-@keyframes fadeRed {
-    0% { color: #e74c3c; }
-    100% { color: #000; }
-}
-
-/* Inputs & Buttons */
+/* INPUTS */
 input[type="text"] {
     width: 150px;
     padding: 10px;
@@ -115,6 +71,7 @@ input[type="text"] {
     text-align: center;
 }
 
+/* BUTTONS */
 button {
     padding: 10px 25px;
     font-size: 17px;
@@ -132,8 +89,88 @@ button:hover {
     transform: translateY(-2px);
 }
 
+/* LOGOUT BUTTON */
+.logout-btn {
+    background: #d9534f;
+    color: white;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-bottom: 20px;
+}
+
+.logout-btn:hover {
+    background: #b94440;
+    transform: translateY(-2px);
+}
+
+/* FEEDBACK */
 #feedback {
-    margin-top: 10px;
+    margin-top: 15px;
     font-weight: bold;
     font-size: 18px;
+}
+
+/* ELO TEXT */
+#eloContainer {
+    position: relative;
+    height: 30px;
+    margin-bottom: 15px;
+}
+
+#eloUtente {
+    font-size: 22px;
+    font-weight: bold;
+    display: inline-block;
+    color: #000;
+}
+
+#eloDelta {
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-size: 20px;
+    font-weight: bold;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+/* PDF LIST */
+.pdf-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 25px;
+}
+
+.pdf-list li {
+    margin: 12px 0;
+}
+
+.pdf-list a {
+    text-decoration: none;
+    font-size: 20px;
+    color: #222;
+    font-weight: 500;
+    transition: 0.25s;
+}
+
+.pdf-list a:hover {
+    color: #3367D6;
+    transform: translateX(5px);
+}
+
+/* CANVAS GRAFICO */
+canvas {
+    max-width: 100%;
+    margin-top: 20px;
+}
+
+/* OPTIONAL: SEQUENZA INPUT & BUTTON ALIGNMENT */
+#sequenceBox input,
+#sequenceBox button {
+    margin-top: 10px;
 }
