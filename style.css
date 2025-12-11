@@ -9,7 +9,7 @@ body {
     background-color: #f8f9fa;
     color: #333;
     min-height: 100vh;
-    padding-top: 60px; /* Spazio per header fisso */
+    padding-top: 60px;
 }
 
 /* Login Modal */
@@ -120,7 +120,7 @@ body {
     border: 1px solid #cbd5e0;
     border-radius: 4px;
     padding: 12px;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 .elo-display {
@@ -172,6 +172,37 @@ body {
     100% { transform: scale(1); }
 }
 
+/* Difficulty Selector */
+.difficulty-selector {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.diff-btn {
+    padding: 10px 5px;
+    font-size: 12px;
+    border: 1px solid #cbd5e0;
+    background: white;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: center;
+    font-weight: 500;
+}
+
+.diff-btn:hover {
+    background: #f0f4f8;
+    border-color: #4a6fa5;
+}
+
+.diff-btn.active {
+    background: #4a6fa5;
+    color: white;
+    border-color: #4a6fa5;
+}
+
 /* Card */
 .card {
     background: white;
@@ -180,6 +211,15 @@ body {
     margin-bottom: 15px;
     border: 1px solid #e2e8f0;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+    color: #2c5282;
+    font-size: 18px;
+    margin-bottom: 15px;
+    text-align: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e2e8f0;
 }
 
 /* Sequence Display */
@@ -215,6 +255,9 @@ body {
     outline: none;
     margin-bottom: 15px;
     font-family: 'Georgia', serif;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 .answer-input:focus {
@@ -242,7 +285,7 @@ body {
     color: white;
 }
 
-.submit-btn:hover {
+.submit-btn:hover:not(:disabled) {
     background-color: #3a5a80;
 }
 
@@ -252,7 +295,7 @@ body {
     border: 1px solid #4a6fa5;
 }
 
-.new-btn:hover {
+.new-btn:hover:not(:disabled) {
     background-color: #e2e8f0;
 }
 
@@ -276,27 +319,69 @@ body {
     justify-content: center;
 }
 
-/* Problemi Page */
-.links-container {
+/* Classifica */
+.classifica-container {
+    margin-top: 15px;
+}
+
+.classifica-item {
     display: flex;
-    flex-direction: column;
-    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    border-bottom: 1px solid #e2e8f0;
+    transition: background-color 0.3s;
 }
 
-.simple-link {
-    text-decoration: none;
-    color: #2c5282;
-    font-size: 16px;
-    padding: 12px;
-    border: 1px solid #e2e8f0;
-    border-radius: 3px;
+.classifica-item:hover {
+    background-color: #f8fafc;
+}
+
+.classifica-item.current-user {
+    background-color: #e6f0ff;
+    border-left: 3px solid #4a6fa5;
+}
+
+.posizione {
+    font-weight: 600;
+    color: #4a6fa5;
+    width: 30px;
     text-align: center;
-    transition: all 0.3s;
 }
 
-.simple-link:hover {
-    background-color: #f0f4f8;
-    border-color: #cbd5e0;
+.posizione.oro { color: #d4af37; }
+.posizione.argento { color: #c0c0c0; }
+.posizione.bronzo { color: #cd7f32; }
+
+.utente-info {
+    flex: 1;
+    margin: 0 15px;
+    overflow: hidden;
+}
+
+.utente-nome {
+    font-weight: 500;
+    color: #2d3748;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.utente-elo {
+    font-size: 14px;
+    color: #718096;
+}
+
+.utente-elo-valore {
+    font-weight: 600;
+    color: #2c5282;
+}
+
+.loading {
+    text-align: center;
+    padding: 30px;
+    color: #718096;
+    font-style: italic;
 }
 
 /* Chart Container */
@@ -326,6 +411,29 @@ body {
     background-color: #c0392b;
 }
 
+/* Problemi Page */
+.links-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.simple-link {
+    text-decoration: none;
+    color: #2c5282;
+    font-size: 16px;
+    padding: 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 3px;
+    text-align: center;
+    transition: all 0.3s;
+}
+
+.simple-link:hover {
+    background-color: #f0f4f8;
+    border-color: #cbd5e0;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     body {
@@ -345,6 +453,10 @@ body {
         padding: 0 15px;
     }
     
+    .difficulty-selector {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
     .sequence-display {
         font-size: 18px;
         padding: 20px 10px;
@@ -352,5 +464,19 @@ body {
     
     .chart-container {
         height: 250px;
+    }
+}
+
+@media (max-width: 480px) {
+    .difficulty-selector {
+        grid-template-columns: 1fr;
+    }
+    
+    .nav-center {
+        gap: 10px;
+    }
+    
+    .nav-center a {
+        font-size: 13px;
     }
 }
