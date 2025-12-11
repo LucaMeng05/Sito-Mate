@@ -258,12 +258,6 @@
     "difficulty": "Difficile"
   },
   {
-    "sequence": [69, 19, 14, 9, 13],
-    "answer": 8,
-    "elo": 1700,
-    "difficulty": "Difficile"
-  },
-  {
     "sequence": [1, 4, 10, 19],
     "answer": 31,
     "elo": 1750,
@@ -506,6 +500,12 @@
   {
     "sequence": [67, 26, 16, 14, 10],
     "answer": 2,
+    "elo": 2300,
+    "difficulty": "Bot"
+  },
+    {
+    "sequence": [69, 19, 14, 9, 13],
+    "answer": 8,
     "elo": 2300,
     "difficulty": "Bot"
   },
