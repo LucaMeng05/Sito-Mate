@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MathRain - Statistiche</title>
     <link rel="stylesheet" href="style.css">
-
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -22,11 +20,7 @@
 <main>
     <section class="content-box">
         <h2>Statistiche</h2>
-
-        <!-- Logout -->
         <button id="logoutBtn" class="logout-btn">Logout</button>
-
-        <!-- Grafico -->
         <h3>ELO nel tempo</h3>
         <canvas id="eloChart" width="400" height="250"></canvas>
     </section>
@@ -35,9 +29,9 @@
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-import { getDatabase, ref, get, set, onValue, push } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+import { getDatabase, ref, get, set, onValue, update } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
-// Config Firebase
+// Firebase config
 const firebaseConfig = {
     apiKey: "AIzaSyBzmwF02AuyFnvUZSZbta5Sx-xEMWHcYU4",
     authDomain: "math-c4f91.firebaseapp.com",
@@ -48,7 +42,6 @@ const firebaseConfig = {
     appId: "1:222559643526:web:566ef9854fdb15e8776e07"
 };
 
-// Init Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
@@ -56,30 +49,28 @@ const provider = new GoogleAuthProvider();
 
 const logoutBtn = document.getElementById("logoutBtn");
 const ctx = document.getElementById("eloChart").getContext("2d");
-
 let chart;
 
 // --- LOGIN OBBLIGATORIO ---
-async function loginIfNeeded() {
+async function login() {
     try {
         await signInWithPopup(auth, provider);
-    } catch(e) {
-        console.error("Login fallito", e);
+    } catch(err) {
+        console.error("Login fallito:", err);
     }
 }
 
 // --- LOGOUT ---
 logoutBtn.addEventListener("click", async () => {
     await signOut(auth);
-    await loginIfNeeded();
+    await login(); // subito login obbligatorio
 });
 
 // --- STATO AUTENTICAZIONE ---
 onAuthStateChanged(auth, async (user) => {
     if (!user) {
-        await loginIfNeeded();
+        await login();
     } else {
-        // Controlla se esiste l’ELO
         const userRef = ref(db, "utenti/" + user.uid);
         const snap = await get(userRef);
         if (!snap.exists()) {
@@ -98,12 +89,10 @@ function caricaGrafico(uid) {
         const data = snapshot.val();
         if (!data) return;
 
-        // Ordina i giorni
         const giorni = Object.keys(data).sort((a,b)=>a-b);
         const valori = giorni.map(g => data[g]);
 
-        // Se chart già esiste
-        if (chart) {
+        if(chart){
             chart.data.labels = giorni;
             chart.data.datasets[0].data = valori;
             chart.update();
@@ -122,20 +111,15 @@ function caricaGrafico(uid) {
                     fill: false,
                     tension: 0.2,
                     pointBackgroundColor: valori.map((v,i) => {
-                        if(i===0) return "#000"; // giorno 0
-                        const delta = v - valori[i-1];
-                        return delta>=0 ? "#2ecc71" : "#e74c3c";
+                        if(i===0) return "#000";
+                        return v - valori[i-1] >= 0 ? "#2ecc71" : "#e74c3c";
                     })
                 }]
             },
             options: {
                 responsive: true,
-                plugins: {
-                    legend: { display: false }
-                },
-                scales: {
-                    y: { beginAtZero: false }
-                }
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: false } }
             }
         });
     });
