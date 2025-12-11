@@ -2,51 +2,85 @@
   {
     "sequence": [1, 2, 3, 4],
     "answer": 5,
-    "elo": 1000
+    "elo": 1000,
+    "difficulty": "Elementare"
   },
   {
     "sequence": [2, 4, 6, 8],
     "answer": 10,
-    "elo": 1200
-  },
-  {
-    "sequence": [3, 9, 27],
-    "answer": 81,
-    "elo": 1500
+    "elo": 1100,
+    "difficulty": "Elementare"
   },
   {
     "sequence": [5, 10, 15, 20],
     "answer": 25,
-    "elo": 1200
-  },
-  {
-    "sequence": [1, 1, 2, 3, 5],
-    "answer": 8,
-    "elo": 1500
+    "elo": 1200,
+    "difficulty": "Elementare"
   },
   {
     "sequence": [7, 14, 21],
     "answer": 28,
-    "elo": 1100
+    "elo": 1250,
+    "difficulty": "Facile"
   },
   {
     "sequence": [10, 7, 4, 1],
     "answer": -2,
-    "elo": 1100
-  },
-  {
-    "sequence": [1, 4, 9, 16],
-    "answer": 25,
-    "elo": 1400
-  },
-  {
-    "sequence": [2, 3, 5, 8],
-    "answer": 13,
-    "elo": 1500
+    "elo": 1350,
+    "difficulty": "Facile"
   },
   {
     "sequence": [100, 50, 25],
     "answer": 12.5,
-    "elo": 1200
+    "elo": 1400,
+    "difficulty": "Facile"
+  },
+  {
+    "sequence": [2, 4, 6, 8],
+    "answer": 10,
+    "elo": 1450,
+    "difficulty": "Intermedio"
+  },
+  {
+    "sequence": [1, 4, 9, 16],
+    "answer": 25,
+    "elo": 1550,
+    "difficulty": "Intermedio"
+  },
+  {
+    "sequence": [1, 1, 2, 3, 5],
+    "answer": 8,
+    "elo": 1650,
+    "difficulty": "Difficile"
+  },
+  {
+    "sequence": [2, 3, 5, 8],
+    "answer": 13,
+    "elo": 1750,
+    "difficulty": "Difficile"
+  },
+  {
+    "sequence": [3, 9, 27],
+    "answer": 81,
+    "elo": 1850,
+    "difficulty": "Estremo"
+  },
+  {
+    "sequence": [1, 1, 2, 3, 5],
+    "answer": 8,
+    "elo": 1950,
+    "difficulty": "Estremo"
+  },
+  {
+    "sequence": [3, 9, 27],
+    "answer": 81,
+    "elo": 2100,
+    "difficulty": "Bot"
+  },
+  {
+    "sequence": [2, 3, 5, 8],
+    "answer": 13,
+    "elo": 2200,
+    "difficulty": "Bot"
   }
 ]
