@@ -3,19 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MathRain - Home</title>
+    <title>MathRain</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <header class="main-header">
-            <nav class="nav-center">
-                <a href="index.html" class="active">Home</a>
-                <a href="problemi.html">Problemi</a>
-                <a href="statistiche.html">Statistiche</a>
-            </nav>
-        </header>
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <h3>Login Richiesto</h3>
+            <p>Accedi con Google per continuare</p>
+            <button id="googleLoginBtn">Accedi con Google</button>
+        </div>
+    </div>
 
+    <!-- Fixed Header -->
+    <header class="fixed-header">
+        <nav class="nav-center">
+            <a href="index.html">Home</a>
+            <a href="problemi.html">Problemi</a>
+            <a href="statistiche.html">Statistiche</a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
         <div class="elo-container">
             <div class="elo-display">
                 <span id="eloUtente" class="elo-number">ELO: 1000</span>
@@ -25,18 +36,16 @@
 
         <main class="main-content">
             <div class="card">
-                <h2 class="card-title">Indovina il prossimo numero</h2>
-                
                 <div id="sequenzaBox" class="sequence-display">
                     Caricamento sequenza...
                 </div>
                 
                 <div class="input-section">
-                    <input type="number" id="rispostaUtente" class="answer-input" placeholder="Inserisci la risposta">
+                    <input type="number" id="rispostaUtente" class="answer-input" placeholder="Risposta">
                     
                     <div class="button-row">
-                        <button id="inviaRispostaBtn" class="btn submit-btn">Invia Risposta</button>
-                        <button id="nuovaSequenzaBtn" class="btn new-btn">Nuova Sequenza</button>
+                        <button id="inviaRispostaBtn" class="btn submit-btn">Invia</button>
+                        <button id="nuovaSequenzaBtn" class="btn new-btn">Nuova</button>
                     </div>
                 </div>
                 
