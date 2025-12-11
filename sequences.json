@@ -162,8 +162,8 @@
     "difficulty": "Intermedio"
   },
   {
-    "sequence": [10, 5, 8, 4, 7],
-    "answer": 3.5,
+    "sequence": [10, 5, 8, 4, 7, 3.5],
+    "answer": 6.5,
     "elo": 1550,
     "difficulty": "Intermedio"
   },
