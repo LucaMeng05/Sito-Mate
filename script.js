@@ -1,8 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 import { getDatabase, ref, get, set, update } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
-// --- CONFIG FIREBASE ---
 const firebaseConfig = {
     apiKey: "AIzaSyBzmwF02AuyFnvUZSZbta5Sx-xEMWHcYU4",
     authDomain: "math-c4f91.firebaseapp.com",
@@ -13,16 +12,11 @@ const firebaseConfig = {
     appId: "1:222559643526:web:566ef9854fdb15e8776e07"
 };
 
-// --- INIT FIREBASE ---
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 const provider = new GoogleAuthProvider();
 
-// --- ELEMENTI HTML ---
-const googleLoginBtn = document.getElementById("googleLoginBtn");
-const logoutBtn = document.getElementById("logoutBtn");
-const sequenceBox = document.getElementById("sequenceBox");
 const sequenzaEl = document.getElementById("sequenzaBox");
 const rispostaInput = document.getElementById("rispostaUtente");
 const inviaBtn = document.getElementById("inviaRispostaBtn");
@@ -37,61 +31,47 @@ let userUid = null;
 
 // --- CARICA SEQUENZE ---
 fetch('sequences.json')
-    .then(res => res.json())
-    .then(data => sequenze = data)
-    .catch(err => console.error(err));
+  .then(res => res.json())
+  .then(data => sequenze = data);
 
-// --- LOGIN GOOGLE ---
+// --- LOGIN ---
 async function login() {
     try {
         const result = await signInWithPopup(auth, provider);
         userUid = result.user.uid;
         caricaElo();
-    } catch (err) {
-        console.error("Login fallito", err);
+        generaSequenzaHome();
+    } catch(err){
+        console.error(err);
     }
 }
 
-googleLoginBtn.addEventListener("click", login);
-
-// --- LOGOUT ---
-logoutBtn.addEventListener("click", async () => {
-    await signOut(auth);
-    userUid = null;
-    await login(); // login obbligatorio
-});
-
-// --- STATO AUTENTICAZIONE ---
-onAuthStateChanged(auth, async (user) => {
-    if (!user) {
+onAuthStateChanged(auth, async user => {
+    if(!user){
         await login();
     } else {
         userUid = user.uid;
-        googleLoginBtn.style.display = "none";
-        sequenceBox.style.display = "block";
         caricaElo();
         generaSequenzaHome();
     }
 });
 
 // --- CARICA ELO ---
-async function caricaElo() {
-    if (!userUid) return;
+async function caricaElo(){
+    if(!userUid) return;
     const userRef = ref(db, 'utenti/' + userUid);
     const snap = await get(userRef);
-
-    if (!snap.exists()) {
+    if(!snap.exists()){
         await set(userRef, { elo: 1000, storicoELO: { 0: 1000 } });
         eloDisplay.textContent = "ELO: 1000";
     } else {
-        const elo = snap.val().elo || 1000;
-        eloDisplay.textContent = `ELO: ${elo}`;
+        eloDisplay.textContent = `ELO: ${snap.val().elo || 1000}`;
     }
 }
 
 // --- GENERA SEQUENZA ---
-function generaSequenzaHome() {
-    if (sequenze.length === 0) return;
+function generaSequenzaHome(){
+    if(sequenze.length === 0) return;
     const index = Math.floor(Math.random() * sequenze.length);
     sequenzaCorrente = sequenze[index];
     sequenzaEl.innerText = sequenzaCorrente.sequence.join(", ") + ", ?";
@@ -101,18 +81,16 @@ function generaSequenzaHome() {
 }
 
 // --- CONTROLLA RISPOSTA ---
-inviaBtn.addEventListener("click", async () => {
-    if (!sequenzaCorrente) return;
-
+inviaBtn.addEventListener("click", async ()=>{
+    if(!sequenzaCorrente) return;
     const userAnswer = Number(rispostaInput.value);
     const correctAnswer = sequenzaCorrente.answer;
-
     inviaBtn.disabled = true;
 
     let delta = calcolaDeltaElo(userAnswer === correctAnswer);
     await aggiornaElo(delta);
 
-    if (userAnswer === correctAnswer) {
+    if(userAnswer === correctAnswer){
         feedback.innerText = "✅ Corretto!";
         feedback.style.color = "#2ecc71";
     } else {
@@ -122,44 +100,39 @@ inviaBtn.addEventListener("click", async () => {
 });
 
 // --- NUOVA SEQUENZA ---
-nuovaSequenzaBtn.addEventListener("click", () => {
-    generaSequenzaHome();
-});
+nuovaSequenzaBtn.addEventListener("click", ()=>generaSequenzaHome());
 
 // --- CALCOLO DELTA ELO ---
-async function calcolaDeltaElo(corretta) {
-    const userRef = ref(db, 'utenti/' + userUid);
-    const snap = await get(userRef);
+async function calcolaDeltaElo(corretta){
+    const snap = await get(ref(db,'utenti/'+userUid));
     const eloUtente = snap.val().elo || 1000;
     const eloProblema = sequenzaCorrente.elo || 1000;
 
     let diff = eloProblema - eloUtente;
-    let segno = diff >= 0 ? 1 : -1;
+    let segno = diff>=0?1:-1;
     let varDelta = segno * Math.floor(Math.sqrt(Math.abs(diff)));
-    if (varDelta > 400) varDelta = 400;
+    if(Math.abs(varDelta)>400) varDelta = 400;
 
-    return corretta ? 19 + varDelta : -20 + varDelta;
+    return corretta ? 19+varDelta : -20+varDelta;
 }
 
 // --- AGGIORNA ELO ---
-async function aggiornaElo(delta) {
-    const userRef = ref(db, 'utenti/' + userUid);
+async function aggiornaElo(delta){
+    const userRef = ref(db, 'utenti/'+userUid);
     const snap = await get(userRef);
-    let elo = snap.val().elo || 1000;
+    const elo = snap.val().elo || 1000;
+    const nuovoElo = Math.max(0, elo+delta);
 
-    const nuovoElo = Math.max(0, elo + delta);
-    await update(userRef, { elo: nuovoElo });
-
-    // Aggiorna storicoELO
-    let storico = snap.val().storicoELO || { 0: 1000 };
+    // Aggiorna DB
+    let storico = snap.val().storicoELO || {0:1000};
     const day = Object.keys(storico).length;
     storico[day] = nuovoElo;
-    await update(userRef, { storicoELO: storico });
+    await update(userRef, { elo: nuovoElo, storicoELO: storico });
 
-    // Aggiorna ELO HTML con animazione colore
+    // Aggiorna display
     eloDisplay.textContent = `ELO: ${nuovoElo}`;
-    eloDelta.textContent = (delta >= 0 ? `+${delta}` : delta);
-    eloDelta.style.color = delta >= 0 ? "#2ecc71" : "#e74c3c";
-    eloDelta.style.opacity = "1";
-    setTimeout(() => { eloDelta.style.opacity = "0"; }, 1000);
+    eloDelta.textContent = (delta>=0?`+${delta}`:delta);
+    eloDelta.style.color = delta>=0?"#2ecc71":"#e74c3c";
+    eloDelta.style.opacity="1";
+    setTimeout(()=>{eloDelta.style.opacity="0"}, 1000);
 }
