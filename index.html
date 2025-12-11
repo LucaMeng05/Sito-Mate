@@ -73,6 +73,13 @@
 
     <!-- Main Content -->
     <div class="container">
+        <div class="elo-container">
+            <div class="elo-display">
+                <span id="eloUtente" class="elo-number">ELO: 1000</span>
+                <span id="eloDelta" class="elo-change"></span>
+            </div>
+        </div>
+
         <main class="main-content">
             <div class="card">
                 <div id="sequenzaBox" class="sequence-display">
@@ -82,30 +89,19 @@
                 <div class="input-section">
                     <input type="number" id="rispostaUtente" class="answer-input" placeholder="Risposta">
                     
-                    <!-- Prima riga: Invia | Spazio | Nuova -->
-                    <div class="button-grid">
-                        <div class="grid-left">
-                            <button id="inviaRispostaBtn" class="btn submit-btn" disabled>Invia</button>
-                        </div>
-                        <div class="grid-center"></div> <!-- Spazio vuoto -->
-                        <div class="grid-right">
-                            <button id="nuovaSequenzaBtn" class="btn new-btn" disabled>Nuova</button>
-                        </div>
+                    <!-- Bottoni Invia e Nuova affiancati PERFETTAMENTE -->
+                    <div class="dual-buttons">
+                        <button id="inviaRispostaBtn" class="btn submit-btn" disabled>Invia</button>
+                        <button id="nuovaSequenzaBtn" class="btn new-btn" disabled>Nuova</button>
                     </div>
                     
-                    <!-- Seconda riga: Difficoltà (centrato) -->
+                    <!-- Bottone Difficoltà sotto -->
                     <div class="difficulty-row">
                         <button id="scegliDifficoltaBtn" class="btn diff-btn">Difficoltà</button>
                     </div>
                 </div>
                 
-                <!-- ELO Display al posto del feedback -->
-                <div class="elo-feedback-container">
-                    <div id="eloFeedback" class="elo-feedback">
-                        <span id="eloCurrent" class="elo-current">ELO: 1000</span>
-                        <span id="eloChange" class="elo-change-display"></span>
-                    </div>
-                </div>
+                <div id="feedback" class="result-feedback"></div>
             </div>
         </main>
     </div>
