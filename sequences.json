@@ -138,7 +138,7 @@
     "difficulty": "Intermedio"
   },
   {
-    "sequence": [3, 7, 14, 24],
+    "sequence": [3, 7, 13, 21],
     "answer": 37,
     "elo": 1550,
     "difficulty": "Intermedio"
