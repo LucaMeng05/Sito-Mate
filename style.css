@@ -5,7 +5,6 @@ body {
     font-family: 'Roboto', sans-serif;
     background: #f3f3f3;
     margin: 0;
-    padding: 0;
     padding-top: 80px;
 }
 
@@ -26,7 +25,6 @@ nav {
     display: flex;
     justify-content: center;
     align-items: center;
-    position: relative;
 }
 
 .nav-center a {
@@ -40,34 +38,6 @@ nav {
 .nav-center a:hover {
     color: #FFD700;
     transform: scale(1.1);
-}
-
-/* USER INFO (ELO) */
-#userInfo {
-    position: absolute;
-    right: 25px;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
-#eloUtente {
-    background: #eee;
-    padding: 10px 16px;
-    border-radius: 14px;
-    border: 2px solid #333;
-    font-size: 18px;
-    font-weight: bold;
-    transition: transform 0.4s ease;
-}
-
-.elo-anim {
-    animation: pulseElo 0.6s ease;
-}
-
-@keyframes pulseElo {
-    0% { transform: scale(1); color: black; }
-    30% { transform: scale(1.25); color: #3cb371; }
-    100% { transform: scale(1); color: black; }
 }
 
 /* Welcome box */
@@ -93,6 +63,52 @@ nav {
     display: none;
 }
 
+/* ELO box inside game */
+#eloContainer {
+    margin-bottom: 20px;
+}
+
+#eloUtente {
+    display: inline-block;
+    background: #eee;
+    padding: 10px 16px;
+    border-radius: 14px;
+    border: 2px solid #333;
+    font-size: 20px;
+    font-weight: bold;
+    transition: transform 0.4s ease;
+}
+
+#eloDelta {
+    font-size: 18px;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+/* Animations */
+.elo-gain {
+    animation: pulseGreen 0.6s ease;
+    color: #2ecc71 !important;
+}
+
+.elo-loss {
+    animation: pulseRed 0.6s ease;
+    color: #e74c3c !important;
+}
+
+@keyframes pulseGreen {
+    0% { transform: scale(1); color: black; }
+    40% { transform: scale(1.25); color: #2ecc71; }
+    100% { transform: scale(1); color: black; }
+}
+
+@keyframes pulseRed {
+    0% { transform: scale(1); color: black; }
+    40% { transform: scale(1.25); color: #e74c3c; }
+    100% { transform: scale(1); color: black; }
+}
+
+/* Inputs & Buttons */
 input[type="text"] {
     width: 150px;
     padding: 10px;
@@ -124,15 +140,4 @@ button:hover {
     margin-top: 10px;
     font-weight: bold;
     font-size: 18px;
-}
-
-/* FOOTER */
-footer {
-    background: #222;
-    color: white;
-    text-align: center;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    padding: 8px 0;
 }
