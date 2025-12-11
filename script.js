@@ -1,8 +1,8 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 import { getDatabase, ref, get, set, update } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
-// Firebase
+// --- CONFIG FIREBASE ---
 const firebaseConfig = {
     apiKey: "AIzaSyBzmwF02AuyFnvUZSZbta5Sx-xEMWHcYU4",
     authDomain: "math-c4f91.firebaseapp.com",
@@ -10,149 +10,156 @@ const firebaseConfig = {
     projectId: "math-c4f91",
     storageBucket: "math-c4f91.firebasestorage.app",
     messagingSenderId: "222559643526",
-    appId: "1:222559643526:web:566ef9854fdb15e8776e07",
-    measurementId: "G-SXX6P84M4F"
+    appId: "1:222559643526:web:566ef9854fdb15e8776e07"
 };
 
+// --- INIT FIREBASE ---
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
 const db = getDatabase(app);
+const provider = new GoogleAuthProvider();
 
-// HTML refs
+// --- ELEMENTI HTML ---
+const googleLoginBtn = document.getElementById("googleLoginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
 const sequenceBox = document.getElementById("sequenceBox");
-const eloBox = document.getElementById("eloUtente");
-const eloDelta = document.getElementById("eloDelta");
-const sequenzaBox = document.getElementById("sequenzaBox");
+const sequenzaEl = document.getElementById("sequenzaBox");
 const rispostaInput = document.getElementById("rispostaUtente");
 const inviaBtn = document.getElementById("inviaRispostaBtn");
 const nuovaSequenzaBtn = document.getElementById("nuovaSequenzaBtn");
+const feedback = document.getElementById("feedback");
+const eloDisplay = document.getElementById("eloUtente");
+const eloDelta = document.getElementById("eloDelta");
 
 let sequenze = [];
 let sequenzaCorrente = null;
+let userUid = null;
 
-// Load sequences
-fetch("sequences.json")
-    .then(r => r.json())
-    .then(d => sequenze = d);
+// --- CARICA SEQUENZE ---
+fetch('sequences.json')
+    .then(res => res.json())
+    .then(data => sequenze = data)
+    .catch(err => console.error(err));
 
-// Generate sequence
-function generaSequenza() {
-    const i = Math.floor(Math.random() * sequenze.length);
-    sequenzaCorrente = sequenze[i];
-
-    sequenzaBox.innerText = sequenzaCorrente.sequence.join(", ") + ", ?";
-    rispostaInput.value = "";
-    document.getElementById("feedback").innerText = "";
-    eloDelta.innerText = "";
-
-    inviaBtn.style.display = "inline-block";
+// --- LOGIN GOOGLE ---
+async function login() {
+    try {
+        const result = await signInWithPopup(auth, provider);
+        userUid = result.user.uid;
+        caricaElo();
+    } catch (err) {
+        console.error("Login fallito", err);
+    }
 }
 
-function aggiornaEloBox(oldElo, newElo) {
-    const delta = newElo - oldElo;
+googleLoginBtn.addEventListener("click", login);
 
-    // Delta visual
-    eloDelta.innerText = delta > 0 ? `+${delta}` : `${delta}`;
-    eloDelta.style.color = delta > 0 ? "#2ecc71" : "#e74c3c";
-
-    // Show delta without shifting text
-    eloDelta.style.opacity = 1;
-
-    setTimeout(() => {
-        eloDelta.style.opacity = 0;
-    }, 1200);
-
-    // Animate number slowly
-    let start = oldElo;
-    const end = newElo;
-    const duration = 1200;
-    const step = (end - start) / (duration / 40);
-
-    const anim = setInterval(() => {
-        start += step;
-
-        if ((step > 0 && start >= end) || (step < 0 && start <= end)) {
-            start = end;
-            clearInterval(anim);
-        }
-
-        eloUtente.innerText = "ELO: " + Math.round(start);
-    }, 40);
-
-    // Color fade animation
-    if (delta > 0) {
-        eloUtente.style.animation = "fadeGreen 1.2s ease";
-    } else {
-        eloUtente.style.animation = "fadeRed 1.2s ease";
-    }
-
-    // reset animation
-    setTimeout(() => {
-        eloUtente.style.animation = "none";
-    }, 1300);
-}
-
-// Auto-login
-onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-        await signInWithPopup(auth, provider);
-        return;
-    }
-
-    const userRef = ref(db, "utenti/" + user.uid);
-    const snap = await get(userRef);
-
-    let elo = 1000;
-    if (!snap.exists()) {
-        await set(userRef, { elo: 1000 });
-    } else {
-        elo = snap.val().elo;
-    }
-
-    eloBox.dataset.value = elo;
-    eloBox.innerText = "ELO: " + elo;
-
-    sequenceBox.style.display = "block";
-    generaSequenza();
+// --- LOGOUT ---
+logoutBtn.addEventListener("click", async () => {
+    await signOut(auth);
+    userUid = null;
+    await login(); // login obbligatorio
 });
 
-// Check answer
-async function controllaRisposta() {
-    const user = auth.currentUser;
-    if (!user || !sequenzaCorrente) return;
+// --- STATO AUTENTICAZIONE ---
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+        await login();
+    } else {
+        userUid = user.uid;
+        googleLoginBtn.style.display = "none";
+        sequenceBox.style.display = "block";
+        caricaElo();
+        generaSequenzaHome();
+    }
+});
 
-    const userRef = ref(db, "utenti/" + user.uid);
+// --- CARICA ELO ---
+async function caricaElo() {
+    if (!userUid) return;
+    const userRef = ref(db, 'utenti/' + userUid);
     const snap = await get(userRef);
-    let elo = snap.val().elo;
 
-    const feedback = document.getElementById("feedback");
+    if (!snap.exists()) {
+        await set(userRef, { elo: 1000, storicoELO: { 0: 1000 } });
+        eloDisplay.textContent = "ELO: 1000";
+    } else {
+        const elo = snap.val().elo || 1000;
+        eloDisplay.textContent = `ELO: ${elo}`;
+    }
+}
+
+// --- GENERA SEQUENZA ---
+function generaSequenzaHome() {
+    if (sequenze.length === 0) return;
+    const index = Math.floor(Math.random() * sequenze.length);
+    sequenzaCorrente = sequenze[index];
+    sequenzaEl.innerText = sequenzaCorrente.sequence.join(", ") + ", ?";
+    rispostaInput.value = "";
+    feedback.innerText = "";
+    inviaBtn.disabled = false;
+}
+
+// --- CONTROLLA RISPOSTA ---
+inviaBtn.addEventListener("click", async () => {
+    if (!sequenzaCorrente) return;
+
     const userAnswer = Number(rispostaInput.value);
+    const correctAnswer = sequenzaCorrente.answer;
 
-    inviaBtn.style.display = "none";
+    inviaBtn.disabled = true;
 
-    let diff = Math.abs(elo - sequenzaCorrente.elo);
-    diff = Math.min(diff, 400);
+    let delta = calcolaDeltaElo(userAnswer === correctAnswer);
+    await aggiornaElo(delta);
 
-    const segno = sequenzaCorrente.elo > elo ? 1 : -1;
-    const varAdjust = segno * (Math.floor(Math.sqrt(diff)) - 1);
-
-    let delta;
-
-    if (userAnswer === sequenzaCorrente.answer) {
+    if (userAnswer === correctAnswer) {
         feedback.innerText = "✅ Corretto!";
-        delta = 19 + varAdjust;
+        feedback.style.color = "#2ecc71";
     } else {
         feedback.innerText = "❌ Sbagliato!";
-        delta = -20 + varAdjust;
+        feedback.style.color = "#e74c3c";
     }
+});
+
+// --- NUOVA SEQUENZA ---
+nuovaSequenzaBtn.addEventListener("click", () => {
+    generaSequenzaHome();
+});
+
+// --- CALCOLO DELTA ELO ---
+async function calcolaDeltaElo(corretta) {
+    const userRef = ref(db, 'utenti/' + userUid);
+    const snap = await get(userRef);
+    const eloUtente = snap.val().elo || 1000;
+    const eloProblema = sequenzaCorrente.elo || 1000;
+
+    let diff = eloProblema - eloUtente;
+    let segno = diff >= 0 ? 1 : -1;
+    let varDelta = segno * Math.floor(Math.sqrt(Math.abs(diff)));
+    if (varDelta > 400) varDelta = 400;
+
+    return corretta ? 19 + varDelta : -20 + varDelta;
+}
+
+// --- AGGIORNA ELO ---
+async function aggiornaElo(delta) {
+    const userRef = ref(db, 'utenti/' + userUid);
+    const snap = await get(userRef);
+    let elo = snap.val().elo || 1000;
 
     const nuovoElo = Math.max(0, elo + delta);
     await update(userRef, { elo: nuovoElo });
 
-    aggiornaEloBox(elo, nuovoElo);
-    eloBox.dataset.value = nuovoElo;
-}
+    // Aggiorna storicoELO
+    let storico = snap.val().storicoELO || { 0: 1000 };
+    const day = Object.keys(storico).length;
+    storico[day] = nuovoElo;
+    await update(userRef, { storicoELO: storico });
 
-inviaBtn.addEventListener("click", controllaRisposta);
-nuovaSequenzaBtn.addEventListener("click", generaSequenza);
+    // Aggiorna ELO HTML con animazione colore
+    eloDisplay.textContent = `ELO: ${nuovoElo}`;
+    eloDelta.textContent = (delta >= 0 ? `+${delta}` : delta);
+    eloDelta.style.color = delta >= 0 ? "#2ecc71" : "#e74c3c";
+    eloDelta.style.opacity = "1";
+    setTimeout(() => { eloDelta.style.opacity = "0"; }, 1000);
+}
