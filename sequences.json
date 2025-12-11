@@ -504,8 +504,8 @@
     "difficulty": "Bot"
   },
   {
-    "sequence": [1111, 120, 33, 30],
-    "answer": 23,
+    "sequence": [1111, 120, 33, 30, 23],
+    "answer": 21,
     "elo": 2300,
     "difficulty": "Bot"
   },
