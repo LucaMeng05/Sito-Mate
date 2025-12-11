@@ -8,15 +8,26 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <div class="container">
-        <header class="main-header">
-            <nav class="nav-center">
-                <a href="index.html">Home</a>
-                <a href="problemi.html">Problemi</a>
-                <a href="statistiche.html" class="active">Statistiche</a>
-            </nav>
-        </header>
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <h3>Login Richiesto</h3>
+            <p>Accedi con Google per continuare</p>
+            <button id="googleLoginBtn">Accedi con Google</button>
+        </div>
+    </div>
 
+    <!-- Fixed Header -->
+    <header class="fixed-header">
+        <nav class="nav-center">
+            <a href="index.html">Home</a>
+            <a href="problemi.html">Problemi</a>
+            <a href="statistiche.html">Statistiche</a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
         <div class="elo-container">
             <div class="elo-display">
                 <span id="eloUtenteStat" class="elo-number">ELO: 1000</span>
@@ -25,11 +36,13 @@
 
         <main class="main-content">
             <div class="card">
-                <h2 class="card-title">Andamento ELO</h2>
-                
                 <div class="chart-container">
                     <canvas id="eloChart"></canvas>
                 </div>
+            </div>
+
+            <div class="logout-container">
+                <button id="logoutBtn" class="logout-btn">Logout</button>
             </div>
         </main>
     </div>
