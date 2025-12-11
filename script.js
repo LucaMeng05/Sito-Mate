@@ -2,7 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebas
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 import { getDatabase, ref, get, set, update } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
-// Firebase config
+// Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyBzmwF02AuyFnvUZSZbta5Sx-xEMWHcYU4",
     authDomain: "math-c4f91.firebaseapp.com",
@@ -14,15 +14,15 @@ const firebaseConfig = {
     measurementId: "G-SXX6P84M4F"
 };
 
-// Init
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 const db = getDatabase(app);
 
-// Elements
+// HTML refs
 const sequenceBox = document.getElementById("sequenceBox");
 const eloBox = document.getElementById("eloUtente");
+const eloDelta = document.getElementById("eloDelta");
 const sequenzaBox = document.getElementById("sequenzaBox");
 const rispostaInput = document.getElementById("rispostaUtente");
 const inviaBtn = document.getElementById("inviaRispostaBtn");
@@ -36,7 +36,7 @@ fetch("sequences.json")
     .then(r => r.json())
     .then(d => sequenze = d);
 
-// Generate new sequence
+// Generate sequence
 function generaSequenza() {
     const i = Math.floor(Math.random() * sequenze.length);
     sequenzaCorrente = sequenze[i];
@@ -44,11 +44,47 @@ function generaSequenza() {
     sequenzaBox.innerText = sequenzaCorrente.sequence.join(", ") + ", ?";
     rispostaInput.value = "";
     document.getElementById("feedback").innerText = "";
+    eloDelta.innerText = "";
 
     inviaBtn.style.display = "inline-block";
 }
 
-// Auto login on page load
+// Animate ELO
+function aggiornaEloBox(oldElo, newElo) {
+    const delta = newElo - oldElo;
+
+    // ELO delta indicator
+    eloDelta.innerText = delta > 0 ? `(+${delta})` : `(${delta})`;
+    eloDelta.style.color = delta > 0 ? "#2ecc71" : "#e74c3c";
+
+    // remove previous class
+    eloBox.classList.remove("elo-gain", "elo-loss");
+    void eloBox.offsetWidth;
+
+    // Add animation based on gain/loss
+    if (delta >= 0) {
+        eloBox.classList.add("elo-gain");
+    } else {
+        eloBox.classList.add("elo-loss");
+    }
+
+    // Animate the number
+    let start = oldElo;
+    const end = newElo;
+    const duration = 500;
+    const step = (end - start) / (duration / 20);
+
+    const anim = setInterval(() => {
+        start += step;
+        if ((step > 0 && start >= end) || (step < 0 && start <= end)) {
+            start = end;
+            clearInterval(anim);
+        }
+        eloBox.innerText = "ELO: " + Math.round(start);
+    }, 20);
+}
+
+// Auto-login
 onAuthStateChanged(auth, async (user) => {
     if (!user) {
         await signInWithPopup(auth, provider);
@@ -65,35 +101,12 @@ onAuthStateChanged(auth, async (user) => {
         elo = snap.val().elo;
     }
 
-    aggiornaEloBox(elo);
+    eloBox.dataset.value = elo;
+    eloBox.innerText = "ELO: " + elo;
 
     sequenceBox.style.display = "block";
     generaSequenza();
 });
-
-// Animate ELO box
-function aggiornaEloBox(nuovoElo) {
-    const old = Number(eloBox.dataset.value || "0");
-    eloBox.dataset.value = nuovoElo;
-
-    eloBox.classList.remove("elo-anim");
-    void eloBox.offsetWidth;
-    eloBox.classList.add("elo-anim");
-
-    let start = old;
-    const end = nuovoElo;
-    const duration = 600;
-    const step = (end - start) / (duration / 20);
-
-    const interval = setInterval(() => {
-        start += step;
-        if ((step >= 0 && start >= end) || (step < 0 && start <= end)) {
-            start = end;
-            clearInterval(interval);
-        }
-        eloBox.innerText = "ELO: " + Math.round(start);
-    }, 20);
-}
 
 // Check answer
 async function controllaRisposta() {
@@ -104,34 +117,32 @@ async function controllaRisposta() {
     const snap = await get(userRef);
     let elo = snap.val().elo;
 
+    const feedback = document.getElementById("feedback");
     const userAnswer = Number(rispostaInput.value);
-    const corretta = sequenzaCorrente.answer;
 
     inviaBtn.style.display = "none";
-
-    const feedback = document.getElementById("feedback");
 
     let diff = Math.abs(elo - sequenzaCorrente.elo);
     diff = Math.min(diff, 400);
 
-    const segno = sequenzaCorrente.elo > elo ? +1 : -1;
+    const segno = sequenzaCorrente.elo > elo ? 1 : -1;
     const varAdjust = segno * (Math.floor(Math.sqrt(diff)) - 1);
 
-    let delta = 0;
+    let delta;
 
-    if (userAnswer === corretta) {
+    if (userAnswer === sequenzaCorrente.answer) {
         feedback.innerText = "✅ Corretto!";
         delta = 19 + varAdjust;
     } else {
-        feedback.innerText = `❌ Sbagliato! Risposta: ${corretta}`;
+        feedback.innerText = "❌ Sbagliato!";
         delta = -20 + varAdjust;
     }
 
     const nuovoElo = Math.max(0, elo + delta);
-
     await update(userRef, { elo: nuovoElo });
 
-    aggiornaEloBox(nuovoElo);
+    aggiornaEloBox(elo, nuovoElo);
+    eloBox.dataset.value = nuovoElo;
 }
 
 inviaBtn.addEventListener("click", controllaRisposta);
