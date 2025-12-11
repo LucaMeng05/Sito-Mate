@@ -350,7 +350,7 @@ body {
 
 .btn.compact {
     flex: none; /* impedisce ai pulsanti di allargarsi */
-    width: 100px; /* larghezza fissa */
+    width: 50px; /* larghezza fissa */
     padding: 8px 0; /* meno padding verticale */
     font-size: 13px; /* più piccolo */
 }
