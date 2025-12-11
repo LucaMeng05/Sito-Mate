@@ -63,49 +63,45 @@ nav {
     display: none;
 }
 
-/* ELO box inside game */
+/* ELO container */
 #eloContainer {
-    margin-bottom: 20px;
+    position: relative;
+    height: 30px;
+    margin-bottom: 15px;
 }
 
 #eloUtente {
+    font-size: 22px;
+    font-weight: bold;
     display: inline-block;
-    background: #eee;
-    padding: 10px 16px;
-    border-radius: 14px;
-    border: 2px solid #333;
+    color: #000;
+}
+
+/* ELO Δ appears fixed on the right side */
+#eloDelta {
+    position: absolute;
+    right: 0;
+    top: 0;
     font-size: 20px;
     font-weight: bold;
-    transition: transform 0.4s ease;
+    opacity: 0;
+    transition: opacity 0.4s ease;
 }
 
-#eloDelta {
-    font-size: 18px;
-    font-weight: bold;
-    margin-left: 10px;
+/* No scaling animations */
+.elo-gain, .elo-loss {
+    animation: none;
 }
 
-/* Animations */
-.elo-gain {
-    animation: pulseGreen 0.6s ease;
-    color: #2ecc71 !important;
+/* Fade color animations only */
+@keyframes fadeGreen {
+    0% { color: #2ecc71; }
+    100% { color: #000; }
 }
 
-.elo-loss {
-    animation: pulseRed 0.6s ease;
-    color: #e74c3c !important;
-}
-
-@keyframes pulseGreen {
-    0% { transform: scale(1); color: black; }
-    40% { transform: scale(1.25); color: #2ecc71; }
-    100% { transform: scale(1); color: black; }
-}
-
-@keyframes pulseRed {
-    0% { transform: scale(1); color: black; }
-    40% { transform: scale(1.25); color: #e74c3c; }
-    100% { transform: scale(1); color: black; }
+@keyframes fadeRed {
+    0% { color: #e74c3c; }
+    100% { color: #000; }
 }
 
 /* Inputs & Buttons */
