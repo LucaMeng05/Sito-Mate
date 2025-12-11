@@ -49,39 +49,48 @@ function generaSequenza() {
     inviaBtn.style.display = "inline-block";
 }
 
-// Animate ELO
 function aggiornaEloBox(oldElo, newElo) {
     const delta = newElo - oldElo;
 
-    // ELO delta indicator
-    eloDelta.innerText = delta > 0 ? `(+${delta})` : `(${delta})`;
+    // Delta visual
+    eloDelta.innerText = delta > 0 ? `+${delta}` : `${delta}`;
     eloDelta.style.color = delta > 0 ? "#2ecc71" : "#e74c3c";
 
-    // remove previous class
-    eloBox.classList.remove("elo-gain", "elo-loss");
-    void eloBox.offsetWidth;
+    // Show delta without shifting text
+    eloDelta.style.opacity = 1;
 
-    // Add animation based on gain/loss
-    if (delta >= 0) {
-        eloBox.classList.add("elo-gain");
-    } else {
-        eloBox.classList.add("elo-loss");
-    }
+    setTimeout(() => {
+        eloDelta.style.opacity = 0;
+    }, 1200);
 
-    // Animate the number
+    // Animate number slowly
     let start = oldElo;
     const end = newElo;
-    const duration = 500;
-    const step = (end - start) / (duration / 20);
+    const duration = 1200;
+    const step = (end - start) / (duration / 40);
 
     const anim = setInterval(() => {
         start += step;
+
         if ((step > 0 && start >= end) || (step < 0 && start <= end)) {
             start = end;
             clearInterval(anim);
         }
-        eloBox.innerText = "ELO: " + Math.round(start);
-    }, 20);
+
+        eloUtente.innerText = "ELO: " + Math.round(start);
+    }, 40);
+
+    // Color fade animation
+    if (delta > 0) {
+        eloUtente.style.animation = "fadeGreen 1.2s ease";
+    } else {
+        eloUtente.style.animation = "fadeRed 1.2s ease";
+    }
+
+    // reset animation
+    setTimeout(() => {
+        eloUtente.style.animation = "none";
+    }, 1300);
 }
 
 // Auto-login
