@@ -75,6 +75,7 @@ function generaSequenzaHome(){
   rispostaInput.value = "";
   feedback.innerText = "";
   inviaBtn.disabled = false;
+  rispostaInput.focus();
 }
 
 // Controlla risposta
@@ -87,12 +88,21 @@ inviaBtn.addEventListener("click", async ()=>{
   const delta = calcolaDeltaElo(corretto);
   await aggiornaElo(delta);
 
-  feedback.innerText = corretto?"✅ Corretto!":"❌ Sbagliato!";
-  feedback.style.color = corretto?"#2ecc71":"#e74c3c";
+  feedback.innerText = corretto ? "✅ Corretto!" : "❌ Sbagliato! La risposta era: " + sequenzaCorrente.answer;
+  feedback.style.color = corretto ? "#276749" : "#c53030";
+  feedback.style.borderColor = corretto ? "#9ae6b4" : "#fc8181";
+  feedback.style.backgroundColor = corretto ? "#f0fff4" : "#fff5f5";
 });
 
 // Nuova sequenza
 nuovaSequenzaBtn.addEventListener("click", ()=>generaSequenzaHome());
+
+// Tasto Enter per inviare risposta
+rispostaInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter" && !inviaBtn.disabled) {
+    inviaBtn.click();
+  }
+});
 
 // Calcola delta ELO
 function calcolaDeltaElo(corretto){
@@ -117,9 +127,41 @@ async function aggiornaElo(delta){
   storico[day] = nuovoElo;
   await update(userRef,{elo:nuovoElo, storicoELO:storico});
 
-  eloDisplay.textContent = `ELO: ${nuovoElo}`;
-  eloDelta.textContent = delta>=0?`+${delta}`:delta;
-  eloDelta.style.color = delta>=0?"#2ecc71":"#e74c3c";
-  eloDelta.style.opacity="1";
-  setTimeout(()=>{eloDelta.style.opacity="0"},1000);
+  // Animazione ELO
+  animaElo(elo, nuovoElo, delta);
+}
+
+// Animazione ELO migliorata
+function animaElo(oldElo, newElo, delta) {
+  // Mostra variazione
+  eloDelta.textContent = delta >= 0 ? `+${delta}` : delta;
+  eloDelta.className = 'elo-change';
+  eloDelta.classList.add('show');
+  eloDelta.classList.add(delta >= 0 ? 'positive' : 'negative');
+  
+  // Animazione numero
+  let current = oldElo;
+  const duration = 1200;
+  const step = (newElo - oldElo) / (duration / 30);
+  const startTime = Date.now();
+  
+  function update() {
+    const elapsed = Date.now() - startTime;
+    if (elapsed >= duration) {
+      current = newElo;
+      eloDisplay.textContent = `ELO: ${Math.round(current)}`;
+      return;
+    }
+    
+    current = oldElo + (newElo - oldElo) * (elapsed / duration);
+    eloDisplay.textContent = `ELO: ${Math.round(current)}`;
+    requestAnimationFrame(update);
+  }
+  
+  requestAnimationFrame(update);
+  
+  // Nascondi delta dopo 2 secondi
+  setTimeout(() => {
+    eloDelta.classList.remove('show');
+  }, 2000);
 }
