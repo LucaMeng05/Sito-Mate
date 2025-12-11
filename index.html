@@ -34,18 +34,28 @@
             </div>
         </div>
 
+        <!-- Difficulty Selector -->
+        <div class="difficulty-selector">
+            <button class="diff-btn" data-difficulty="Elementare" data-min="1000" data-max="1200">Elementare (1000-1200)</button>
+            <button class="diff-btn" data-difficulty="Facile" data-min="1200" data-max="1400">Facile (1200-1400)</button>
+            <button class="diff-btn" data-difficulty="Intermedio" data-min="1400" data-max="1600">Intermedio (1400-1600)</button>
+            <button class="diff-btn" data-difficulty="Difficile" data-min="1600" data-max="1800">Difficile (1600-1800)</button>
+            <button class="diff-btn" data-difficulty="Estremo" data-min="1800" data-max="2000">Estremo (1800-2000)</button>
+            <button class="diff-btn" data-difficulty="Bot" data-min="2000" data-max="9999">Bot (2000+)</button>
+        </div>
+
         <main class="main-content">
             <div class="card">
                 <div id="sequenzaBox" class="sequence-display">
-                    Caricamento sequenza...
+                    Seleziona una difficoltà
                 </div>
                 
                 <div class="input-section">
-                    <input type="number" id="rispostaUtente" class="answer-input" placeholder="Risposta">
+                    <input type="number" id="rispostaUtente" class="answer-input" placeholder="Risposta" onfocus="this.blur()">
                     
                     <div class="button-row">
-                        <button id="inviaRispostaBtn" class="btn submit-btn">Invia</button>
-                        <button id="nuovaSequenzaBtn" class="btn new-btn">Nuova</button>
+                        <button id="inviaRispostaBtn" class="btn submit-btn" disabled>Invia</button>
+                        <button id="nuovaSequenzaBtn" class="btn new-btn" disabled>Nuova</button>
                     </div>
                 </div>
                 
