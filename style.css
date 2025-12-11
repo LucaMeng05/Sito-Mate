@@ -42,7 +42,7 @@ body {
 
 .modal-content h3 {
     color: #2c3e50;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     font-size: 20px;
 }
 
@@ -52,11 +52,36 @@ body {
     font-size: 14px;
 }
 
-.modal-content button {
-    background-color: #4285f4;
+/* Difficulty Modal */
+.difficulty-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.diff-option {
+    padding: 12px;
+    font-size: 14px;
+    border: 1px solid #cbd5e0;
+    background: white;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: center;
+    font-weight: 500;
+}
+
+.diff-option:hover {
+    background: #f0f4f8;
+    border-color: #4a6fa5;
+}
+
+.close-btn {
+    background-color: #718096;
     color: white;
     border: none;
-    padding: 12px 24px;
+    padding: 10px 20px;
     border-radius: 4px;
     font-size: 14px;
     cursor: pointer;
@@ -64,8 +89,8 @@ body {
     transition: background-color 0.3s;
 }
 
-.modal-content button:hover {
-    background-color: #3367d6;
+.close-btn:hover {
+    background-color: #4a5568;
 }
 
 /* Fixed Header */
@@ -172,37 +197,6 @@ body {
     100% { transform: scale(1); }
 }
 
-/* Difficulty Selector */
-.difficulty-selector {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    margin-bottom: 20px;
-}
-
-.diff-btn {
-    padding: 10px 5px;
-    font-size: 12px;
-    border: 1px solid #cbd5e0;
-    background: white;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.3s;
-    text-align: center;
-    font-weight: 500;
-}
-
-.diff-btn:hover {
-    background: #f0f4f8;
-    border-color: #4a6fa5;
-}
-
-.diff-btn.active {
-    background: #4a6fa5;
-    color: white;
-    border-color: #4a6fa5;
-}
-
 /* Card */
 .card {
     background: white;
@@ -255,13 +249,11 @@ body {
     outline: none;
     margin-bottom: 15px;
     font-family: 'Georgia', serif;
-    -webkit-tap-highlight-color: transparent;
-    -webkit-user-select: none;
-    user-select: none;
 }
 
 .answer-input:focus {
     border-color: #4a6fa5;
+    outline: none;
 }
 
 .button-row {
@@ -297,6 +289,15 @@ body {
 
 .new-btn:hover:not(:disabled) {
     background-color: #e2e8f0;
+}
+
+.diff-btn {
+    background-color: #ed8936;
+    color: white;
+}
+
+.diff-btn:hover {
+    background-color: #dd6b20;
 }
 
 .btn:disabled {
@@ -453,8 +454,12 @@ body {
         padding: 0 15px;
     }
     
-    .difficulty-selector {
-        grid-template-columns: repeat(2, 1fr);
+    .button-row {
+        flex-wrap: wrap;
+    }
+    
+    .btn {
+        min-width: calc(33.333% - 7px);
     }
     
     .sequence-display {
@@ -468,15 +473,19 @@ body {
 }
 
 @media (max-width: 480px) {
-    .difficulty-selector {
-        grid-template-columns: 1fr;
-    }
-    
     .nav-center {
         gap: 10px;
     }
     
     .nav-center a {
         font-size: 13px;
+    }
+    
+    .btn {
+        min-width: calc(50% - 5px);
+    }
+    
+    .button-row {
+        gap: 8px;
     }
 }
