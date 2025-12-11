@@ -314,46 +314,67 @@ body {
     justify-content: center;
     line-height: 1.3;
 }
+/* ... (Omesso codice precedente per brevità) ... */
 
 /* Input Section */
 .input-section {
-    margin: 16px 0; /* Ridotto */
+    margin: 16px 0; /* Ridotto */
 }
 
 .answer-input {
-    width: 100%;
-    padding: 12px 14px; /* Ridotto */
-    font-size: 15px; /* Ridotto */
-    border: 1px solid #d1d5db;
-    border-radius: 7px; /* Ridotto */
-    text-align: center;
-    outline: none;
-    margin-bottom: 16px; /* Ridotto */
-    font-family: 'Inter', sans-serif;
-    background: #fafbfc;
-    transition: all 0.2s;
+    width: 100%;
+    padding: 12px 14px; /* Ridotto */
+    font-size: 15px; /* Ridotto */
+    border: 1px solid #d1d5db;
+    border-radius: 7px; /* Ridotto */
+    text-align: center;
+    outline: none;
+    margin-bottom: 16px; /* Ridotto */
+    font-family: 'Inter', sans-serif;
+    background: #fafbfc;
+    transition: all 0.2s;
 }
 
 .answer-input:focus {
-    border-color: #4f46e5;
-    background: white;
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    border-color: #4f46e5;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
-/* Button rows compact - centrati e più piccoli */
+/* Button rows compact - Contenitore che abilita la suddivisione a metà */
 .button-row.compact {
-    display: flex;
-    justify-content: center; /* centra i pulsanti */
-    gap: 12px; /* distanza tra i pulsanti */
-    margin-bottom: 10px;
+    display: flex; /* Abilita flexbox */
+    gap: 10px; /* Ridotto */
+    margin-bottom: 10px; /* Ridotto */
 }
 
 .btn.compact {
-    flex: none; /* impedisce ai pulsanti di allargarsi */
-    width: 50px; /* larghezza fissa */
-    padding: 8px 0; /* meno padding verticale */
-    font-size: 13px; /* più piccolo */
+    padding: 11px; /* Ridotto */
+    font-size: 14px; /* Ridotto */
 }
+
+.difficulty-row {
+    margin-top: 8px; /* Ridotto */
+}
+
+.button-row {
+    display: flex;
+    gap: 10px; /* Ridotto */
+}
+
+.btn {
+    flex: 1; /* Permette al bottone di occupare spazio equo all'interno del flex container */
+    padding: 12px; /* Ridotto */
+    font-size: 14px; /* Ridotto */
+    font-weight: 500;
+    border: none;
+    border-radius: 7px; /* Ridotto */
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: -0.01em;
+}
+
+/* ... (Omesso codice successivo per brevità) ... */
 
 .difficulty-row {
     margin-top: 8px; /* Ridotto */
