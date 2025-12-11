@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 import { getDatabase, ref, get, set, update } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
 const firebaseConfig = {
@@ -17,6 +17,8 @@ const auth = getAuth(app);
 const db = getDatabase(app);
 const provider = new GoogleAuthProvider();
 
+const loginModal = document.getElementById("loginModal");
+const googleLoginBtn = document.getElementById("googleLoginBtn");
 const sequenzaEl = document.getElementById("sequenzaBox");
 const rispostaInput = document.getElementById("rispostaUtente");
 const inviaBtn = document.getElementById("inviaRispostaBtn");
@@ -32,21 +34,30 @@ let userUid = null;
 // Carica sequenze
 fetch('sequences.json')
   .then(res => res.json())
-  .then(data => sequenze = data);
+  .then(data => sequenze = data)
+  .catch(() => sequenze = []);
 
-// Login
-async function login() {
+// Login con Google
+googleLoginBtn.addEventListener("click", async () => {
   try {
-    const result = await signInWithPopup(auth, provider);
-    userUid = result.user.uid;
-    caricaElo();
-    generaSequenzaHome();
-  } catch(err){ console.error(err); }
-}
+    await signInWithPopup(auth, provider);
+  } catch(err) {
+    console.error("Login error:", err);
+    alert("Errore nel login. Riprova.");
+  }
+});
 
+// Controllo stato autenticazione
 onAuthStateChanged(auth, async user => {
-  if(!user) await login();
-  else {
+  if (!user) {
+    // Mostra modal login
+    loginModal.classList.add("active");
+    userUid = null;
+    sequenzaEl.innerText = "Login richiesto";
+    inviaBtn.disabled = true;
+  } else {
+    // Nascondi modal login
+    loginModal.classList.remove("active");
     userUid = user.uid;
     caricaElo();
     generaSequenzaHome();
@@ -68,7 +79,10 @@ async function caricaElo(){
 
 // Genera sequenza
 function generaSequenzaHome(){
-  if(sequenze.length===0) return;
+  if(sequenze.length===0) {
+    sequenzaEl.innerText = "Nessuna sequenza disponibile";
+    return;
+  }
   const index = Math.floor(Math.random()*sequenze.length);
   sequenzaCorrente = sequenze[index];
   sequenzaEl.innerText = sequenzaCorrente.sequence.join(", ") + ", ?";
@@ -88,7 +102,7 @@ inviaBtn.addEventListener("click", async ()=>{
   const delta = calcolaDeltaElo(corretto);
   await aggiornaElo(delta);
 
-  feedback.innerText = corretto ? "✅ Corretto!" : "❌ Sbagliato! La risposta era: " + sequenzaCorrente.answer;
+  feedback.innerText = corretto ? "✓ Corretto" : `✗ Sbagliato (${sequenzaCorrente.answer})`;
   feedback.style.color = corretto ? "#276749" : "#c53030";
   feedback.style.borderColor = corretto ? "#9ae6b4" : "#fc8181";
   feedback.style.backgroundColor = corretto ? "#f0fff4" : "#fff5f5";
@@ -97,7 +111,7 @@ inviaBtn.addEventListener("click", async ()=>{
 // Nuova sequenza
 nuovaSequenzaBtn.addEventListener("click", ()=>generaSequenzaHome());
 
-// Tasto Enter per inviare risposta
+// Tasto Enter per inviare
 rispostaInput.addEventListener("keypress", (e) => {
   if (e.key === "Enter" && !inviaBtn.disabled) {
     inviaBtn.click();
@@ -123,25 +137,34 @@ async function aggiornaElo(delta){
   const nuovoElo = Math.max(0, elo+delta);
 
   let storico = snap.val().storicoELO||{0:1000};
-  const day = Object.keys(storico).length;
-  storico[day] = nuovoElo;
+  const ultimoIndex = Math.max(...Object.keys(storico).map(Number));
+  const nuovoIndex = ultimoIndex + 1;
+  
+  // Mantieni solo ultime 30 variazioni
+  const storicoKeys = Object.keys(storico).map(Number).sort((a,b) => a-b);
+  if (storicoKeys.length >= 30) {
+    const chiaviDaEliminare = storicoKeys.slice(0, storicoKeys.length - 29);
+    chiaviDaEliminare.forEach(chiave => {
+      delete storico[chiave];
+    });
+  }
+  
+  storico[nuovoIndex] = nuovoElo;
   await update(userRef,{elo:nuovoElo, storicoELO:storico});
 
   // Animazione ELO
   animaElo(elo, nuovoElo, delta);
 }
 
-// Animazione ELO migliorata
+// Animazione ELO
 function animaElo(oldElo, newElo, delta) {
-  // Mostra variazione
   eloDelta.textContent = delta >= 0 ? `+${delta}` : delta;
   eloDelta.className = 'elo-change';
   eloDelta.classList.add('show');
   eloDelta.classList.add(delta >= 0 ? 'positive' : 'negative');
   
-  // Animazione numero
   let current = oldElo;
-  const duration = 1200;
+  const duration = 800;
   const step = (newElo - oldElo) / (duration / 30);
   const startTime = Date.now();
   
@@ -160,7 +183,6 @@ function animaElo(oldElo, newElo, delta) {
   
   requestAnimationFrame(update);
   
-  // Nascondi delta dopo 2 secondi
   setTimeout(() => {
     eloDelta.classList.remove('show');
   }, 2000);
