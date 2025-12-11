@@ -35,12 +35,23 @@
         </div>
 
         <main class="main-content">
+            <!-- Classifica Utenti -->
             <div class="card">
+                <h3 class="section-title">🏆 Classifica Top 10</h3>
+                <div id="classifica" class="classifica-container">
+                    <div class="loading">Caricamento classifica...</div>
+                </div>
+            </div>
+
+            <!-- Grafico Personale -->
+            <div class="card">
+                <h3 class="section-title">📈 Andamento ELO</h3>
                 <div class="chart-container">
                     <canvas id="eloChart"></canvas>
                 </div>
             </div>
 
+            <!-- Logout -->
             <div class="logout-container">
                 <button id="logoutBtn" class="logout-btn">Logout</button>
             </div>
