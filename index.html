@@ -4,11 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MathRain</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <!-- Login Modal -->
-    <div id="loginModal" class="modal">
+    <div id="loginModal" class="modal active">
         <div class="modal-content login-modal">
             <div class="login-header">
                 <div class="math-icon">∑</div>
@@ -65,7 +68,7 @@
     <!-- Fixed Header -->
     <header class="fixed-header">
         <nav class="nav-center">
-            <a href="index.html">Home</a>
+            <a href="index.html" class="active">Home</a>
             <a href="statistiche.html">Statistiche</a>
             <a href="extra.html">Extra</a>
         </nav>
@@ -91,7 +94,7 @@
                     
                     <div class="button-row compact">
                         <button id="inviaRispostaBtn" class="btn submit-btn compact" disabled>Invia</button>
-                        <button id="nuovaSequenzaBtn" class="btn new-btn compact" disabled>Nuova</button>
+                        <button id="nuovaSequenzaBtn" class="btn new-btn compact">Nuova</button>
                     </div>
                     
                     <div class="difficulty-row">
