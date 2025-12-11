@@ -3,27 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MathRain - Statistiche</title>
+    <title>Statistiche</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+    <div class="container">
+        <header>
+            <h1>Statistiche</h1>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="statistiche.html">Statistiche</a>
+            </nav>
+        </header>
 
-<header>
-    <nav class="nav-center">
-        <a href="index.html">Home</a>
-        <a href="problemi.html">Problemi</a>
-        <a href="statistiche.html" class="active">Statistiche</a>
-    </nav>
-</header>
+        <div id="eloContainer">
+            <span id="eloUtenteStat">ELO: 1000</span>
+        </div>
 
-<main>
-    <section class="content-box">
-        <canvas id="eloChart" width="400" height="250"></canvas>
-        <button id="googleLoginBtn" class="login-btn">Accedi</button>
-    </section>
-</main>
+        <main>
+            <div class="card">
+                <h2>Andamento ELO</h2>
+                <canvas id="eloChart"></canvas>
+            </div>
+        </main>
+    </div>
 
-<script type="module" src="statistiche.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="statistiche.js"></script>
 </body>
 </html>
