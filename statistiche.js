@@ -84,44 +84,69 @@ async function caricaStatistiche(){
   }
 }
 
-// Carica classifica top 10
+// Carica classifica top 10 - VERSIONE CORRETTA
 async function caricaClassifica(){
-  if(!userUid) return;
+  if(!userUid) {
+    console.log("User UID non disponibile");
+    return;
+  }
   
   try {
+    console.log("Caricamento classifica...");
     const utentiRef = ref(db, 'utenti');
     const snap = await get(utentiRef);
     
-    if(snap.exists()){
-      const utenti = snap.val();
-      const classificaArray = [];
-      
-      // Converti oggetto in array
-      for (const [uid, dati] of Object.entries(utenti)) {
-        if (dati && typeof dati === 'object' && dati.elo) {
+    if(!snap.exists()) {
+      console.log("Nessun dato trovato nel database");
+      classificaContainer.innerHTML = '<div class="loading">Nessun utente trovato</div>';
+      return;
+    }
+    
+    const utenti = snap.val();
+    console.log("Dati ricevuti:", utenti);
+    
+    const classificaArray = [];
+    
+    // Converti oggetto in array con controllo errori
+    for (const [uid, dati] of Object.entries(utenti)) {
+      try {
+        // Controlla che dati sia un oggetto valido
+        if (dati && typeof dati === 'object') {
+          const elo = Number(dati.elo) || 1000;
+          const nome = dati.nome || "Utente";
+          const email = dati.email || "Anonimo";
+          
           classificaArray.push({
             uid: uid,
-            nome: dati.nome || "Utente",
-            email: dati.email || "Anonimo",
-            elo: dati.elo || 1000
+            nome: nome,
+            email: email,
+            elo: elo
           });
         }
+      } catch (err) {
+        console.error(`Errore nel parsing dell'utente ${uid}:`, err);
       }
-      
-      // Ordina per ELO (decrescente)
-      classificaArray.sort((a, b) => b.elo - a.elo);
-      
-      // Prendi top 10
-      const top10 = classificaArray.slice(0, 10);
-      
-      // Mostra classifica
-      mostraClassifica(top10);
-    } else {
-      classificaContainer.innerHTML = '<div class="loading">Nessun utente trovato</div>';
     }
+    
+    console.log("Utenti trovati:", classificaArray.length);
+    
+    if (classificaArray.length === 0) {
+      classificaContainer.innerHTML = '<div class="loading">Nessun utente in classifica</div>';
+      return;
+    }
+    
+    // Ordina per ELO (decrescente)
+    classificaArray.sort((a, b) => b.elo - a.elo);
+    
+    // Prendi top 10
+    const top10 = classificaArray.slice(0, 10);
+    
+    // Mostra classifica
+    mostraClassifica(top10);
+    
   } catch(err) {
     console.error("Errore caricamento classifica:", err);
-    classificaContainer.innerHTML = '<div class="loading">Errore caricamento classifica</div>';
+    classificaContainer.innerHTML = '<div class="loading">Errore: ' + err.message + '</div>';
   }
 }
 
@@ -141,7 +166,7 @@ function mostraClassifica(top10) {
     
     // Estrai nome
     let nomeMostrato = utente.nome;
-    if(nomeMostrato === "Utente" && utente.email && utente.email !== "Anonimo") {
+    if((nomeMostrato === "Utente" || !nomeMostrato) && utente.email && utente.email !== "Anonimo") {
       nomeMostrato = utente.email.split('@')[0];
     }
     
@@ -159,6 +184,7 @@ function mostraClassifica(top10) {
   });
   
   classificaContainer.innerHTML = html;
+  console.log("Classifica visualizzata:", top10.length, "utenti");
 }
 
 // Crea grafico personale
@@ -225,3 +251,10 @@ function creaGrafico(storicoELO){
     }
   });
 }
+
+// Test: Carica classifica anche se ci sono errori
+setTimeout(() => {
+  if(userUid) {
+    caricaClassifica();
+  }
+}, 2000);
