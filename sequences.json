@@ -281,9 +281,9 @@
     "elo": 1775,
     "difficulty": "Difficile"
   },
-  {
-    "sequence": [2, 3, 10, 29, 86],
-    "answer": 257,
+   {
+    "sequence": [4, 11, 32, 95],
+    "answer": 284,
     "elo": 1775,
     "difficulty": "Difficile"
   },
@@ -430,10 +430,10 @@
     "answer": 163,
     "elo": 2050,
     "difficulty": "Bot"
-  },
+  }, 
   {
-    "sequence": [4, 11, 32, 95],
-    "answer": 284,
+    "sequence": [2, 5, 16, 47, 142],
+    "answer": 425,
     "elo": 2050,
     "difficulty": "Bot"
   },
