@@ -365,40 +365,69 @@
     "elo": 1775,
     "difficulty": "Difficile"
   },
+  // Livello 1800-1849
   {
-    "sequence": [1, 1, 3, 5, 11],
-    "answer": 21,
-    "elo": 1850,
+    "sequence": [3, 10, 24, 52],
+    "answer": 108,
+    "elo": 1800,
+    "difficulty": "Estremo"
+  },
+  {
+    "sequence": [4, 9, 17, 28],
+    "answer": 42,
+    "elo": 1815,
+    "difficulty": "Estremo"
+  },
+  {
+    "sequence": [1, 5, 14, 30, 55],
+    "answer": 91,
+    "elo": 1830,
     "difficulty": "Estremo"
   },
   {
     "sequence": [1, 2, 6, 24],
     "answer": 120,
-    "elo": 1850,  // RIDOTTO da 1900 a 1850
+    "elo": 1845,
+    "difficulty": "Estremo"
+  },
+
+  // Livello 1850-1899
+  {
+    "sequence": [1, 1, 3, 5, 11],
+    "answer": 21,
+    "elo": 1855,
     "difficulty": "Estremo"
   },
   {
     "sequence": [1, 4, 27, 256],
     "answer": 3125,
-    "elo": 1850,  // RIDOTTO da 1900 a 1850
+    "elo": 1870,
     "difficulty": "Estremo"
   },
   {
+    "sequence": [4, 9, 19, 39],
+    "answer": 79,
+    "elo": 1885,
+    "difficulty": "Estremo"
+  },
+  {
+    "sequence": [3, 8, 18, 38],
+    "answer": 78,
+    "elo": 1895,
+    "difficulty": "Estremo"
+  },
+
+  // Livello 1900-1949
+  {
     "sequence": [2, 8, 64, 1024],
     "answer": 32768,
-    "elo": 1900,
+    "elo": 1905,
     "difficulty": "Estremo"
   },
   {
     "sequence": [1, 3, 8, 19, 42],
     "answer": 89,
-    "elo": 1900,
-    "difficulty": "Estremo"
-  },
-  {
-    "sequence": [3, 4, 7, 16, 43],
-    "answer": 124,
-    "elo": 1925,  // AUMENTATO da 1900 a 1925
+    "elo": 1915,
     "difficulty": "Estremo"
   },
   {
@@ -410,103 +439,113 @@
   {
     "sequence": [1, 5, 14, 30],
     "answer": 55,
-    "elo": 1925,
+    "elo": 1935,
     "difficulty": "Estremo"
   },
   {
+    "sequence": [3, 4, 7, 16, 43],
+    "answer": 124,
+    "elo": 1945,
+    "difficulty": "Estremo"
+  },
+
+  // Livello 1950-1999
+  {
     "sequence": [1, 5, 9, 3, 7],
     "answer": 1,
-    "elo": 1950,
+    "elo": 1955,
     "difficulty": "Estremo"
   },
   {
     "sequence": [3, 10, 21, 36],
     "answer": 55,
-    "elo": 1950,
+    "elo": 1965,
     "difficulty": "Estremo"
   },
   {
     "sequence": [2, 8, 18, 32],
     "answer": 50,
-    "elo": 1950,
+    "elo": 1975,
     "difficulty": "Estremo"
   },
   {
     "sequence": [14, 19, 29, 40, 44],
     "answer": 52,
-    "elo": 1950,
+    "elo": 1980,
     "difficulty": "Estremo"
   },
   {
     "sequence": [100, 50, 33, 25, 20],
     "answer": 16,
-    "elo": 1950,
+    "elo": 1985,
     "difficulty": "Estremo"
   },
   {
     "sequence": [1, 3, 15, 105],
     "answer": 945,
-    "elo": 1950,
+    "elo": 1990,
     "difficulty": "Estremo"
   },
   {
     "sequence": [12, 211, 11222, 22211111],
     "answer": 1111122222222,
-    "elo": 1975,
+    "elo": 1995,
     "difficulty": "Estremo"
   },
+
+  // Sequenze ex-Bot ora in Estremo (2000-2099 → scalate a 1800-2000)
   {
     "sequence": [4, 11, 25, 53],
     "answer": 109,
-    "elo": 1975,
+    "elo": 1820,
     "difficulty": "Estremo"
   },
   {
     "sequence": [5, 14, 32, 68],
     "answer": 140,
-    "elo": 1975,
+    "elo": 1840,
     "difficulty": "Estremo"
   },
   {
     "sequence": [2, 5, 10, 17, 26],
     "answer": 37,
-    "elo": 1980,
+    "elo": 1860,
     "difficulty": "Estremo"
   },
   {
     "sequence": [1, 4, 9, 61, 52],
     "answer": 63,
-    "elo": 1990,
+    "elo": 1880,
     "difficulty": "Estremo"
   },
   {
     "sequence": [0, 1, 1, 2, 4, 7, 13],
     "answer": 24,
-    "elo": 2000,
+    "elo": 1900,
     "difficulty": "Estremo"
   },
   {
     "sequence": [2, 2, 10, 14, 26],
     "answer": 34,
-    "elo": 2000,
+    "elo": 1920,
     "difficulty": "Estremo"
   },
   {
     "sequence": [5, 10, 9, 18, 17, 34],
     "answer": 33,
-    "elo": 2000,
+    "elo": 1940,
     "difficulty": "Estremo"
   },
   {
     "sequence": [2, 6, 5, 15, 14, 42],
     "answer": 41,
-    "elo": 2000,
+    "elo": 1960,
     "difficulty": "Estremo"
   },
   {
     "sequence": [2, 4, 10, 24, 58, 140],
     "answer": 338,
-    "elo": 2000,
+    "elo": 1980,
     "difficulty": "Estremo"
   },
   {
@@ -550,31 +589,8 @@
     "answer": 29,
     "elo": 2000,
     "difficulty": "Estremo"
-  },
-  {
-    "sequence": [2, 3, 7, 22, 89],
-    "answer": 446,
-    "elo": 2000,
-    "difficulty": "Estremo"
-  },
-  {
-    "sequence": [2, 11, 6, 19, 10],
-    "answer": 27,
-    "elo": 2000,
-    "difficulty": "Estremo"
-  },
-  {
-    "sequence": [2, 5, 11, 17, 23],
-    "answer": 31,
-    "elo": 2000,
-    "difficulty": "Estremo"
-  },
-  {
-    "sequence": [2, 5, 16, 47, 142],
-    "answer": 425,
-    "elo": 2000,
-    "difficulty": "Estremo"
-  },
+  }
+,
   {
     "sequence": [1, 5, 4, 17, 22, 53],
     "answer": 94,
