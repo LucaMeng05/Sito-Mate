@@ -37,7 +37,6 @@ let userUid = null;
 let currentDifficulty = null;
 let sequenzeFiltrate = [];
 let problemiRisolti = new Set();
-let userHasCM = false;
 
 // Carica sequenze
 fetch('sequences.json')
@@ -91,7 +90,6 @@ onAuthStateChanged(auth, async user => {
     nuovaSequenzaBtn.disabled = true;
     scegliDifficoltaBtn.disabled = true;
     problemiRisolti.clear();
-    userHasCM = false;
   } else {
     loginModal.classList.remove("active");
     userUid = user.uid;
@@ -102,14 +100,6 @@ onAuthStateChanged(auth, async user => {
       const data = snap.val();
       if (data.problemiRisolti) {
         problemiRisolti = new Set(data.problemiRisolti);
-      }
-      
-      // Controlla se ha CM o M
-      userHasCM = data.titolo === "CM" || data.titolo === "M";
-      
-      // Se ha ELO >= 1900 ma non ha ancora CM, assegnalo
-      if (data.elo >= 1900 && !userHasCM && data.titolo !== "M") {
-        await assegnaTitoloCM();
       }
     } else {
       await set(userRef, { 
@@ -144,20 +134,21 @@ async function caricaElo(){
 
 // Assegna titolo CM
 async function assegnaTitoloCM() {
-  if (!userUid || userHasCM) return;
+  if (!userUid) return;
   
   const userRef = ref(db, 'utenti/' + userUid);
   const snap = await get(userRef);
   const userData = snap.val();
   const elo = userData.elo || 1000;
+  const titoloAttuale = userData.titolo || "";
   
-  // Assegna CM solo se ELO >= 1900 e non ha già M
-  if (elo >= 1900 && userData.titolo !== "M") {
+  // Assegna CM solo se ELO >= 1900 e non ha già un titolo
+  if (elo >= 1900 && titoloAttuale !== "CM" && titoloAttuale !== "M") {
+    console.log("🎯 Assegno CM per ELO:", elo);
+    
     await update(userRef, {
       titolo: "CM"
     });
-    
-    userHasCM = true;
     
     // Mostra notifica
     feedback.innerText = "🎉 Congratulazioni! Hai ottenuto il titolo CM (Candidate Master)!";
@@ -186,11 +177,6 @@ async function controllaTitoloM() {
   const elo = userData.elo || 1000;
   const problemi2100Risolti = userData.problemi2100Risolti || 0;
   const titoloAttuale = userData.titolo || "";
-  
-  // Se ha CM ma ora ottiene M, sovrascrivi
-  if (titoloAttuale === "CM") {
-    userHasCM = false;
-  }
   
   // Controlla se l'utente ha già il titolo M
   if (titoloAttuale === "M") return;
@@ -383,18 +369,17 @@ async function aggiornaElo(delta, corretto){
     storicoELO: storico
   });
 
-  // Controlla se ha ottenuto CM
-  if (nuovoElo >= 1900 && !userHasCM) {
-    const snapAfterUpdate = await get(userRef);
-    const userData = snapAfterUpdate.val();
-    
-    // Assegna CM solo se non ha già M
-    if (userData.titolo !== "M") {
-      await assegnaTitoloCM();
-    }
+  // DOPO aver aggiornato l'ELO, controlla titoli
+  const snapAfter = await get(userRef);
+  const userData = snapAfter.val();
+  const titoloAttuale = userData.titolo || "";
+  
+  // Controlla CM (solo se non ha già un titolo)
+  if (nuovoElo >= 1900 && titoloAttuale !== "CM" && titoloAttuale !== "M") {
+    await assegnaTitoloCM();
   }
-
-  // Controlla se ha ottenuto il titolo M
+  
+  // Controlla M
   await controllaTitoloM();
 
   animaElo(elo, nuovoElo, delta);
