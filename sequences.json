@@ -618,9 +618,9 @@
     "difficulty": "Bot"
   },
   {
-    "sequence": ["A", "B", "D", "C", "C", "D"],
-    "answer": "B",
-    "elo": 2300,
+    "sequence": [1, 2, 4, 3, 3, 4],
+    "answer": 2,
+    "elo": 2250,
     "difficulty": "Bot"
   }
 ]
