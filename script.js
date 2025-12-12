@@ -30,6 +30,7 @@ const nuovaSequenzaBtn = document.getElementById("nuovaSequenzaBtn");
 const feedback = document.getElementById("feedback");
 const eloDisplay = document.getElementById("eloUtente");
 const eloDelta = document.getElementById("eloDelta");
+const titoloDisplay = document.getElementById("titoloUtente"); // Aggiungi questo nel tuo HTML
 
 let sequenze = [];
 let sequenzaCorrente = null;
@@ -90,6 +91,7 @@ onAuthStateChanged(auth, async user => {
     nuovaSequenzaBtn.disabled = true;
     scegliDifficoltaBtn.disabled = true;
     problemiRisolti.clear();
+    if (titoloDisplay) titoloDisplay.textContent = "";
   } else {
     loginModal.classList.remove("active");
     userUid = user.uid;
@@ -101,6 +103,10 @@ onAuthStateChanged(auth, async user => {
       if (data.problemiRisolti) {
         problemiRisolti = new Set(data.problemiRisolti);
       }
+      // Mostra il titolo M se l'utente lo ha già
+      if (data.titolo === "M") {
+        mostraTitoloM();
+      }
     } else {
       await set(userRef, { 
         elo: 1000, 
@@ -108,7 +114,7 @@ onAuthStateChanged(auth, async user => {
         nome: user.displayName || user.email.split('@')[0],
         email: user.email || "",
         problemiRisolti: [],
-        titolo: 0,
+        titolo: "", // Vuoto di default, diventa "M" quando si ottiene
         problemi2100Risolti: 0
       });
     }
@@ -125,15 +131,25 @@ async function caricaElo(){
   const userRef = ref(db,'utenti/'+userUid);
   const snap = await get(userRef);
   if(!snap.exists()){
-    await set(userRef,{elo:1000, storicoELO:{0:1000}});
+    await set(userRef,{elo:1000, storicoELO:{0:1000}, titolo: ""});
     eloDisplay.textContent = "ELO: 1000";
   } else {
     eloDisplay.textContent = `ELO: ${snap.val().elo||1000}`;
   }
 }
 
-// Controlla e assegna titoli
-async function controllaTitoli() {
+// Mostra titolo M nell'UI
+function mostraTitoloM() {
+  if (!titoloDisplay) return;
+  titoloDisplay.textContent = "M";
+  titoloDisplay.style.color = "#d4af37";
+  titoloDisplay.style.fontWeight = "700";
+  titoloDisplay.style.fontSize = "20px";
+  titoloDisplay.style.marginLeft = "10px";
+}
+
+// Controlla e assegna titolo M
+async function controllaTitoloM() {
   if (!userUid) return;
   
   const userRef = ref(db, 'utenti/' + userUid);
@@ -143,29 +159,35 @@ async function controllaTitoli() {
   const userData = snap.val();
   const elo = userData.elo || 1000;
   const problemi2100Risolti = userData.problemi2100Risolti || 0;
-  let titolo = userData.titolo || 0;
+  const titoloAttuale = userData.titolo || "";
   
-  let nuovoTitolo = titolo;
+  // Controlla se l'utente ha già il titolo M
+  if (titoloAttuale === "M") return;
   
-  // T3: 1600+ ELO
-  if (elo >= 1600 && titolo < 1) {
-    nuovoTitolo = 1;
-  }
+  // Condizioni per ottenere il titolo M
+  const haTitoloM = elo >= 2000 && problemi2100Risolti >= 3;
   
-  // T2: 1800+ ELO
-  if (elo >= 1800 && titolo < 2) {
-    nuovoTitolo = 2;
-  }
-  
-  // T1: 2000+ ELO E 3+ problemi 2100+
-  if (elo >= 2000 && problemi2100Risolti >= 3 && titolo < 3) {
-    nuovoTitolo = 3;
-  }
-  
-  if (nuovoTitolo !== titolo) {
+  if (haTitoloM) {
+    // Assegna il titolo M
     await update(userRef, {
-      titolo: nuovoTitolo
+      titolo: "M"
     });
+    
+    // Mostra il titolo nell'UI
+    mostraTitoloM();
+    
+    // Mostra messaggio di congratulazioni
+    feedback.innerText = "🎉 Congratulazioni! Hai ottenuto il titolo M!";
+    feedback.style.color = "#d4af37";
+    feedback.style.backgroundColor = "#fefce8";
+    feedback.style.borderColor = "#f59e0b";
+    
+    // Rimuovi il messaggio dopo 5 secondi
+    setTimeout(() => {
+      if (feedback.innerText === "🎉 Congratulazioni! Hai ottenuto il titolo M!") {
+        feedback.innerText = "";
+      }
+    }, 5000);
   }
 }
 
@@ -228,7 +250,16 @@ function generaSequenza(sequenzeDisponibili = sequenzeFiltrate) {
 // Controlla risposta
 inviaBtn.addEventListener("click", async ()=>{
   if(!sequenzaCorrente) return;
+  
+  // Validazione input
   const userAnswer = Number(rispostaInput.value);
+  if (isNaN(userAnswer)) {
+    feedback.innerText = "Inserisci un numero valido";
+    feedback.style.color = "#dc2626";
+    feedback.style.backgroundColor = "#fee2e2";
+    return;
+  }
+  
   const corretto = userAnswer === sequenzaCorrente.answer;
   inviaBtn.disabled = true;
 
@@ -250,6 +281,9 @@ inviaBtn.addEventListener("click", async ()=>{
   feedback.style.color = corretto ? "#059669" : "#dc2626";
   feedback.style.backgroundColor = corretto ? "#d1fae5" : "#fee2e2";
   feedback.style.borderColor = corretto ? "#10b981" : "#ef4444";
+  
+  // Controlla se ha ottenuto il titolo M
+  await controllaTitoloM();
 });
 
 // Nuova sequenza (stessa difficoltà, non risolta)
@@ -320,7 +354,8 @@ async function aggiornaElo(delta, corretto){
     storicoELO: storico
   });
 
-  controllaTitoli();
+  // Controlla se ha ottenuto il titolo M
+  await controllaTitoloM();
 
   animaElo(elo, nuovoElo, delta);
 }
@@ -342,8 +377,6 @@ async function incrementaProblemi2100Risolti() {
   await update(userRef, {
     problemi2100Risolti: currentCount + 1
   });
-  
-  controllaTitoli();
 }
 
 // Animazione ELO
@@ -376,4 +409,15 @@ function animaElo(oldElo, newElo, delta) {
   setTimeout(() => {
     eloDelta.classList.remove('show');
   }, 2000);
+}
+
+// Logout
+if (document.getElementById('logoutBtn')) {
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  });
 }
