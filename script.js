@@ -362,7 +362,7 @@ function calcolaDeltaElo(corretto){
   let segno = diff >= 0 ? 1 : -1;
   if(Math.abs(diff) > 400) diff = 400;
   let varDelta = segno * (Math.floor(Math.abs(diff) ** 0.5)-1);
-  return corretto ? 19 + varDelta : -21 + varDelta;
+  return corretto ? 19 + varDelta : -23 + varDelta;
 }
 
 // Aggiorna ELO e controlla titoli
