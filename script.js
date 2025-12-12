@@ -45,18 +45,6 @@ fetch('sequences.json')
   .then(data => {
     sequenze = data;
     console.log(`Caricate ${sequenze.length} sequenze`);
-    
-    // CORREZIONE: Aumenta automaticamente ELO delle sequenze Bot < 2100
-    sequenze = sequenze.map(seq => {
-      if (seq.difficulty === "Bot" && seq.elo < 2100) {
-        console.log(`Correzione ELO: "${seq.sequence.join(', ')}" da ${seq.elo} a 2100`);
-        return {
-          ...seq,
-          elo: 2100  // Imposta a 2100 (minimo per categoria Bot)
-        };
-      }
-      return seq;
-    });
   })
   .catch(err => {
     console.error("Errore caricamento sequenze:", err);
@@ -261,21 +249,10 @@ diffOptions.forEach(option => {
     const minElo = parseInt(option.dataset.min);
     const maxElo = parseInt(option.dataset.max);
     
-    // CORREZIONE: Filtro speciale per categoria "bot" per gestire ELO < 2100
-    if (currentDifficulty === "bot") {
-      sequenzeFiltrate = sequenze.filter(seq => {
-        const eloSeq = seq.elo || 1200;
-        // Includi se: ELO nel range OPPURE difficoltà è "Bot" (per sicurezza)
-        return (eloSeq >= minElo && eloSeq <= maxElo) || 
-               seq.difficulty === "Bot";
-      });
-    } else {
-      // Per altre difficoltà, filtro normale
-      sequenzeFiltrate = sequenze.filter(seq => {
-        const eloSeq = seq.elo || 1200;
-        return eloSeq >= minElo && eloSeq <= maxElo;
-      });
-    }
+    sequenzeFiltrate = sequenze.filter(seq => {
+      const eloSeq = seq.elo || 1200;
+      return eloSeq >= minElo && eloSeq <= maxElo;
+    });
     
     const sequenzeNonRisolte = sequenzeFiltrate.filter(seq => {
       const sequenzaId = seq.sequence.join(',');
@@ -506,4 +483,4 @@ if (document.getElementById('logoutBtn')) {
       console.error("Logout error:", error);
     }
   });
-}
+} 
