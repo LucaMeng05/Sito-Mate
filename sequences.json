@@ -401,6 +401,12 @@
     "elo": 1925,
     "difficulty": "Estremo"
   },
+    {
+    "sequence": [1, 5, 9, 3, 7],
+    "answer": 1,
+    "elo": 1950,
+    "difficulty": "Estremo"
+  },
   {
     "sequence": [3, 10, 21, 36],
     "answer": 55,
@@ -435,6 +441,30 @@
     "sequence": [5, 14, 32, 68],
     "answer": 140,
     "elo": 1975,
+    "difficulty": "Estremo"
+  },
+  {
+    "sequence": [1, 2, 6, 24, 120],
+    "answer": 720,
+    "elo": 1975,
+    "difficulty": "Estremo"
+  },
+  {
+    "sequence": [2, 5, 10, 17, 26],
+    "answer": 37,
+    "elo": 1980,
+    "difficulty": "Estremo"
+  },
+  {
+    "sequence": [1, 4, 9, 61, 52],
+    "answer": 63,
+    "elo": 1990,
+    "difficulty": "Estremo"
+  },
+  {
+    "sequence": [0, 1, 1, 2, 4, 7, 13],
+    "answer": 24,
+    "elo": 2000,  // Al limite Estremo/Bot
     "difficulty": "Estremo"
   },
   {
@@ -540,15 +570,15 @@
     "difficulty": "Bot"
   },
   {
-    "sequence": [1, 5, 9, 3, 7],
-    "answer": 1,
-    "elo": 2025,
-    "difficulty": "Bot"
-  },
-  {
     "sequence": [1, 6, 3, 0, 5],
     "answer": 2,
     "elo": 2050,
+    "difficulty": "Bot"
+  },
+  {
+    "sequence": [1, 100, 111, 1010, 1101],
+    "answer": 10000,
+    "elo": 2075,
     "difficulty": "Bot"
   },
   {
