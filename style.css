@@ -511,7 +511,22 @@ body {
     text-align: center;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Ombra leggera */
 }
-
+/* Badge CM - Candidate Master */
+.utente-prefisso-cm {
+    color: black;                    /* Testo nero */
+    background-color: white;         /* Sfondo bianco */
+    border: 1.5px solid #1f2937;     /* Contorno nero spesso */
+    font-weight: 600;                /* Normale, non grassetto estremo */
+    margin-right: 6px;
+    font-size: 11px;
+    padding: 1px 5px;
+    border-radius: 4px;
+    display: inline-block;
+    line-height: 1.2;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
 .utente-elo {
     font-size: 13px;
     color: #6b7280;
