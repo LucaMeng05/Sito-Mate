@@ -498,10 +498,18 @@ body {
 }
 
 .utente-prefisso {
-    color: #dc2626;
-    font-weight: 700;
-    margin-right: 3px;
-    font-size: 13px;
+    color: white;
+    font-weight: 800;  /* Più grassetto */
+    margin-right: 5px;
+    font-size: 10px;  /* Ancora più piccolo */
+    background-color: #2563eb;  /* Blu leggermente più scuro */
+    padding: 1px 3px;
+    border-radius: 2px;
+    display: inline-block;
+    line-height: 1.1;
+    min-width: 12px;
+    text-align: center;
+    letter-spacing: 0.2px;
 }
 
 .utente-elo {
