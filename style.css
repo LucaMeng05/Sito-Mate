@@ -1,186 +1,587 @@
-/* Aggiungi alla fine del tuo style.css esistente */
-
-/* Progresso Titoli */
-.progresso-titoli-container {
-    margin: 15px auto;
-    max-width: 600px;
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
 }
 
-.progresso-titoli-card {
-    background: #f8f9fa;
-    border-radius: 12px;
-    padding: 15px 20px;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+body {
+background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+min-height: 100vh;
+padding-top: 70px;
+color: #333;
 }
 
-.titolo-progress-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
+/* Header Fisso */
+.fixed-header {
+position: fixed;
+top: 0;
+left: 0;
+right: 0;
+background: rgba(255, 255, 255, 0.95);
+backdrop-filter: blur(10px);
+border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+z-index: 1000;
+padding: 15px 0;
 }
 
-.titolo-progress-header h4 {
-    margin: 0;
-    color: #4f46e5;
-    font-size: 16px;
+.nav-center {
+max-width: 1200px;
+margin: 0 auto;
+display: flex;
+justify-content: center;
+gap: 40px;
+padding: 0 20px;
 }
 
-.titolo-corrente {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
+.nav-center a {
+color: #4f46e5;
+text-decoration: none;
+font-weight: 500;
+font-size: 16px;
+padding: 8px 16px;
+border-radius: 8px;
+transition: all 0.3s ease;
 }
 
-.titolo-progress-item {
-    margin-bottom: 12px;
+.nav-center a:hover {
+background: #f1f5f9;
+color: #3730a3;
 }
 
-.titolo-progress-info {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 5px;
-    font-size: 14px;
+/* Container */
+.container {
+max-width: 800px;
+margin: 0 auto;
+padding: 20px;
 }
 
-.titolo-progress-info .percentuale {
-    color: #6b7280;
-    font-weight: 500;
+/* ELO Container */
+.elo-container {
+text-align: center;
+margin-bottom: 20px;
 }
 
-.titolo-progress-bar {
-    height: 8px;
-    background: #e5e7eb;
-    border-radius: 4px;
-    overflow: hidden;
+.elo-display {
+display: inline-flex;
+align-items: center;
+gap: 10px;
+background: white;
+padding: 10px 24px;
+border-radius: 12px;
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+border: 1px solid #e5e7eb;
 }
 
-.titolo-progress-fill {
-    height: 100%;
-    border-radius: 4px;
-    transition: width 0.5s ease;
+.elo-number {
+font-size: 20px;
+font-weight: 600;
+color: #4f46e5;
 }
 
-/* Colori barre di progresso */
-.titolo-T3 .titolo-progress-fill {
-    background: #000000;
-}
-.titolo-T2 .titolo-progress-fill {
-    background: #000000;
-}
-.titolo-T1 .titolo-progress-fill {
-    background: #3b82f6;
+/* ELO Change Animation */
+.elo-change {
+font-size: 16px;
+font-weight: 600;
+opacity: 0;
+transform: translateY(-10px);
+transition: all 0.3s ease;
 }
 
-/* Badge Titoli */
+.elo-change.show {
+opacity: 1;
+transform: translateY(0);
+}
+
+.elo-change.positive {
+color: #059669;
+}
+
+.elo-change.negative {
+color: #dc2626;
+}
+
+/* Main Content */
+.main-content {
+background: white;
+border-radius: 16px;
+padding: 30px;
+box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+border: 1px solid #e5e7eb;
+}
+
+.card {
+margin-bottom: 0;
+}
+
+/* Sequence Display */
+.sequence-display {
+background: #f8fafc;
+border: 2px solid #e2e8f0;
+border-radius: 12px;
+padding: 25px;
+margin-bottom: 25px;
+font-size: 24px;
+font-weight: 500;
+text-align: center;
+color: #1e293b;
+min-height: 120px;
+display: flex;
+align-items: center;
+justify-content: center;
+line-height: 1.4;
+}
+
+/* Input Section */
+.input-section {
+margin-bottom: 20px;
+}
+
+.answer-input {
+width: 100%;
+padding: 16px;
+border: 2px solid #e2e8f0;
+border-radius: 12px;
+font-size: 18px;
+margin-bottom: 20px;
+text-align: center;
+transition: border-color 0.3s ease;
+}
+
+.answer-input:focus {
+outline: none;
+border-color: #4f46e5;
+box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+/* Button Styles */
+.button-row {
+display: flex;
+gap: 15px;
+margin-bottom: 15px;
+}
+
+.button-row.compact {
+gap: 10px;
+}
+
+.btn {
+padding: 14px 28px;
+border: none;
+border-radius: 10px;
+font-size: 16px;
+font-weight: 600;
+cursor: pointer;
+transition: all 0.3s ease;
+flex: 1;
+}
+
+.btn.compact {
+padding: 12px 20px;
+font-size: 15px;
+}
+
+.submit-btn {
+background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+color: white;
+}
+
+.submit-btn:hover:not(:disabled) {
+background: linear-gradient(135deg, #3730a3 0%, #312e81 100%);
+transform: translateY(-2px);
+box-shadow: 0 6px 20px rgba(79, 70, 229, 0.3);
+}
+
+.submit-btn:disabled {
+background: #9ca3af;
+cursor: not-allowed;
+transform: none;
+}
+
+.new-btn {
+background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+color: white;
+}
+
+.new-btn:hover:not(:disabled) {
+background: linear-gradient(135deg, #059669 0%, #047857 100%);
+transform: translateY(-2px);
+box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+}
+
+.new-btn:disabled {
+background: #9ca3af;
+cursor: not-allowed;
+transform: none;
+}
+
+.difficulty-row {
+display: flex;
+justify-content: center;
+}
+
+.diff-btn {
+background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+color: white;
+padding: 12px 32px;
+}
+
+.diff-btn:hover:not(:disabled) {
+background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+transform: translateY(-2px);
+box-shadow: 0 6px 20px rgba(139, 92, 246, 0.3);
+}
+
+.diff-btn:disabled {
+background: #9ca3af;
+cursor: not-allowed;
+transform: none;
+}
+
+/* Feedback */
+.result-feedback {
+padding: 16px;
+border-radius: 10px;
+text-align: center;
+font-size: 18px;
+font-weight: 600;
+margin-top: 20px;
+border: 2px solid transparent;
+transition: all 0.3s ease;
+}
+
+/* Modals */
+.modal {
+display: none;
+position: fixed;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background: rgba(0, 0, 0, 0.5);
+z-index: 2000;
+align-items: center;
+justify-content: center;
+padding: 20px;
+}
+
+.modal.active {
+display: flex;
+}
+
+.modal-content {
+background: white;
+border-radius: 16px;
+padding: 30px;
+max-width: 500px;
+width: 100%;
+max-height: 90vh;
+overflow-y: auto;
+box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+position: relative;
+}
+
+/* Login Modal */
+.login-modal {
+text-align: center;
+max-width: 400px;
+}
+
+.login-header {
+margin-bottom: 30px;
+}
+
+.math-icon {
+font-size: 48px;
+color: #4f46e5;
+margin-bottom: 15px;
+}
+
+.login-subtitle {
+color: #6b7280;
+margin-top: 10px;
+font-size: 16px;
+}
+
+.google-login-btn {
+width: 100%;
+padding: 14px;
+background: white;
+border: 2px solid #e5e7eb;
+border-radius: 10px;
+font-size: 16px;
+font-weight: 500;
+color: #374151;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 12px;
+transition: all 0.3s ease;
+margin-bottom: 20px;
+}
+
+.google-login-btn:hover {
+background: #f9fafb;
+border-color: #d1d5db;
+transform: translateY(-2px);
+box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.google-icon {
+width: 20px;
+height: 20px;
+}
+
+.login-note {
+color: #9ca3af;
+font-size: 14px;
+margin-top: 20px;
+line-height: 1.5;
+}
+
+/* Difficulty Modal */
+.modal-content h3 {
+text-align: center;
+margin-bottom: 25px;
+color: #1f2937;
+font-size: 24px;
+}
+
+.difficulty-options {
+display: grid;
+grid-template-columns: repeat(2, 1fr);
+gap: 15px;
+margin-bottom: 25px;
+}
+
+.diff-option {
+padding: 20px;
+border: 2px solid #e5e7eb;
+border-radius: 12px;
+background: white;
+cursor: pointer;
+transition: all 0.3s ease;
+text-align: left;
+}
+
+.diff-option:hover {
+border-color: #4f46e5;
+background: #f8fafc;
+transform: translateY(-2px);
+box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.diff-name {
+display: block;
+font-size: 18px;
+font-weight: 600;
+color: #1f2937;
+margin-bottom: 5px;
+}
+
+.diff-range {
+display: block;
+font-size: 14px;
+color: #6b7280;
+font-weight: 500;
+}
+
+.close-btn {
+width: 100%;
+padding: 14px;
+background: #f3f4f6;
+border: none;
+border-radius: 10px;
+font-size: 16px;
+font-weight: 500;
+color: #374151;
+cursor: pointer;
+transition: all 0.3s ease;
+}
+
+.close-btn:hover {
+background: #e5e7eb;
+}
+
+/* Statistiche Page */
+.section-title {
+text-align: center;
+margin-bottom: 25px;
+color: #1f2937;
+font-size: 24px;
+padding-bottom: 15px;
+border-bottom: 2px solid #e5e7eb;
+}
+
+.classifica-container {
+max-height: 400px;
+overflow-y: auto;
+border-radius: 10px;
+border: 1px solid #e5e7eb;
+}
+
+.classifica-item {
+display: flex;
+align-items: center;
+padding: 15px 20px;
+border-bottom: 1px solid #e5e7eb;
+background: white;
+transition: background 0.3s ease;
+}
+
+.classifica-item:last-child {
+border-bottom: none;
+}
+
+.classifica-item:hover {
+background: #f9fafb;
+}
+
+.classifica-item.current-user {
+background: #f0f9ff;
+border-left: 4px solid #3b82f6;
+}
+
+.posizione {
+width: 50px;
+font-weight: bold;
+font-size: 18px;
+color: #6b7280;
+}
+
+.posizione.oro {
+color: #f59e0b;
+}
+
+.posizione.argento {
+color: #9ca3af;
+}
+
+.posizione.bronzo {
+color: #d97706;
+}
+
+.utente-info {
+flex: 1;
+padding: 0 15px;
+}
+
+.utente-nome {
+font-weight: 500;
+color: #1f2937;
+font-size: 16px;
+display: flex;
+align-items: center;
+gap: 8px;
+}
+
+.utente-elo {
+font-weight: bold;
+color: #4f46e5;
+font-size: 18px;
+}
+
+.loading {
+text-align: center;
+padding: 40px;
+color: #6b7280;
+font-size: 16px;
+}
+
+/* Chart Container */
+.chart-container {
+height: 300px;
+position: relative;
+margin: 20px 0;
+}
+
+.logout-container {
+text-align: center;
+margin-top: 30px;
+padding-top: 20px;
+border-top: 1px solid #e5e7eb;
+}
+
+.logout-btn {
+padding: 12px 30px;
+background: #ef4444;
+color: white;
+border: none;
+border-radius: 8px;
+font-size: 16px;
+font-weight: 500;
+cursor: pointer;
+transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+background: #dc2626;
+transform: translateY(-2px);
+box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+.container {
+padding: 15px;
+}
+
+.main-content {
+padding: 20px;
+}
+
+.sequence-display {
+font-size: 20px;
+padding: 20px;
+min-height: 100px;
+}
+
+.difficulty-options {
+grid-template-columns: 1fr;
+}
+
+.button-row {
+flex-direction: column;
+}
+
+.nav-center {
+gap: 15px;
+padding: 0 15px;
+}
+
+.nav-center a {
+padding: 6px 12px;
+font-size: 14px;
+}
+}
+
+/* TITOLI - solo i badge essenziali */
 .titolo-badge {
-    display: inline-block;
-    font-weight: bold;
-    width: 28px;
-    height: 28px;
-    border-radius: 6px;
-    text-align: center;
-    line-height: 28px;
-    margin-right: 8px;
-    font-size: 12px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+display: inline-flex;
+align-items: center;
+justify-content: center;
+font-weight: bold;
+width: 28px;
+height: 28px;
+border-radius: 4px;
+margin-right: 8px;
+font-size: 12px;
+box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 /* T3 e T2: Nero su sfondo bianco */
 .titolo-badge.T3,
 .titolo-badge.T2 {
-    background: white;
-    color: black;
-    border: 2px solid #000;
+background: white;
+color: black;
+border: 1px solid #000;
 }
 
 /* T1: Bianco su sfondo azzurro */
 .titolo-badge.T1 {
-    background: #3b82f6;
-    color: white;
-    border: 2px solid #2563eb;
+background: #3b82f6;
+color: white;
+border: 1px solid #2563eb;
 }
 
-/* Animazioni */
-@keyframes slideIn {
-    from {
-        transform: translateX(100%);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
-
-@keyframes slideOut {
-    from {
-        transform: translateX(0);
-        opacity: 1;
-    }
-    to {
-        transform: translateX(100%);
-        opacity: 0;
-    }
-}
-
-/* Classifica separatore */
-.classifica-item.separator {
-    justify-content: center;
-    opacity: 0.5;
-    font-size: 12px;
-    padding: 8px 16px;
-    color: #6b7280;
-}
-
-/* Stili esistenti della classifica (assumendo che esistano già) */
-.classifica-container {
-    max-height: 400px;
-    overflow-y: auto;
-}
-
-.classifica-item {
-    display: flex;
-    align-items: center;
-    padding: 10px 16px;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-.classifica-item.current-user {
-    background-color: #f0f9ff;
-    border-left: 3px solid #3b82f6;
-}
-
-.classifica-item .posizione {
-    width: 40px;
-    font-weight: bold;
-    color: #6b7280;
-}
-
-.classifica-item .posizione.oro {
-    color: #f59e0b;
-}
-
-.classifica-item .posizione.argento {
-    color: #9ca3af;
-}
-
-.classifica-item .posizione.bronzo {
-    color: #d97706;
-}
-
-.utente-info {
-    flex: 1;
-}
-
-.utente-nome {
-    display: flex;
-    align-items: center;
-    font-weight: 500;
-}
-
-.utente-elo {
-    font-weight: bold;
-    color: #4f46e5;
-}
