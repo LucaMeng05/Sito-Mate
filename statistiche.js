@@ -21,6 +21,7 @@ const loginModal = document.getElementById("loginModal");
 const googleLoginBtn = document.getElementById("googleLoginBtn");
 const logoutBtn = document.getElementById("logoutBtn");
 const eloDisplay = document.getElementById("eloUtenteStat");
+const titoloDisplay = document.getElementById("titoloUtenteStat");
 const classificaContainer = document.getElementById("classifica");
 const ctx = document.getElementById('eloChart').getContext('2d');
 
@@ -53,6 +54,7 @@ onAuthStateChanged(auth, async user => {
     loginModal.classList.add("active");
     userUid = null;
     eloDisplay.textContent = "ELO: --";
+    if (titoloDisplay) titoloDisplay.style.display = "none";
     if (chart) chart.destroy();
     if (classificaInterval) clearInterval(classificaInterval);
     classificaContainer.innerHTML = '<div class="loading">Login richiesto</div>';
@@ -77,7 +79,22 @@ async function caricaStatistiche(){
   if(snap.exists()){
     const data = snap.val();
     eloDisplay.textContent = `ELO: ${data.elo||1000}`;
-
+    
+    // Mostra titolo M accanto all'ELO
+    if (titoloDisplay) {
+      if (data.titolo === "M") {
+        titoloDisplay.textContent = "M";
+        titoloDisplay.style.display = "inline-block";
+        titoloDisplay.style.color = "#d4af37";
+        titoloDisplay.style.fontWeight = "700";
+        titoloDisplay.style.fontSize = "18px";
+        titoloDisplay.style.marginLeft = "8px";
+        titoloDisplay.style.textShadow = "0 1px 2px rgba(0,0,0,0.1)";
+      } else {
+        titoloDisplay.style.display = "none";
+      }
+    }
+    
     if(data.storicoELO){
       creaGrafico(data.storicoELO);
     }
@@ -86,18 +103,13 @@ async function caricaStatistiche(){
 
 // Carica classifica top 10 + utente corrente
 async function caricaClassifica(){
-  if(!userUid) {
-    console.log("User UID non disponibile");
-    return;
-  }
+  if(!userUid) return;
 
   try {
-    console.log("Caricamento classifica...");
     const utentiRef = ref(db, 'utenti');
     const snap = await get(utentiRef);
 
     if(!snap.exists()) {
-      console.log("Nessun dato trovato nel database");
       classificaContainer.innerHTML = '<div class="loading">Nessun utente trovato</div>';
       return;
     }
@@ -108,13 +120,17 @@ async function caricaClassifica(){
     // Converti oggetto in array
     for (const [uid, dati] of Object.entries(utenti)) {
       try {
-        if (dati && typeof dati === 'object' && dati.elo) {
+        if (dati && typeof dati === 'object' && dati.elo !== undefined) {
+          // Determina se l'utente ha il titolo M
+          // Controlla PRIMA 'prefissoM', POI 'titolo' per compatibilità
+          const haTitoloM = dati.prefissoM === true || dati.titolo === "M";
+          
           classificaArray.push({
             uid: uid,
-            nome: dati.nome || "Utente",
-            email: dati.email || "Anonimo",
+            nome: dati.nome || (dati.email ? dati.email.split('@')[0] : "Utente"),
+            email: dati.email || "",
             elo: Number(dati.elo) || 1000,
-            prefissoM: dati.titolo === "M" || false
+            prefissoM: haTitoloM
           });
         }
       } catch (err) {
@@ -188,12 +204,6 @@ function mostraClassifica(classificaUtenti, userPosition) {
                           posizioneMostrata === 2 ? 'argento' :
                           posizioneMostrata === 3 ? 'bronzo' : '';
 
-    // Estrai nome
-    let nomeMostrato = utente.nome;
-    if((nomeMostrato === "Utente" || !nomeMostrato) && utente.email && utente.email !== "Anonimo") {
-      nomeMostrato = utente.email.split('@')[0];
-    }
-
     // Determina posizione da mostrare
     let posizioneDaMostrare = posizioneMostrata;
     if (isCurrentUser && userPosition > 10) {
@@ -204,9 +214,9 @@ function mostraClassifica(classificaUtenti, userPosition) {
     <div class="classifica-item ${isCurrentUser ? 'current-user' : ''} ${userPosition > 10 && isCurrentUser ? 'outside-top' : ''}">
       <span class="posizione ${posizioneClass}">${posizioneDaMostrare}.</span>
       <div class="utente-info">
-        <div class="utente-nome" title="${nomeMostrato}">
+        <div class="utente-nome" title="${utente.nome}">
           ${utente.prefissoM ? '<span class="utente-prefisso">M</span>' : ''}
-          ${nomeMostrato}
+          ${utente.nome}
         </div>
       </div>
       <div class="utente-elo">
@@ -258,7 +268,12 @@ function creaGrafico(storicoELO){
           titleFont: { size: 13 },
           bodyFont: { size: 14 },
           padding: 10,
-          cornerRadius: 6
+          cornerRadius: 6,
+          callbacks: {
+            label: function(context) {
+              return `ELO: ${context.parsed.y}`;
+            }
+          }
         }
       },
       scales: {
