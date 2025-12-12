@@ -30,7 +30,6 @@ const nuovaSequenzaBtn = document.getElementById("nuovaSequenzaBtn");
 const feedback = document.getElementById("feedback");
 const eloDisplay = document.getElementById("eloUtente");
 const eloDelta = document.getElementById("eloDelta");
-const titoloDisplay = document.getElementById("titoloUtente"); // Aggiungi questo nel tuo HTML
 
 let sequenze = [];
 let sequenzaCorrente = null;
@@ -91,7 +90,6 @@ onAuthStateChanged(auth, async user => {
     nuovaSequenzaBtn.disabled = true;
     scegliDifficoltaBtn.disabled = true;
     problemiRisolti.clear();
-    if (titoloDisplay) titoloDisplay.textContent = "";
   } else {
     loginModal.classList.remove("active");
     userUid = user.uid;
@@ -102,10 +100,6 @@ onAuthStateChanged(auth, async user => {
       const data = snap.val();
       if (data.problemiRisolti) {
         problemiRisolti = new Set(data.problemiRisolti);
-      }
-      // Mostra il titolo M se l'utente lo ha già
-      if (data.titolo === "M") {
-        mostraTitoloM();
       }
     } else {
       await set(userRef, { 
@@ -131,21 +125,11 @@ async function caricaElo(){
   const userRef = ref(db,'utenti/'+userUid);
   const snap = await get(userRef);
   if(!snap.exists()){
-    await set(userRef,{elo:1000, storicoELO:{0:1000}, titolo: ""});
+    await set(userRef,{elo:1000, storicoELO:{0:1000}, titolo: "", problemi2100Risolti: 0});
     eloDisplay.textContent = "ELO: 1000";
   } else {
     eloDisplay.textContent = `ELO: ${snap.val().elo||1000}`;
   }
-}
-
-// Mostra titolo M nell'UI
-function mostraTitoloM() {
-  if (!titoloDisplay) return;
-  titoloDisplay.textContent = "M";
-  titoloDisplay.style.color = "#d4af37";
-  titoloDisplay.style.fontWeight = "700";
-  titoloDisplay.style.fontSize = "20px";
-  titoloDisplay.style.marginLeft = "10px";
 }
 
 // Controlla e assegna titolo M
@@ -172,9 +156,6 @@ async function controllaTitoloM() {
     await update(userRef, {
       titolo: "M"
     });
-    
-    // Mostra il titolo nell'UI
-    mostraTitoloM();
     
     // Mostra messaggio di congratulazioni
     feedback.innerText = "🎉 Congratulazioni! Hai ottenuto il titolo M!";
