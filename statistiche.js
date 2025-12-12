@@ -1,4 +1,3 @@
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
@@ -23,7 +22,6 @@ const googleLoginBtn = document.getElementById("googleLoginBtn");
 const logoutBtn = document.getElementById("logoutBtn");
 const eloDisplay = document.getElementById("eloUtenteStat");
 const classificaContainer = document.getElementById("classifica");
-const titoloDisplay = document.getElementById("titoloUtenteStat"); // Aggiungi questo elemento
 const ctx = document.getElementById('eloChart').getContext('2d');
 
 let userUid = null;
@@ -55,7 +53,6 @@ onAuthStateChanged(auth, async user => {
     loginModal.classList.add("active");
     userUid = null;
     eloDisplay.textContent = "ELO: --";
-    if (titoloDisplay) titoloDisplay.style.display = "none";
     if (chart) chart.destroy();
     if (classificaInterval) clearInterval(classificaInterval);
     classificaContainer.innerHTML = '<div class="loading">Login richiesto</div>';
@@ -80,21 +77,7 @@ async function caricaStatistiche(){
   if(snap.exists()){
     const data = snap.val();
     eloDisplay.textContent = `ELO: ${data.elo||1000}`;
-    
-    // Mostra titolo M
-    if (titoloDisplay) {
-      if (data.titolo === "M") {
-        titoloDisplay.textContent = "M";
-        titoloDisplay.style.display = "inline";
-        titoloDisplay.style.color = "#d4af37";
-        titoloDisplay.style.fontWeight = "700";
-        titoloDisplay.style.fontSize = "18px";
-        titoloDisplay.style.marginLeft = "8px";
-      } else {
-        titoloDisplay.style.display = "none";
-      }
-    }
-    
+
     if(data.storicoELO){
       creaGrafico(data.storicoELO);
     }
@@ -109,10 +92,12 @@ async function caricaClassifica(){
   }
 
   try {
+    console.log("Caricamento classifica...");
     const utentiRef = ref(db, 'utenti');
     const snap = await get(utentiRef);
 
     if(!snap.exists()) {
+      console.log("Nessun dato trovato nel database");
       classificaContainer.innerHTML = '<div class="loading">Nessun utente trovato</div>';
       return;
     }
@@ -123,13 +108,13 @@ async function caricaClassifica(){
     // Converti oggetto in array
     for (const [uid, dati] of Object.entries(utenti)) {
       try {
-        if (dati && typeof dati === 'object' && dati.elo !== undefined) {
+        if (dati && typeof dati === 'object' && dati.elo) {
           classificaArray.push({
             uid: uid,
-            nome: dati.nome || (dati.email ? dati.email.split('@')[0] : "Utente"),
-            email: dati.email || "",
+            nome: dati.nome || "Utente",
+            email: dati.email || "Anonimo",
             elo: Number(dati.elo) || 1000,
-            prefissoM: dati.titolo === "M" || false  // MODIFICATO QUI
+            prefissoM: dati.prefissoM || false
           });
         }
       } catch (err) {
@@ -203,6 +188,12 @@ function mostraClassifica(classificaUtenti, userPosition) {
                           posizioneMostrata === 2 ? 'argento' :
                           posizioneMostrata === 3 ? 'bronzo' : '';
 
+    // Estrai nome
+    let nomeMostrato = utente.nome;
+    if((nomeMostrato === "Utente" || !nomeMostrato) && utente.email && utente.email !== "Anonimo") {
+      nomeMostrato = utente.email.split('@')[0];
+    }
+
     // Determina posizione da mostrare
     let posizioneDaMostrare = posizioneMostrata;
     if (isCurrentUser && userPosition > 10) {
@@ -213,9 +204,9 @@ function mostraClassifica(classificaUtenti, userPosition) {
     <div class="classifica-item ${isCurrentUser ? 'current-user' : ''} ${userPosition > 10 && isCurrentUser ? 'outside-top' : ''}">
       <span class="posizione ${posizioneClass}">${posizioneDaMostrare}.</span>
       <div class="utente-info">
-        <div class="utente-nome" title="${utente.nome}">
+        <div class="utente-nome" title="${nomeMostrato}">
           ${utente.prefissoM ? '<span class="utente-prefisso">M</span>' : ''}
-          ${utente.nome}
+          ${nomeMostrato}
         </div>
       </div>
       <div class="utente-elo">
@@ -267,12 +258,7 @@ function creaGrafico(storicoELO){
           titleFont: { size: 13 },
           bodyFont: { size: 14 },
           padding: 10,
-          cornerRadius: 6,
-          callbacks: {
-            label: function(context) {
-              return `ELO: ${context.parsed.y}`;
-            }
-          }
+          cornerRadius: 6
         }
       },
       scales: {
