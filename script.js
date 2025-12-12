@@ -30,13 +30,14 @@ const nuovaSequenzaBtn = document.getElementById("nuovaSequenzaBtn");
 const feedback = document.getElementById("feedback");
 const eloDisplay = document.getElementById("eloUtente");
 const eloDelta = document.getElementById("eloDelta");
+const progressoTitoliContainer = document.getElementById("progressoTitoliContainer");
 
 let sequenze = [];
 let sequenzaCorrente = null;
 let userUid = null;
 let currentDifficulty = null;
 let sequenzeFiltrate = [];
-let problemiRisolti = new Set(); // Per tracciare problemi già risolti
+let problemiRisolti = new Set();
 
 // Carica sequenze
 fetch('sequences.json')
@@ -90,6 +91,7 @@ onAuthStateChanged(auth, async user => {
     nuovaSequenzaBtn.disabled = true;
     scegliDifficoltaBtn.disabled = true;
     problemiRisolti.clear();
+    progressoTitoliContainer.innerHTML = '';
   } else {
     loginModal.classList.remove("active");
     userUid = user.uid;
@@ -104,17 +106,33 @@ onAuthStateChanged(auth, async user => {
         problemiRisolti = new Set(data.problemiRisolti);
       }
       
-      // Controlla e aggiorna prefisso M
-      await controllaPrefissoM(data);
+      // Controlla e aggiorna titoli
+      await controllaTitoli(data);
+      // Mostra progresso titoli
+      mostraProgressoTitoli(data);
     } else {
+      // Inizializza con nessun titolo
       await set(userRef, { 
         elo: 1000, 
         storicoELO: {0:1000},
         nome: user.displayName || user.email.split('@')[0],
         email: user.email || "",
         problemiRisolti: [],
-        prefissoM: false,
-        problemi2100Risolti: 0
+        titolo: 0, // 0 = nessuno, 1 = T3, 2 = T2, 3 = T1
+        problemi2100Risolti: 0,
+        titoliOttenuti: {
+          T3: false,
+          T2: false,
+          T1: false
+        }
+      });
+      
+      // Mostra progresso titoli iniziale
+      mostraProgressoTitoli({
+        elo: 1000,
+        problemi2100Risolti: 0,
+        titolo: 0,
+        titoliOttenuti: { T3: false, T2: false, T1: false }
       });
     }
     
@@ -137,18 +155,179 @@ async function caricaElo(){
   }
 }
 
-// Controlla se assegnare prefisso M
-async function controllaPrefissoM(userData) {
-  if (userData.prefissoM) return; // Già ha il prefisso
+// Controlla e aggiorna i titoli
+async function controllaTitoli(userData) {
+  if (!userUid) return;
+  
+  const userRef = ref(db, 'utenti/' + userUid);
+  const snap = await get(userRef);
+  let userDataUpdated = snap.val();
+  
+  const elo = userDataUpdated.elo || 1000;
+  const problemi2100Risolti = userDataUpdated.problemi2100Risolti || 0;
+  const titoloAttuale = userDataUpdated.titolo || 0;
+  
+  let nuovoTitolo = titoloAttuale;
+  let titoliOttenuti = userDataUpdated.titoliOttenuti || {
+    T3: false,
+    T2: false,
+    T1: false
+  };
+  
+  // Controlla T3 (1600+ ELO)
+  if (elo >= 1600 && !titoliOttenuti.T3) {
+    titoliOttenuti.T3 = true;
+    nuovoTitolo = Math.max(nuovoTitolo, 1);
+  }
+  
+  // Controlla T2 (1800+ ELO)
+  if (elo >= 1800 && !titoliOttenuti.T2) {
+    titoliOttenuti.T2 = true;
+    nuovoTitolo = Math.max(nuovoTitolo, 2);
+  }
+  
+  // Controlla T1 (2000+ ELO E 3+ problemi 2100+)
+  if (elo >= 2000 && problemi2100Risolti >= 3 && !titoliOttenuti.T1) {
+    titoliOttenuti.T1 = true;
+    nuovoTitolo = Math.max(nuovoTitolo, 3);
+  }
+  
+  // Se c'è un cambiamento, aggiorna il database
+  if (nuovoTitolo !== titoloAttuale || 
+      JSON.stringify(titoliOttenuti) !== JSON.stringify(userDataUpdated.titoliOttenuti || {})) {
+    
+    await update(userRef, {
+      titolo: nuovoTitolo,
+      titoliOttenuti: titoliOttenuti
+    });
+    
+    // Notifica l'utente se ha ottenuto un nuovo titolo
+    if (nuovoTitolo > titoloAttuale) {
+      mostraNotificaTitolo(nuovoTitolo);
+    }
+    
+    // Aggiorna il progresso visuale
+    mostraProgressoTitoli({
+      elo: elo,
+      problemi2100Risolti: problemi2100Risolti,
+      titolo: nuovoTitolo,
+      titoliOttenuti: titoliOttenuti
+    });
+  }
+}
+
+// Mostra progresso titoli nella pagina principale
+function mostraProgressoTitoli(userData) {
+  if (!progressoTitoliContainer) return;
   
   const elo = userData.elo || 1000;
   const problemi2100Risolti = userData.problemi2100Risolti || 0;
+  const titolo = userData.titolo || 0;
+  const titoliOttenuti = userData.titoliOttenuti || { T3: false, T2: false, T1: false };
   
-  if (elo >= 2000 && problemi2100Risolti >= 3) {
-    await update(ref(db, 'utenti/' + userUid), {
-      prefissoM: true
-    });
-  }
+  const titoli = [
+    { nome: "T3", eloRequisito: 1600, problemiRequisito: 0, ottenuto: titoliOttenuti.T3, colore: "#000" },
+    { nome: "T2", eloRequisito: 1800, problemiRequisito: 0, ottenuto: titoliOttenuti.T2, colore: "#000" },
+    { nome: "T1", eloRequisito: 2000, problemiRequisito: 3, ottenuto: titoliOttenuti.T1, colore: "#3b82f6" }
+  ];
+  
+  let html = `
+    <div class="progresso-titoli-card">
+      <div class="titolo-progress-header">
+        <h4>Progresso Titoli</h4>
+        <div class="titolo-corrente">
+          ${titolo === 3 ? '<span class="titolo-badge T1">T1</span>' : 
+            titolo === 2 ? '<span class="titolo-badge T2">T2</span>' : 
+            titolo === 1 ? '<span class="titolo-badge T3">T3</span>' : 'Nessun titolo'}
+        </div>
+      </div>
+  `;
+  
+  titoli.forEach((t, index) => {
+    const eloPercent = Math.min(100, (elo / t.eloRequisito) * 100);
+    const problemiPercent = t.problemiRequisito > 0 ? 
+      Math.min(100, (problemi2100Risolti / t.problemiRequisito) * 100) : 100;
+    
+    const percentCompleto = t.problemiRequisito > 0 ? 
+      (eloPercent * 0.5 + problemiPercent * 0.5) : eloPercent;
+    
+    const completato = t.ottenuto;
+    
+    html += `
+      <div class="titolo-progress-item titolo-${t.nome}">
+        <div class="titolo-progress-info">
+          <span>
+            ${completato ? '✅ ' : ''}
+            <strong>${t.nome}</strong>
+            ${t.nome === "T1" ? ' (2000 ELO + 3 problemi 2100+)' : ` (${t.eloRequisito}+ ELO)`}
+          </span>
+          <span class="percentuale">${completato ? '100%' : Math.round(percentCompleto) + '%'}</span>
+        </div>
+        <div class="titolo-progress-bar">
+          <div class="titolo-progress-fill" style="width: ${completato ? 100 : percentCompleto}%;"></div>
+        </div>
+      </div>
+    `;
+  });
+  
+  html += `</div>`;
+  progressoTitoliContainer.innerHTML = html;
+}
+
+// Notifica nuovo titolo
+function mostraNotificaTitolo(titolo) {
+  const titoliNomi = { 1: "T3", 2: "T2", 3: "T1" };
+  const messaggi = {
+    1: "Hai raggiunto 1600 ELO! Titolo T3 ottenuto.",
+    2: "Hai raggiunto 1800 ELO! Titolo T2 ottenuto.",
+    3: "Maestro! 2000 ELO e 3+ problemi 2100+! Titolo T1 ottenuto."
+  };
+  
+  const notifica = document.createElement('div');
+  notifica.className = 'notifica-titolo';
+  notifica.innerHTML = `
+    <div style="
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: ${titolo === 3 ? '#3b82f6' : '#1f2937'};
+      color: white;
+      padding: 12px 16px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 9999;
+      animation: slideIn 0.3s ease-out;
+      max-width: 300px;
+    ">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div style="
+          background: rgba(255,255,255,0.2);
+          width: 32px;
+          height: 32px;
+          border-radius: 6px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: bold;
+          font-size: 14px;
+          ${titolo === 3 ? 'background: white; color: #3b82f6;' : 'color: white;'}
+        ">${titoliNomi[titolo]}</div>
+        <div>
+          <strong style="font-size: 14px;">Nuovo Titolo: ${titoliNomi[titolo]}</strong>
+          <p style="margin: 4px 0 0 0; font-size: 12px; opacity: 0.9;">
+            ${messaggi[titolo]}
+          </p>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(notifica);
+  
+  setTimeout(() => {
+    notifica.style.animation = 'slideOut 0.3s ease-out';
+    setTimeout(() => notifica.remove(), 300);
+  }, 3000);
 }
 
 // Seleziona difficoltà
@@ -235,6 +414,13 @@ inviaBtn.addEventListener("click", async ()=>{
     
     // Salva nel database
     await salvaProblemiRisolti();
+    
+    // Controlla titoli dopo aver risolto un problema
+    const userRef = ref(db, 'utenti/' + userUid);
+    const snap = await get(userRef);
+    if (snap.exists()) {
+      await controllaTitoli(snap.val());
+    }
   }
 
   feedback.innerText = corretto ? "✓ Corretto" : "✗ Sbagliato";
@@ -314,10 +500,9 @@ async function aggiornaElo(delta, corretto){
     storicoELO: storico
   });
 
-  // Controlla prefisso M se necessario
-  if (corretto && nuovoElo >= 2000) {
-    await controllaPrefissoM(await get(userRef).then(snap => snap.val()));
-  }
+  // Controlla titoli dopo aggiornamento ELO
+  const snap2 = await get(userRef);
+  await controllaTitoli(snap2.val());
 
   // Animazione ELO
   animaElo(elo, nuovoElo, delta);
