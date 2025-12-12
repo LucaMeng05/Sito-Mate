@@ -530,25 +530,25 @@
   {
     "sequence": [1, 2, 4, 8, 7, 5],
     "answer": 1,
-    "elo": 2095,
+    "elo": 2050,
     "difficulty": "Bot"
   },
   {
     "sequence": [1, 4, 0, 3, 6, 2],
     "answer": 5,
-    "elo": 2095,
+    "elo": 2050,
     "difficulty": "Bot"
   },
   {
     "sequence": [1, 5, 9, 3, 7],
     "answer": 1,
-    "elo": 2095,
+    "elo": 2025,
     "difficulty": "Bot"
   },
   {
     "sequence": [1, 6, 3, 0, 5],
     "answer": 2,
-    "elo": 2095,
+    "elo": 2050,
     "difficulty": "Bot"
   },
   {
