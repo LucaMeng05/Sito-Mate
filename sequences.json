@@ -365,23 +365,15 @@
     "elo": 1775,
     "difficulty": "Difficile"
   },
+  // ... (tutte le sequenze fino a "Difficile" rimangono uguali)
+  
+  // SEZIONE ESTREMO (1800-2000) - SENZA DUPLICATI
+  
   // Livello 1800-1849
   {
     "sequence": [3, 10, 24, 52],
     "answer": 108,
     "elo": 1800,
-    "difficulty": "Estremo"
-  },
-  {
-    "sequence": [4, 9, 17, 28],
-    "answer": 42,
-    "elo": 1815,
-    "difficulty": "Estremo"
-  },
-  {
-    "sequence": [1, 5, 14, 30, 55],
-    "answer": 91,
-    "elo": 1830,
     "difficulty": "Estremo"
   },
   {
@@ -402,18 +394,6 @@
     "sequence": [1, 4, 27, 256],
     "answer": 3125,
     "elo": 1870,
-    "difficulty": "Estremo"
-  },
-  {
-    "sequence": [4, 9, 19, 39],
-    "answer": 79,
-    "elo": 1885,
-    "difficulty": "Estremo"
-  },
-  {
-    "sequence": [3, 8, 18, 38],
-    "answer": 78,
-    "elo": 1895,
     "difficulty": "Estremo"
   },
 
@@ -493,7 +473,7 @@
     "difficulty": "Estremo"
   },
 
-  // Sequenze ex-Bot ora in Estremo (2000-2099 → scalate a 1800-2000)
+  // Sequenze ex-Bot ora in Estremo
   {
     "sequence": [4, 11, 25, 53],
     "answer": 109,
@@ -589,7 +569,10 @@
     "answer": 29,
     "elo": 2000,
     "difficulty": "Estremo"
-  }
+  },
+  
+  // SEZIONE BOT (2100+) rimane uguale...
+ 
 ,
   {
     "sequence": [1, 5, 4, 17, 22, 53],
