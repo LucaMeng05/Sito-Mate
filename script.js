@@ -360,9 +360,9 @@ function calcolaDeltaElo(corretto){
   const eloProblema = sequenzaCorrente.elo || 1000;
   let diff = eloProblema - eloUtente;
   let segno = diff >= 0 ? 1 : -1;
-  let varDelta = segno * Math.floor(Math.abs(diff) ** 0.5);
-  if(Math.abs(varDelta) > 400) varDelta = 400;
-  return corretto ? 19 + varDelta : -20 + varDelta;
+  if(Math.abs(diff) > 400) diff = 400;
+  let varDelta = segno * (Math.floor(Math.abs(diff) ** 0.5)-1);
+  return corretto ? 19 + varDelta : -21 + varDelta;
 }
 
 // Aggiorna ELO e controlla titoli
