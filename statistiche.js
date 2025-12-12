@@ -80,16 +80,18 @@ async function caricaStatistiche(){
     const data = snap.val();
     eloDisplay.textContent = `ELO: ${data.elo||1000}`;
     
-    // Mostra titolo M accanto all'ELO
+    // Mostra titolo accanto all'ELO
     if (titoloDisplay) {
       if (data.titolo === "M") {
         titoloDisplay.textContent = "M";
+        titoloDisplay.className = "utente-prefisso";
         titoloDisplay.style.display = "inline-block";
-        titoloDisplay.style.color = "#d4af37";
-        titoloDisplay.style.fontWeight = "700";
-        titoloDisplay.style.fontSize = "18px";
         titoloDisplay.style.marginLeft = "8px";
-        titoloDisplay.style.textShadow = "0 1px 2px rgba(0,0,0,0.1)";
+      } else if (data.titolo === "CM") {
+        titoloDisplay.textContent = "CM";
+        titoloDisplay.className = "utente-prefisso-cm";
+        titoloDisplay.style.display = "inline-block";
+        titoloDisplay.style.marginLeft = "8px";
       } else {
         titoloDisplay.style.display = "none";
       }
@@ -121,16 +123,17 @@ async function caricaClassifica(){
     for (const [uid, dati] of Object.entries(utenti)) {
       try {
         if (dati && typeof dati === 'object' && dati.elo !== undefined) {
-          // Determina se l'utente ha il titolo M
-          // Controlla PRIMA 'prefissoM', POI 'titolo' per compatibilità
-          const haTitoloM = dati.prefissoM === true || dati.titolo === "M";
+          // Determina titoli
+          const haTitoloM = dati.titolo === "M";
+          const haTitoloCM = dati.titolo === "CM";
           
           classificaArray.push({
             uid: uid,
             nome: dati.nome || (dati.email ? dati.email.split('@')[0] : "Utente"),
             email: dati.email || "",
             elo: Number(dati.elo) || 1000,
-            prefissoM: haTitoloM
+            prefissoM: haTitoloM,
+            prefissoCM: haTitoloCM
           });
         }
       } catch (err) {
@@ -215,6 +218,7 @@ function mostraClassifica(classificaUtenti, userPosition) {
       <span class="posizione ${posizioneClass}">${posizioneDaMostrare}.</span>
       <div class="utente-info">
         <div class="utente-nome" title="${utente.nome}">
+          ${utente.prefissoCM ? '<span class="utente-prefisso-cm">CM</span>' : ''}
           ${utente.prefissoM ? '<span class="utente-prefisso">M</span>' : ''}
           ${utente.nome}
         </div>
