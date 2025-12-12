@@ -464,7 +464,7 @@
   {
     "sequence": [0, 1, 1, 2, 4, 7, 13],
     "answer": 24,
-    "elo": 2000,  // Al limite Estremo/Bot
+    "elo": 2000,
     "difficulty": "Estremo"
   },
   {
