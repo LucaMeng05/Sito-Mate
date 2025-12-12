@@ -92,12 +92,10 @@ async function caricaClassifica(){
   }
   
   try {
-    console.log("Caricamento classifica...");
     const utentiRef = ref(db, 'utenti');
     const snap = await get(utentiRef);
     
     if(!snap.exists()) {
-      console.log("Nessun dato trovato nel database");
       classificaContainer.innerHTML = '<div class="loading">Nessun utente trovato</div>';
       return;
     }
@@ -114,7 +112,9 @@ async function caricaClassifica(){
             nome: dati.nome || "Utente",
             email: dati.email || "Anonimo",
             elo: Number(dati.elo) || 1000,
-            prefissoM: dati.prefissoM || false
+            titolo: dati.titolo || 0,
+            titoliOttenuti: dati.titoliOttenuti || { T3: false, T2: false, T1: false },
+            problemi2100Risolti: dati.problemi2100Risolti || 0
           });
         }
       } catch (err) {
@@ -161,7 +161,7 @@ async function caricaClassifica(){
   }
 }
 
-// Mostra classifica
+// Mostra classifica con titoli
 function mostraClassifica(classificaUtenti, userPosition) {
   if(classificaUtenti.length === 0) {
     classificaContainer.innerHTML = '<div class="loading">Nessun utente in classifica</div>';
@@ -175,7 +175,7 @@ function mostraClassifica(classificaUtenti, userPosition) {
     // Se è un separatore
     if (utente.isSeparator) {
       html += `
-        <div class="classifica-item" style="justify-content: center; opacity: 0.5; font-size: 12px; padding: 8px 16px;">
+        <div class="classifica-item separator">
           · · ·
         </div>
       `;
@@ -200,12 +200,25 @@ function mostraClassifica(classificaUtenti, userPosition) {
       posizioneDaMostrare = userPosition;
     }
     
+    // Determina badge titolo
+    let titoloBadge = '';
+    if (utente.titolo >= 3 || utente.titoliOttenuti?.T1) {
+      // T1: Bianco su sfondo azzurro
+      titoloBadge = '<span class="titolo-badge T1">T1</span>';
+    } else if (utente.titolo >= 2 || utente.titoliOttenuti?.T2) {
+      // T2: Nero su sfondo bianco
+      titoloBadge = '<span class="titolo-badge T2">T2</span>';
+    } else if (utente.titolo >= 1 || utente.titoliOttenuti?.T3) {
+      // T3: Nero su sfondo bianco
+      titoloBadge = '<span class="titolo-badge T3">T3</span>';
+    }
+    
     html += `
       <div class="classifica-item ${isCurrentUser ? 'current-user' : ''} ${userPosition > 10 && isCurrentUser ? 'outside-top' : ''}">
         <span class="posizione ${posizioneClass}">${posizioneDaMostrare}.</span>
         <div class="utente-info">
           <div class="utente-nome" title="${nomeMostrato}">
-            ${utente.prefissoM ? '<span class="utente-prefisso">M</span>' : ''}
+            ${titoloBadge}
             ${nomeMostrato}
           </div>
         </div>
