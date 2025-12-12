@@ -114,21 +114,57 @@ onAuthStateChanged(auth, async user => {
     }
     
     caricaElo();
+    aggiornaTitoloDisplay();
     sequenzaEl.innerText = "Scegli difficoltà";
     scegliDifficoltaBtn.disabled = false;
   }
 });
 
-// Carica ELO
-async function caricaElo(){
+// Carica ELO e aggiorna display
+async function caricaElo() {
   if(!userUid) return;
   const userRef = ref(db,'utenti/'+userUid);
   const snap = await get(userRef);
-  if(!snap.exists()){
+  if(!snap.exists()) {
     await set(userRef,{elo:1000, storicoELO:{0:1000}, titolo: "", problemi2100Risolti: 0});
     eloDisplay.textContent = "ELO: 1000";
   } else {
     eloDisplay.textContent = `ELO: ${snap.val().elo||1000}`;
+  }
+}
+
+// Aggiorna display del titolo
+async function aggiornaTitoloDisplay() {
+  if (!userUid) return;
+  
+  const userRef = ref(db, 'utenti/' + userUid);
+  const snap = await get(userRef);
+  if (!snap.exists()) return;
+  
+  const data = snap.val();
+  const titolo = data.titolo || "";
+  
+  // Cerca o crea elemento titolo
+  let titoloElement = document.getElementById('titoloUtente');
+  if (!titoloElement && document.querySelector('.elo-display')) {
+    titoloElement = document.createElement('span');
+    titoloElement.id = 'titoloUtente';
+    titoloElement.style.marginLeft = '10px';
+    eloDisplay.parentNode.insertBefore(titoloElement, eloDisplay.nextSibling);
+  }
+  
+  if (titoloElement) {
+    if (titolo === "CM") {
+      titoloElement.textContent = "CM";
+      titoloElement.className = 'utente-prefisso-cm';
+      titoloElement.style.display = 'inline-block';
+    } else if (titolo === "M") {
+      titoloElement.textContent = "M";
+      titoloElement.className = 'utente-prefisso';
+      titoloElement.style.display = 'inline-block';
+    } else {
+      titoloElement.style.display = 'none';
+    }
   }
 }
 
@@ -142,23 +178,17 @@ async function assegnaTitoloCM() {
   const elo = userData.elo || 1000;
   const titoloAttuale = userData.titolo || "";
   
-  // Assegna CM solo se ELO >= 1900 e non ha già un titolo
   if (elo >= 1900 && titoloAttuale !== "CM" && titoloAttuale !== "M") {
-    console.log("🎯 Assegno CM per ELO:", elo);
+    await update(userRef, { titolo: "CM" });
+    aggiornaTitoloDisplay();
     
-    await update(userRef, {
-      titolo: "CM"
-    });
-    
-    // Mostra notifica
-    feedback.innerText = "🎉 Congratulazioni! Hai ottenuto il titolo CM (Candidate Master)!";
+    feedback.innerText = "🎉 Congratulazioni! Hai ottenuto il titolo CM!";
     feedback.style.color = "#1f2937";
     feedback.style.backgroundColor = "#f9fafb";
     feedback.style.borderColor = "#d1d5db";
-    feedback.style.fontWeight = "500";
     
     setTimeout(() => {
-      if (feedback.innerText === "🎉 Congratulazioni! Hai ottenuto il titolo CM (Candidate Master)!") {
+      if (feedback.innerText.includes("Congratulazioni! Hai ottenuto il titolo CM")) {
         feedback.innerText = "";
       }
     }, 5000);
@@ -178,28 +208,23 @@ async function controllaTitoloM() {
   const problemi2100Risolti = userData.problemi2100Risolti || 0;
   const titoloAttuale = userData.titolo || "";
   
-  // Controlla se l'utente ha già il titolo M
   if (titoloAttuale === "M") return;
   
-  // Condizioni per ottenere il titolo M
-  const haTitoloM = elo >= 2000 && problemi2100Risolti >= 3;
-  
-  if (haTitoloM) {
-    // Assegna il titolo M
+  if (elo >= 2000 && problemi2100Risolti >= 3) {
     await update(userRef, {
       titolo: "M",
       prefissoM: true
     });
     
-    // Mostra messaggio di congratulazioni
-    feedback.innerText = "🎉 Congratulazioni! Hai ottenuto il titolo M (Master)!";
+    aggiornaTitoloDisplay();
+    
+    feedback.innerText = "🎉 Congratulazioni! Hai ottenuto il titolo M!";
     feedback.style.color = "#d4af37";
     feedback.style.backgroundColor = "#fefce8";
     feedback.style.borderColor = "#f59e0b";
     
-    // Rimuovi il messaggio dopo 5 secondi
     setTimeout(() => {
-      if (feedback.innerText === "🎉 Congratulazioni! Hai ottenuto il titolo M (Master)!") {
+      if (feedback.innerText.includes("Congratulazioni! Hai ottenuto il titolo M")) {
         feedback.innerText = "";
       }
     }, 5000);
@@ -237,13 +262,12 @@ diffOptions.forEach(option => {
     nuovaSequenzaBtn.disabled = false;
     
     generaSequenza(sequenzeNonRisolte);
-    
     difficultyModal.classList.remove("active");
     sequenzaEl.focus({preventScroll: true});
   });
 });
 
-// Genera sequenza casuale NON risolta
+// Genera sequenza
 function generaSequenza(sequenzeDisponibili = sequenzeFiltrate) {
   if(sequenzeDisponibili.length === 0) {
     sequenzaEl.innerText = "Nessuna sequenza disponibile";
@@ -266,7 +290,6 @@ function generaSequenza(sequenzeDisponibili = sequenzeFiltrate) {
 inviaBtn.addEventListener("click", async ()=>{
   if(!sequenzaCorrente) return;
   
-  // Validazione input
   const userAnswer = Number(rispostaInput.value);
   if (isNaN(userAnswer)) {
     feedback.innerText = "Inserisci un numero valido";
@@ -297,11 +320,10 @@ inviaBtn.addEventListener("click", async ()=>{
   feedback.style.backgroundColor = corretto ? "#d1fae5" : "#fee2e2";
   feedback.style.borderColor = corretto ? "#10b981" : "#ef4444";
   
-  // Controlla se ha ottenuto il titolo M
   await controllaTitoloM();
 });
 
-// Nuova sequenza (stessa difficoltà, non risolta)
+// Nuova sequenza
 nuovaSequenzaBtn.addEventListener("click", ()=>{
   if(currentDifficulty && sequenzeFiltrate.length > 0) {
     const sequenzeNonRisolte = sequenzeFiltrate.filter(seq => {
@@ -325,7 +347,7 @@ nuovaSequenzaBtn.addEventListener("click", ()=>{
   }
 });
 
-// Tasto Enter per inviare
+// Tasto Enter
 rispostaInput.addEventListener("keypress", (e) => {
   if (e.key === "Enter" && !inviaBtn.disabled) {
     inviaBtn.click();
@@ -343,7 +365,7 @@ function calcolaDeltaElo(corretto){
   return corretto ? 19 + varDelta : -20 + varDelta;
 }
 
-// Aggiorna ELO e statistiche
+// Aggiorna ELO e controlla titoli
 async function aggiornaElo(delta, corretto){
   const userRef = ref(db,'utenti/'+userUid);
   const snap = await get(userRef);
@@ -369,23 +391,13 @@ async function aggiornaElo(delta, corretto){
     storicoELO: storico
   });
 
-  // DOPO aver aggiornato l'ELO, controlla titoli
-  const snapAfter = await get(userRef);
-  const userData = snapAfter.val();
-  const titoloAttuale = userData.titolo || "";
+  // Controlla CM dopo aggiornamento ELO
+  await assegnaTitoloCM();
   
-  // Controlla CM (solo se non ha già un titolo)
-  if (nuovoElo >= 1900 && titoloAttuale !== "CM" && titoloAttuale !== "M") {
-    await assegnaTitoloCM();
-  }
-  
-  // Controlla M
-  await controllaTitoloM();
-
   animaElo(elo, nuovoElo, delta);
 }
 
-// Salva problemi risolti nel database
+// Salva problemi risolti
 async function salvaProblemiRisolti() {
   const userRef = ref(db,'utenti/'+userUid);
   await update(userRef, {
@@ -393,7 +405,7 @@ async function salvaProblemiRisolti() {
   });
 }
 
-// Incrementa contatore problemi 2100+ risolti
+// Incrementa problemi 2100+ risolti
 async function incrementaProblemi2100Risolti() {
   const userRef = ref(db,'utenti/'+userUid);
   const snap = await get(userRef);
