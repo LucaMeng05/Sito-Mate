@@ -483,4 +483,4 @@ if (document.getElementById('logoutBtn')) {
       console.error("Logout error:", error);
     }
   });
-} 
+}
