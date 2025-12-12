@@ -499,17 +499,17 @@ body {
 
 .utente-prefisso {
     color: white;
-    font-weight: 800;  /* Più grassetto */
-    margin-right: 5px;
-    font-size: 10px;  /* Ancora più piccolo */
-    background-color: #2563eb;  /* Blu leggermente più scuro */
-    padding: 1px 3px;
-    border-radius: 2px;
+    background-color: #3b82f6;
+    font-weight: 800;           /* Più grassetto */
+    margin-right: 6px;          /* Più spazio */
+    font-size: 12px;            /* Testo più grande */
+    padding: 2px 6px;           /* Box più grande */
+    border-radius: 4px;         /* Angoli più arrotondati */
     display: inline-block;
-    line-height: 1.1;
-    min-width: 12px;
+    line-height: 1.2;           /* Altezza linea */
+    min-width: 16px;            /* Larghezza minima */
     text-align: center;
-    letter-spacing: 0.2px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Ombra leggera */
 }
 
 .utente-elo {
