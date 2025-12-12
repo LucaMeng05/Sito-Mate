@@ -504,11 +504,11 @@ body {
     border: 1.5px solid #1f2937;
     font-weight: 600;
     margin-right: 6px;
-    font-size: 12px;                     /* +1px rispetto a prima */
+    font-size: 14px;                     /* +1px rispetto a prima */
     padding: 2px 6px;                    /* +1px verticale */
     border-radius: 4px;
     display: inline-block;
-    line-height: 1.2;
+    line-height: 14;
     letter-spacing: 0.3px;
     text-transform: uppercase;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -522,53 +522,17 @@ body {
     background-color: #3b82f6;
     font-weight: 700;
     margin-right: 6px;                   /* Allineato con CM */
-    font-size: 12px;                     /* Stessa dimensione di CM */
+    font-size: 14px;                     /* Stessa dimensione di CM */
     padding: 2px 6px;                    /* Stessa spaziatura di CM */
     border-radius: 4px;                  /* Stesso border-radius */
     display: inline-block;
-    line-height: 1.2;                    /* Stessa altezza linea */
+    line-height: 1.4;               /* Stessa altezza linea */
     min-width: 26px;                     /* Poco meno di CM (M più stretta) */
     text-align: center;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-/* Per il titolo accanto all'ELO */
-#titoloUtente {
-    margin-left: 10px;
-    vertical-align: middle;
-}
 
-/* Uniformità: stesse proporzioni per entrambi */
-.utente-prefisso,
-.utente-prefisso-cm {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    transition: all 0.15s ease;
-    vertical-align: middle;
-}
-
-/* Leggero effetto hover */
-.classifica-item:hover .utente-prefisso,
-.classifica-item:hover .utente-prefisso-cm {
-    transform: translateY(-1px);
-}
-
-/* Mobile: riduci proporzionalmente */
-@media (max-width: 768px) {
-    .utente-prefisso-cm,
-    .utente-prefisso {
-        font-size: 11px;
-        padding: 1px 5px;
-        margin-right: 5px;
-    }
-    
-    .utente-prefisso-cm {
-        min-width: 32px;
-    }
-    
-    .utente-prefisso {
-        min-width: 24px;
-    }
-}
 .utente-elo {
     font-size: 13px;
     color: #6b7280;
