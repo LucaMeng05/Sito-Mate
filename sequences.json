@@ -139,7 +139,7 @@
   },
   {
     "sequence": [3, 7, 13, 21],
-    "answer": 37,
+    "answer": 31,
     "elo": 1550,
     "difficulty": "Intermedio"
   },
