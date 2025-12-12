@@ -114,7 +114,7 @@ async function caricaClassifica(){
             nome: dati.nome || "Utente",
             email: dati.email || "Anonimo",
             elo: Number(dati.elo) || 1000,
-            prefissoM: dati.prefissoM || false
+            prefissoM: dati.titolo === "M" || false
           });
         }
       } catch (err) {
