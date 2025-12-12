@@ -657,7 +657,7 @@
     "difficulty": "Bot"
   },
   {
-    "sequence": [17, 8, 41, 5, 26],
+    "sequence": [17, 8, 41, 5, 26, ...],
     "answer": 8,
     "elo": 2200,
     "difficulty": "Bot"
