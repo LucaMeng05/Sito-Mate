@@ -528,6 +528,12 @@
     "difficulty": "Estremo"
   },
   {
+  "sequence": [1, 3, 6, 11, 18],
+  "answer": 29,
+  "elo": 2000,
+  "difficulty": "Estremo"
+},
+  {
     "sequence": [2, 3, 8, 27, 112],
     "answer": 565,
     "elo": 2050,
