@@ -576,21 +576,33 @@
     "difficulty": "Estremo"
   },
   {
-    "sequence": [28, 48, 96, 162, 36],
-    "answer": 54,
-    "elo": 2250,
+    "sequence": [1, 5, 4, 17, 22, 53],
+    "answer": 94,
+    "elo": 2100,
     "difficulty": "Bot"
   },
   {
-    "sequence": [1, 4, 9, 6, 10, 18],
-    "answer": 36,
-    "elo": 2250,
+    "sequence": [1, 4, 6, 8, 9, 10],
+    "answer": 12,
+    "elo": 2100,
     "difficulty": "Bot"
   },
   {
-    "sequence": [35, 23, 11, 3, 6, 12],
-    "answer": 5,
-    "elo": 2300,
+    "sequence": [1, 2, 5, 17, 73, 382],
+    "answer": 2365,
+    "elo": 2150,
+    "difficulty": "Bot"
+  },
+  {
+    "sequence": [67, 26, 16, 14, 10],
+    "answer": 2,
+    "elo": 2175,
+    "difficulty": "Bot"
+  },
+  {
+    "sequence": [69, 19, 14, 9, 13],
+    "answer": 8,
+    "elo": 2175,
     "difficulty": "Bot"
   },
   {
@@ -602,12 +614,6 @@
   {
     "sequence": [7, 14, 10, 10, 13, 6],
     "answer": 16,
-    "elo": 2050,
-    "difficulty": "Bot"
-  },
-  {
-    "sequence": [3, 10, 24, 52],
-    "answer": 108,
     "elo": 2050,
     "difficulty": "Bot"
   },
@@ -636,12 +642,6 @@
     "difficulty": "Bot"
   },
   {
-    "sequence": [1, 4, 6, 8, 9, 10],
-    "answer": 12,
-    "elo": 2195,
-    "difficulty": "Bot"
-  },
-  {
     "sequence": [3, 4, 6, 8, 12],
     "answer": 14,
     "elo": 2075,
@@ -650,18 +650,6 @@
   {
     "sequence": [11, 4, 16, 49, 169],
     "answer": 256,
-    "elo": 2200,
-    "difficulty": "Bot"
-  },
-  {
-    "sequence": [67, 26, 16, 14, 10],
-    "answer": 2,
-    "elo": 2200,
-    "difficulty": "Bot"
-  },
-  {
-    "sequence": [69, 19, 14, 9, 13],
-    "answer": 8,
     "elo": 2200,
     "difficulty": "Bot"
   },
@@ -678,6 +666,24 @@
     "difficulty": "Bot"
   },
   {
+    "sequence": [28, 48, 96, 162, 36],
+    "answer": 54,
+    "elo": 2250,
+    "difficulty": "Bot"
+  },
+  {
+    "sequence": [1, 4, 9, 6, 10, 18],
+    "answer": 36,
+    "elo": 2250,
+    "difficulty": "Bot"
+  },
+  {
+    "sequence": [1, 2, 4, 3, 3, 4],
+    "answer": 2,
+    "elo": 2250,
+    "difficulty": "Bot"
+  },
+  {
     "sequence": [1111, 120, 33, 30, 23],
     "answer": 21,
     "elo": 2300,
@@ -690,9 +696,9 @@
     "difficulty": "Bot"
   },
   {
-    "sequence": [1, 2, 4, 3, 3, 4],
-    "answer": 2,
-    "elo": 2250,
+    "sequence": [35, 23, 11, 3, 6, 12],
+    "answer": 5,
+    "elo": 2300,
     "difficulty": "Bot"
   }
 ]
