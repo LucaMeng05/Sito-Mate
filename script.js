@@ -37,6 +37,7 @@ let userUid = null;
 let currentDifficulty = null;
 let sequenzeFiltrate = [];
 let problemiRisolti = new Set();
+let partiteGiocate = 0; // Contatore partite
 
 // Carica sequenze
 fetch('sequences.json')
@@ -90,6 +91,7 @@ onAuthStateChanged(auth, async user => {
     nuovaSequenzaBtn.disabled = true;
     scegliDifficoltaBtn.disabled = true;
     problemiRisolti.clear();
+    partiteGiocate = 0; // Reset contatore
   } else {
     loginModal.classList.remove("active");
     userUid = user.uid;
@@ -101,15 +103,18 @@ onAuthStateChanged(auth, async user => {
       if (data.problemiRisolti) {
         problemiRisolti = new Set(data.problemiRisolti);
       }
+      // Carica partite giocate da database se esiste
+      partiteGiocate = data.partiteGiocate || 0;
     } else {
       await set(userRef, { 
-        elo: 1000, 
-        storicoELO: {0:1000},
+        elo: 1200, // ELO INIZIALE 1200
+        storicoELO: {0:1200},
         nome: user.displayName || user.email.split('@')[0],
         email: user.email || "",
         problemiRisolti: [],
         titolo: "",
-        problemi2100Risolti: 0
+        problemi2200Risolti: 0, // CAMBIATO: 2200 invece di 2100
+        partiteGiocate: 0
       });
     }
     
@@ -126,10 +131,16 @@ async function caricaElo() {
   const userRef = ref(db,'utenti/'+userUid);
   const snap = await get(userRef);
   if(!snap.exists()) {
-    await set(userRef,{elo:1000, storicoELO:{0:1000}, titolo: "", problemi2100Risolti: 0});
-    eloDisplay.textContent = "ELO: 1000";
+    await set(userRef,{
+      elo: 1200, // ELO INIZIALE 1200
+      storicoELO:{0:1200}, 
+      titolo: "", 
+      problemi2200Risolti: 0,
+      partiteGiocate: 0
+    });
+    eloDisplay.textContent = "ELO: 1200";
   } else {
-    eloDisplay.textContent = `ELO: ${snap.val().elo||1000}`;
+    eloDisplay.textContent = `ELO: ${snap.val().elo||1200}`;
   }
 }
 
@@ -144,7 +155,6 @@ async function aggiornaTitoloDisplay() {
   const data = snap.val();
   const titolo = data.titolo || "";
   
-  // Cerca o crea elemento titolo
   let titoloElement = document.getElementById('titoloUtente');
   if (!titoloElement && document.querySelector('.elo-display')) {
     titoloElement = document.createElement('span');
@@ -175,7 +185,7 @@ async function assegnaTitoloCM() {
   const userRef = ref(db, 'utenti/' + userUid);
   const snap = await get(userRef);
   const userData = snap.val();
-  const elo = userData.elo || 1000;
+  const elo = userData.elo || 1200;
   const titoloAttuale = userData.titolo || "";
   
   if (elo >= 1900 && titoloAttuale !== "CM" && titoloAttuale !== "M") {
@@ -204,13 +214,14 @@ async function controllaTitoloM() {
   if (!snap.exists()) return;
   
   const userData = snap.val();
-  const elo = userData.elo || 1000;
-  const problemi2100Risolti = userData.problemi2100Risolti || 0;
+  const elo = userData.elo || 1200;
+  const problemi2200Risolti = userData.problemi2200Risolti || 0; // 2200!
   const titoloAttuale = userData.titolo || "";
   
   if (titoloAttuale === "M") return;
   
-  if (elo >= 2000 && problemi2100Risolti >= 3) {
+  // CONDIZIONI AUMENTATE: ELO ≥2100 e 3 problemi ≥2200
+  if (elo >= 2100 && problemi2200Risolti >= 3) {
     await update(userRef, {
       titolo: "M",
       prefissoM: true
@@ -218,7 +229,7 @@ async function controllaTitoloM() {
     
     aggiornaTitoloDisplay();
     
-    feedback.innerText = "🎉 Congratulazioni! Hai ottenuto il titolo M!";
+    feedback.innerText = "🎉 Congratulazioni! Hai ottenuto il titolo M (Master)!";
     feedback.style.color = "#d4af37";
     feedback.style.backgroundColor = "#fefce8";
     feedback.style.borderColor = "#f59e0b";
@@ -239,7 +250,7 @@ diffOptions.forEach(option => {
     const maxElo = parseInt(option.dataset.max);
     
     sequenzeFiltrate = sequenze.filter(seq => {
-      const eloSeq = seq.elo || 1000;
+      const eloSeq = seq.elo || 1200;
       return eloSeq >= minElo && eloSeq <= maxElo;
     });
     
@@ -308,8 +319,9 @@ inviaBtn.addEventListener("click", async ()=>{
     const sequenzaId = sequenzaCorrente.sequence.join(',');
     problemiRisolti.add(sequenzaId);
     
-    if (sequenzaCorrente.elo >= 2100) {
-      await incrementaProblemi2100Risolti();
+    // INCREMENTA PROBLEMI 2200+ RISOLTI (non 2100)
+    if (sequenzaCorrente.elo >= 2200) {
+      await incrementaProblemi2200Risolti();
     }
     
     await salvaProblemiRisolti();
@@ -354,25 +366,35 @@ rispostaInput.addEventListener("keypress", (e) => {
   }
 });
 
-// Calcola delta ELO
+// Calcola delta ELO con RADDOPPIO prime 5 partite
 function calcolaDeltaElo(corretto){
   const eloUtente = Number(eloDisplay.textContent.replace("ELO: ",""));
-  const eloProblema = sequenzaCorrente.elo || 1000;
+  const eloProblema = sequenzaCorrente.elo || 1200;
   let diff = eloProblema - eloUtente;
   let segno = diff >= 0 ? 1 : -1;
   if(Math.abs(diff) > 400) diff = 400;
   let varDelta = segno * (Math.floor(Math.abs(diff) ** 0.5)-1);
-  return corretto ? 19 + varDelta : -23 + varDelta;
+  
+  // Base delta
+  let delta = corretto ? 19 + varDelta : -23 + varDelta;
+  
+  // RADDOPPIA per prime 5 partite
+  if (partiteGiocate < 5) {
+    delta = delta * 2;
+    console.log(`🎯 Partita ${partiteGiocate + 1}/5: delta raddoppiato = ${delta}`);
+  }
+  
+  return delta;
 }
 
 // Aggiorna ELO e controlla titoli
 async function aggiornaElo(delta, corretto){
   const userRef = ref(db,'utenti/'+userUid);
   const snap = await get(userRef);
-  const elo = snap.val().elo || 1000;
+  const elo = snap.val().elo || 1200;
   const nuovoElo = Math.max(0, elo + delta);
 
-  let storico = snap.val().storicoELO || {0:1000};
+  let storico = snap.val().storicoELO || {0:1200};
   const ultimoIndex = Math.max(...Object.keys(storico).map(Number));
   const nuovoIndex = ultimoIndex + 1;
   
@@ -386,9 +408,13 @@ async function aggiornaElo(delta, corretto){
   
   storico[nuovoIndex] = nuovoElo;
   
+  // Incrementa contatore partite e salva
+  partiteGiocate++;
+  
   await update(userRef,{
     elo: nuovoElo,
-    storicoELO: storico
+    storicoELO: storico,
+    partiteGiocate: partiteGiocate
   });
 
   // Controlla CM dopo aggiornamento ELO
@@ -405,14 +431,14 @@ async function salvaProblemiRisolti() {
   });
 }
 
-// Incrementa problemi 2100+ risolti
-async function incrementaProblemi2100Risolti() {
+// Incrementa problemi 2200+ risolti
+async function incrementaProblemi2200Risolti() {
   const userRef = ref(db,'utenti/'+userUid);
   const snap = await get(userRef);
-  const currentCount = snap.val().problemi2100Risolti || 0;
+  const currentCount = snap.val().problemi2200Risolti || 0;
   
   await update(userRef, {
-    problemi2100Risolti: currentCount + 1
+    problemi2200Risolti: currentCount + 1
   });
 }
 
