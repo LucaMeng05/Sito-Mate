@@ -619,7 +619,7 @@
   },
   {
     "sequence": ["A", "B", "D", "C", "C", "D"],
-    "answer": "D",
+    "answer": "B",
     "elo": 2300,
     "difficulty": "Bot"
   }
