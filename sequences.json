@@ -173,6 +173,31 @@
     "elo": 1550,
     "difficulty": "Intermedio"
   },
+
+  {
+    "sequence": [48, 46, 42, 36],
+    "answer": 28,
+    "elo": 1650,
+    "difficulty": "Difficile"
+  },
+  {
+    "sequence": [1, 2, 5, 11, 21],
+    "answer": 36,
+    "elo": 1675,
+    "difficulty": "Difficile"
+  },
+  {
+    "sequence": [2, 3, 2, 1, 2, 3],
+    "answer": 2,
+    "elo": 1680,
+    "difficulty": "Difficile"
+  },
+  {
+    "sequence": [2, 14, 8, 11, 9.5],
+    "answer": 10.25,
+    "elo": 1700,
+    "difficulty": "Difficile"
+  },
   {
     "sequence": [3, 9, 27, 81],
     "answer": 243,
@@ -284,13 +309,7 @@
   {
     "sequence": [3, 6, 8, 16, 18, 36],
     "answer": 38,
-    "elo": 1725,
-    "difficulty": "Difficile"
-  },
-  {
-    "sequence": [3, 4, 7, 11],
-    "answer": 18,
-    "elo": 1725,
+    "elɔ": 1725,
     "difficulty": "Difficile"
   },
   {
@@ -336,12 +355,6 @@
     "difficulty": "Difficile"
   },
   {
-    "sequence": [4, 9, 17, 28],
-    "answer": 42,
-    "elo": 1775,
-    "difficulty": "Difficile"
-  },
-  {
     "sequence": [1, 5, 14, 30, 55],
     "answer": 91,
     "elo": 1775,
@@ -354,17 +367,13 @@
     "difficulty": "Difficile"
   },
   {
-    "sequence": [4, 9, 19, 39],
-    "answer": 79,
-    "elo": 1775,
+    "sequence": [3, 10, 24, 52],
+    "answer": 108,
+    "elo": 1800,
     "difficulty": "Difficile"
-  },
-  {
-    "sequence": [3, 8, 18, 38],
-    "answer": 78,
-    "elo": 1775,
-    "difficulty": "Difficile"
-  },
+  }
+  
+,
   {
     "sequence": [3, 10, 24, 52],
     "answer": 108,
