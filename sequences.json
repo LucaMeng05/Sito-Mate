@@ -703,5 +703,11 @@
     "answer": 5,
     "elo": 2300,
     "difficulty": "Bot"
+  },
+   {
+    "sequence": [3, 3, 3, 3],
+    "answer": 3,
+    "elo": 2300,
+    "difficulty": "Bot"
   }
 ]
