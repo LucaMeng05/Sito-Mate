@@ -694,7 +694,28 @@ body {
     min-width: 34px;
     text-align: center;
 }
+.badge-titolo {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 700;
+  margin-right: 6px;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
 
+.badge-nm {
+  background-color: #3b82f6;
+  color: white;
+  border: 1px solid #2563eb;
+}
+
+.badge-gm {
+  background-color: #1f2937;
+  color: white;
+  border: 1px solid #374151;
+}
 .utente-prefisso {
     color: white;
     background-color: #3b82f6;
