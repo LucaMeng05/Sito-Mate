@@ -243,13 +243,15 @@ function mostraClassifica(classificaUtenti, userPosition) {
       posizioneDaMostrare = 21; // Fisso come 21° se fuori top 20
     }
 
-    // Mostra badge titolo
-    let badgeHtml = '';
-    if (utente.titolo === "NM") {
-      badgeHtml = '<span class="badge-titolo badge-nm">NM</span>';
-    } else if (utente.titolo === "GM") {
-      badgeHtml = '<span class="badge-titolo badge-gm">GM</span>';
-    }
+// Mostra badge titolo
+let badgeHtml = '';
+if (utente.titolo === "CM") {
+  badgeHtml = '<span class="badge-titolo badge-cm">CM</span>';
+} else if (utente.titolo === "NM") {
+  badgeHtml = '<span class="badge-titolo badge-nm">NM</span>';
+} else if (utente.titolo === "GM") {
+  badgeHtml = '<span class="badge-titolo badge-gm">GM</span>';
+}
 
     html += `
     <div class="classifica-item ${isCurrentUser ? 'current-user' : ''} ${userPosition > 20 && isCurrentUser ? 'outside-top' : ''}">
