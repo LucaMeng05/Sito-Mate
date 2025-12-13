@@ -466,8 +466,8 @@
     "difficulty": "Estremo"
   },
   {
-    "sequence": [4, 5, 7, "*", 19],
-    "answer": 35,
+    "sequence": [1, 2, 5, 11, 21],
+    "answer": 36,
     "elo": 2050,
     "difficulty": "Estremo"
   },
@@ -533,8 +533,8 @@
     "difficulty": "Bot"
   },
   {
-    "sequence": [1, 2, 5, 11, 21],
-    "answer": 36,
+    "sequence": [4, 5, 7, "*", 19],
+    "answer": 35,
     "elo": 2125,
     "difficulty": "Bot"
   },
