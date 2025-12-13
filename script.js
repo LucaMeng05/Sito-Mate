@@ -258,7 +258,7 @@ function calcolaDeltaElo(corretto){
   
   // MODIFICA: DIMEZZA se ELO utente ≥ 2100
   if (eloUtente >= 2100) {
-    delta = delta / 2;
+    delta = Math.floor(delta / 2);
   }
   
   return Math.round(delta * 10) / 10; // Arrotonda a 1 decimale
@@ -307,22 +307,7 @@ async function aggiornaElo(delta, corretto){
   
   await update(userRef, updates);
   
-  // Controlla titoli NM/GM
-  await controllaTitoli();
-  
-  animaElo(elo, nuovoElo, delta);
-}
-
-// Salva problemi risolti e sbagliati
-async function salvaProblemi() {
-  const userRef = ref(db,'utenti/'+userUid);
-  await update(userRef, {
-    problemiRisolti: Array.from(problemiRisolti),
-    problemiSbagliati: Array.from(problemiSbagliati)
-  });
-}
-
-// Controlla titoli NM e GM
+ // SOSTITUISCI la funzione controllaTitoli con questa versione corretta:
 async function controllaTitoli() {
   if (!userUid) return;
   
@@ -336,7 +321,7 @@ async function controllaTitoli() {
   const problemi2250Risolti = userData.problemi2250Risolti || 0;
   const titoloAttuale = userData.titolo || "";
   
-  // GM (Grandmaster) - Bianco su grigio scuro
+  // Prima controlla GM (è superiore a NM)
   if (elo >= 2200 && problemi2250Risolti >= 3 && titoloAttuale !== "GM") {
     await update(userRef, { titolo: "GM" });
     
@@ -350,9 +335,11 @@ async function controllaTitoli() {
         feedback.innerText = "";
       }
     }, 5000);
+    return; // Importante: esci dopo aver assegnato GM
   }
-  // NM (National Master) - Bianco su azzurro
-  else if (elo >= 2100 && problemi2150Risolti >= 2 && titoloAttuale === "") {
+  
+  // Poi controlla NM (solo se non ha già GM)
+  if (elo >= 2100 && problemi2150Risolti >= 2 && titoloAttuale !== "GM" && titoloAttuale !== "NM") {
     await update(userRef, { titolo: "NM" });
     
     feedback.innerText = "🎉 Congratulazioni! Hai ottenuto il titolo NM (National Master)!";
