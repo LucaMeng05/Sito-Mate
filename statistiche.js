@@ -89,7 +89,6 @@ async function caricaStatistiche(){
   }
 }
 
-// Carica statistiche dettagliate
 async function caricaStatisticheDettagliate(data) {
   const elo = data.elo || 1000;
   const titolo = data.titolo || "";
@@ -108,11 +107,14 @@ async function caricaStatisticheDettagliate(data) {
   let titoloTesto = "Nessuno";
   let titoloClasse = "titolo-nessuno";
   
-  if (titolo === "NM") {
-    titoloTesto = "NM (National Master)";
+  if (titolo === "CM") {
+    titoloTesto = "CM";
+    titoloClasse = "titolo-cm";
+  } else if (titolo === "NM") {
+    titoloTesto = "NM";
     titoloClasse = "titolo-nm";
   } else if (titolo === "GM") {
-    titoloTesto = "GM (Grandmaster)";
+    titoloTesto = "GM";
     titoloClasse = "titolo-gm";
   }
   
@@ -138,7 +140,6 @@ async function caricaStatisticheDettagliate(data) {
     </div>
   `;
 }
-
 // Carica classifica top 20 + eventuale 21°
 async function caricaClassifica(){
   if(!userUid) return;
