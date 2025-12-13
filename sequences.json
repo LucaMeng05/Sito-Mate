@@ -513,8 +513,8 @@
     "difficulty": "Estremo"
   },
   {
-    "sequence": [2, 2, 10, 14, 26],
-    "answer": 34,
+    "sequence": [2, 2, 10, 14, 26, 34],
+    "answer": 50,
     "elo": 2000,
     "difficulty": "Estremo"
   },
