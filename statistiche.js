@@ -208,7 +208,8 @@ async function caricaClassifica(){
   }
 }
 
-// Mostra classifica
+// AGGIUNGI questa funzione per mostrare i badge correttamente:
+
 function mostraClassifica(classificaUtenti, userPosition) {
   if(classificaUtenti.length === 0) {
     classificaContainer.innerHTML = '<div class="loading">Nessun utente in classifica</div>';
@@ -241,28 +242,28 @@ function mostraClassifica(classificaUtenti, userPosition) {
       posizioneDaMostrare = 21; // Fisso come 21° se fuori top 20
     }
 
-// Mostra badge titolo
-let badgeHtml = '';
-if (utente.titolo === "NM") {
-  badgeHtml = '<span class="badge-titolo badge-nm">NM</span>';
-} else if (utente.titolo === "GM") {
-  badgeHtml = '<span class="badge-titolo badge-gm">GM</span>';
-}
+    // Mostra badge titolo
+    let badgeHtml = '';
+    if (utente.titolo === "NM") {
+      badgeHtml = '<span class="badge-titolo badge-nm">NM</span>';
+    } else if (utente.titolo === "GM") {
+      badgeHtml = '<span class="badge-titolo badge-gm">GM</span>';
+    }
 
-html += `
-<div class="classifica-item ${isCurrentUser ? 'current-user' : ''} ${userPosition > 20 && isCurrentUser ? 'outside-top' : ''}">
-  <span class="posizione ${posizioneClass}">${posizioneDaMostrare}.</span>
-  <div class="utente-info">
-    <div class="utente-nome" title="${utente.nome}">
-      ${badgeHtml}
-      ${utente.nome}
+    html += `
+    <div class="classifica-item ${isCurrentUser ? 'current-user' : ''} ${userPosition > 20 && isCurrentUser ? 'outside-top' : ''}">
+      <span class="posizione ${posizioneClass}">${posizioneDaMostrare}.</span>
+      <div class="utente-info">
+        <div class="utente-nome" title="${utente.nome}">
+          ${badgeHtml}
+          ${utente.nome}
+        </div>
+      </div>
+      <div class="utente-elo">
+        <span class="utente-elo-valore">${utente.elo}</span>
+      </div>
     </div>
-  </div>
-  <div class="utente-elo">
-    <span class="utente-elo-valore">${utente.elo}</span>
-  </div>
-</div>
-`;
+    `;
   });
 
   classificaContainer.innerHTML = html;
