@@ -579,8 +579,8 @@
     "difficulty": "Estremo"
   },
   {
-    "sequence": [1, 5, 4, 17, 22, 53],
-    "answer": 94,
+    "sequence": [1, 5, 4, 17, 22, 59],
+    "answer": 100,
     "elo": 2200,
     "difficulty": "Bot"
   },
