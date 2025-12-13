@@ -264,7 +264,8 @@ function calcolaDeltaElo(corretto){
   return Math.round(delta * 10) / 10; // Arrotonda a 1 decimale
 }
 
-// Aggiorna ELO e controlla titoli NM/GM
+// SOSTITUISCI tutta la funzione aggiornaElo con questa:
+
 async function aggiornaElo(delta, corretto){
   const userRef = ref(db,'utenti/'+userUid);
   const snap = await get(userRef);
@@ -298,17 +299,26 @@ async function aggiornaElo(delta, corretto){
     if (sequenzaCorrente.elo >= 2150) {
       const current2150 = snap.val().problemi2150Risolti || 0;
       updates.problemi2150Risolti = current2150 + 1;
+      console.log(`➕ Incrementato problemi2150Risolti: ${current2150 + 1}`);
     }
     if (sequenzaCorrente.elo >= 2250) {
       const current2250 = snap.val().problemi2250Risolti || 0;
       updates.problemi2250Risolti = current2250 + 1;
+      console.log(`➕ Incrementato problemi2250Risolti: ${current2250 + 1}`);
     }
   }
   
   await update(userRef, updates);
   
- // SOSTITUISCI la funzione controllaTitoli con questa versione corretta:
+  // AGGIUNGI QUESTA CHIAMATA:
+  await controllaTitoli();
+  
+  animaElo(elo, nuovoElo, delta);
+}
+
+// FUNZIONE controllaTitoli DEVE essere DEFINITA SEPARATAMENTE (non dentro aggiornaElo):
 async function controllaTitoli() {
+  console.log("🔍 Controllando titoli...");
   if (!userUid) return;
   
   const userRef = ref(db, 'utenti/' + userUid);
@@ -321,8 +331,11 @@ async function controllaTitoli() {
   const problemi2250Risolti = userData.problemi2250Risolti || 0;
   const titoloAttuale = userData.titolo || "";
   
+  console.log(`📊 Statistiche: ELO=${elo}, 2150+=${problemi2150Risolti}, 2250+=${problemi2250Risolti}, Titolo=${titoloAttuale}`);
+  
   // Prima controlla GM (è superiore a NM)
   if (elo >= 2200 && problemi2250Risolti >= 3 && titoloAttuale !== "GM") {
+    console.log("🎉 Assegnando titolo GM!");
     await update(userRef, { titolo: "GM" });
     
     feedback.innerText = "🎉 Congratulazioni! Hai ottenuto il titolo GM (Grandmaster)!";
@@ -340,6 +353,7 @@ async function controllaTitoli() {
   
   // Poi controlla NM (solo se non ha già GM)
   if (elo >= 2100 && problemi2150Risolti >= 2 && titoloAttuale !== "GM" && titoloAttuale !== "NM") {
+    console.log("🎉 Assegnando titolo NM!");
     await update(userRef, { titolo: "NM" });
     
     feedback.innerText = "🎉 Congratulazioni! Hai ottenuto il titolo NM (National Master)!";
@@ -353,7 +367,7 @@ async function controllaTitoli() {
       }
     }, 5000);
   }
-}
+      }
 
 // Animazione ELO
 function animaElo(oldElo, newElo, delta) {
