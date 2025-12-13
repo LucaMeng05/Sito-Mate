@@ -258,7 +258,7 @@ function calcolaDeltaElo(corretto){
   
   // MODIFICA: DIMEZZA se ELO utente ≥ 2100
   if (eloUtente >= 2100) {
-    delta = Math.floor(delta / 2);
+    delta = Math.floor(delta *2);
   }
   
   return Math.round(delta * 10) / 10; // Arrotonda a 1 decimale
