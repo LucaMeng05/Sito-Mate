@@ -676,24 +676,7 @@ body {
     box-shadow: 0 3px 8px rgba(59, 130, 246, 0.1);
 }
 
-/* Badge CM e M (mantenuti per retrocompatibilità) */
-.utente-prefisso-cm {
-    color: black;
-    background-color: white;
-    border: 1.5px solid #1f2937;
-    font-weight: 600;
-    margin-right: 6px;
-    font-size: 14px;
-    padding: 2px 6px;
-    border-radius: 4px;
-    display: inline-block;
-    line-height: 1.4;
-    letter-spacing: 0.3px;
-    text-transform: uppercase;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    min-width: 34px;
-    text-align: center;
-}
+/* Badge titoli (unificati) */
 .badge-titolo {
   display: inline-block;
   padding: 2px 6px;
@@ -703,6 +686,14 @@ body {
   margin-right: 6px;
   text-transform: uppercase;
   vertical-align: middle;
+  min-width: 26px;
+  text-align: center;
+}
+
+.badge-cm {
+  background-color: white;
+  color: black;
+  border: 1.5px solid #1f2937;
 }
 
 .badge-nm {
@@ -715,6 +706,32 @@ body {
   background-color: #1f2937;
   color: white;
   border: 1px solid #374151;
+}
+
+/* Stili per i titoli nel box statistiche */
+.titolo-cm {
+  color: black !important;
+  background-color: white;
+  border: 1.5px solid #1f2937;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.titolo-nm {
+  color: white !important;
+  background-color: #3b82f6;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.titolo-gm {
+  color: white !important;
+  background-color: #1f2937;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 600;
 }
 .utente-prefisso {
     color: white;
