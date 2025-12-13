@@ -21,8 +21,8 @@ const loginModal = document.getElementById("loginModal");
 const googleLoginBtn = document.getElementById("googleLoginBtn");
 const logoutBtn = document.getElementById("logoutBtn");
 const eloDisplay = document.getElementById("eloUtenteStat");
-const titoloDisplay = document.getElementById("titoloUtenteStat");
 const classificaContainer = document.getElementById("classifica");
+const statisticheBox = document.getElementById("statisticheBox");
 const ctx = document.getElementById('eloChart').getContext('2d');
 
 let userUid = null;
@@ -54,10 +54,10 @@ onAuthStateChanged(auth, async user => {
     loginModal.classList.add("active");
     userUid = null;
     eloDisplay.textContent = "ELO: --";
-    if (titoloDisplay) titoloDisplay.style.display = "none";
     if (chart) chart.destroy();
     if (classificaInterval) clearInterval(classificaInterval);
     classificaContainer.innerHTML = '<div class="loading">Login richiesto</div>';
+    statisticheBox.innerHTML = '<div class="loading">Login richiesto</div>';
   } else {
     loginModal.classList.remove("active");
     userUid = user.uid;
@@ -70,7 +70,7 @@ onAuthStateChanged(auth, async user => {
   }
 });
 
-// Carica statistiche personali
+// Carica statistiche complete
 async function caricaStatistiche(){
   if(!userUid) return;
   const userRef = ref(db,'utenti/'+userUid);
@@ -80,22 +80,8 @@ async function caricaStatistiche(){
     const data = snap.val();
     eloDisplay.textContent = `ELO: ${data.elo||1000}`;
     
-    // Mostra titolo accanto all'ELO
-    if (titoloDisplay) {
-      if (data.titolo === "M") {
-        titoloDisplay.textContent = "M";
-        titoloDisplay.className = "utente-prefisso";
-        titoloDisplay.style.display = "inline-block";
-        titoloDisplay.style.marginLeft = "8px";
-      } else if (data.titolo === "CM") {
-        titoloDisplay.textContent = "CM";
-        titoloDisplay.className = "utente-prefisso-cm";
-        titoloDisplay.style.display = "inline-block";
-        titoloDisplay.style.marginLeft = "8px";
-      } else {
-        titoloDisplay.style.display = "none";
-      }
-    }
+    // Carica statistiche dettagliate
+    await caricaStatisticheDettagliate(data);
     
     if(data.storicoELO){
       creaGrafico(data.storicoELO);
@@ -103,7 +89,57 @@ async function caricaStatistiche(){
   }
 }
 
-// Carica classifica top 10 + utente corrente
+// Carica statistiche dettagliate
+async function caricaStatisticheDettagliate(data) {
+  const elo = data.elo || 1000;
+  const titolo = data.titolo || "";
+  const problemiRisolti = data.problemiRisolti ? data.problemiRisolti.length : 0;
+  const problemiSbagliati = data.problemiSbagliati ? data.problemiSbagliati.length : 0;
+  const problemi2150Risolti = data.problemi2150Risolti || 0;
+  const problemi2250Risolti = data.problemi2250Risolti || 0;
+  const partiteTotali = problemiRisolti + problemiSbagliati;
+  
+  // Calcola tasso di successo
+  const tassoSuccesso = partiteTotali > 0 
+    ? Math.round((problemiRisolti / partiteTotali) * 100) 
+    : 0;
+  
+  // Determina testo e classe per il titolo
+  let titoloTesto = "Nessuno";
+  let titoloClasse = "titolo-nessuno";
+  
+  if (titolo === "NM") {
+    titoloTesto = "NM (National Master)";
+    titoloClasse = "titolo-nm";
+  } else if (titolo === "GM") {
+    titoloTesto = "GM (Grandmaster)";
+    titoloClasse = "titolo-gm";
+  }
+  
+  // Aggiorna il box statistiche
+  statisticheBox.innerHTML = `
+    <div class="stats-grid">
+      <div class="stat-item">
+        <span class="stat-label">Tasso di Successo</span>
+        <span class="stat-value success-rate">${tassoSuccesso}%</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Problemi 2150+</span>
+        <span class="stat-value high-problem">${problemi2150Risolti}</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Problemi 2250+</span>
+        <span class="stat-value extreme-problem">${problemi2250Risolti}</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Titolo</span>
+        <span class="stat-value ${titoloClasse}">${titoloTesto}</span>
+      </div>
+    </div>
+  `;
+}
+
+// Carica classifica top 20 + eventuale 21°
 async function caricaClassifica(){
   if(!userUid) return;
 
@@ -119,21 +155,15 @@ async function caricaClassifica(){
     const utenti = snap.val();
     const classificaArray = [];
 
-    // Converti oggetto in array
     for (const [uid, dati] of Object.entries(utenti)) {
       try {
         if (dati && typeof dati === 'object' && dati.elo !== undefined) {
-          // Determina titoli
-          const haTitoloM = dati.titolo === "M";
-          const haTitoloCM = dati.titolo === "CM";
-          
           classificaArray.push({
             uid: uid,
             nome: dati.nome || (dati.email ? dati.email.split('@')[0] : "Utente"),
             email: dati.email || "",
             elo: Number(dati.elo) || 1000,
-            prefissoM: haTitoloM,
-            prefissoCM: haTitoloCM
+            titolo: dati.titolo || ""
           });
         }
       } catch (err) {
@@ -153,11 +183,11 @@ async function caricaClassifica(){
     const userIndex = classificaArray.findIndex(u => u.uid === userUid);
     const userPosition = userIndex + 1;
 
-    // Se utente non è nei top 10, aggiungilo come 11°
-    let classificaVisualizzata;
-    if (userPosition > 10 && userPosition <= classificaArray.length) {
-      classificaVisualizzata = classificaArray.slice(0, 10);
-      // Aggiungi riga separatrice e utente corrente
+    // Prendi top 20
+    let classificaVisualizzata = classificaArray.slice(0, 20);
+    
+    // Se utente non è nei top 20, aggiungilo come 21°
+    if (userPosition > 20 && userPosition <= classificaArray.length) {
       classificaVisualizzata.push({
         uid: "separator",
         nome: "...",
@@ -167,8 +197,6 @@ async function caricaClassifica(){
 
       const userData = classificaArray[userIndex];
       classificaVisualizzata.push(userData);
-    } else {
-      classificaVisualizzata = classificaArray.slice(0, 10);
     }
 
     // Mostra classifica
@@ -209,17 +237,24 @@ function mostraClassifica(classificaUtenti, userPosition) {
 
     // Determina posizione da mostrare
     let posizioneDaMostrare = posizioneMostrata;
-    if (isCurrentUser && userPosition > 10) {
-      posizioneDaMostrare = userPosition;
+    if (isCurrentUser && userPosition > 20) {
+      posizioneDaMostrare = 21; // Fisso come 21° se fuori top 20
+    }
+
+    // Mostra badge titolo
+    let badgeHtml = '';
+    if (utente.titolo === "NM") {
+      badgeHtml = '<span class="badge-titolo badge-nm">NM</span>';
+    } else if (utente.titolo === "GM") {
+      badgeHtml = '<span class="badge-titolo badge-gm">GM</span>';
     }
 
     html += `
-    <div class="classifica-item ${isCurrentUser ? 'current-user' : ''} ${userPosition > 10 && isCurrentUser ? 'outside-top' : ''}">
+    <div class="classifica-item ${isCurrentUser ? 'current-user' : ''} ${userPosition > 20 && isCurrentUser ? 'outside-top' : ''}">
       <span class="posizione ${posizioneClass}">${posizioneDaMostrare}.</span>
       <div class="utente-info">
         <div class="utente-nome" title="${utente.nome}">
-          ${utente.prefissoCM ? '<span class="utente-prefisso-cm">CM</span>' : ''}
-          ${utente.prefissoM ? '<span class="utente-prefisso">M</span>' : ''}
+          ${badgeHtml}
           ${utente.nome}
         </div>
       </div>
@@ -235,10 +270,8 @@ function mostraClassifica(classificaUtenti, userPosition) {
 
 // Crea grafico personale
 function creaGrafico(storicoELO){
-  // Prendi solo ultime 30 variazioni
   const chiavi = Object.keys(storicoELO).map(Number).sort((a,b) => a-b);
   const ultime30 = chiavi.slice(-30);
-
   const valori = ultime30.map(chiave => storicoELO[chiave]);
 
   if(chart) {
