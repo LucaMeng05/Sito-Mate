@@ -249,7 +249,7 @@ function calcolaDeltaElo(corretto){
   let varDelta = segno * (Math.floor(Math.abs(diff) ** 0.5)-1);
   
   // Base delta
-  let delta = corretto ? 19 + varDelta : -29 + varDelta;
+  let delta = corretto ? 19 + varDelta : -35 + varDelta;
   
   // RADDOPPIA per prime 5 partite
   if (partiteGiocate < 5) {
