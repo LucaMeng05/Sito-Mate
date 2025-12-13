@@ -217,13 +217,14 @@ body {
     padding: 0 16px;
 }
 
-/* ELO Container - più sottile */
+/* ELO Container - MODIFICATO: più sottile */
 .elo-container {
     background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
     border: 1px solid #e2e8f0;
     border-radius: 7px;
-    padding: 12px 16px;
-    margin-bottom: 16px;
+    padding: 8px 12px; /* Ridotto da 12px 16px */
+    margin-bottom: 8px; /* Ridotto da 16px */
+    min-height: 44px; /* Altezza minima ridotta */
 }
 
 .elo-display {
@@ -276,14 +277,15 @@ body {
     100% { transform: scale(1); }
 }
 
-/* Cards - più sottili */
+/* Cards - MODIFICATO: più sottili */
 .card {
     background: white;
-    padding: 20px;
+    padding: 14px; /* Ridotto da 20px */
     border-radius: 8px;
-    margin-bottom: 16px;
+    margin-bottom: 12px; /* Ridotto da 16px */
     border: 1px solid #e5e7eb;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.02);
+    min-height: auto; /* Rimuovi altezza minima fissa */
 }
 
 .section-title {
@@ -296,19 +298,19 @@ body {
     border-bottom: 1px solid #f3f4f6;
 }
 
-/* Sequence Display - molto più basso */
+/* Sequence Display - MODIFICATO: molto più basso */
 .sequence-display {
-    font-size: 20px;
+    font-size: 18px; /* Ridotto da 20px */
     font-weight: 500;
     text-align: center;
-    padding: 20px 16px;
-    margin: 12px 0;
+    padding: 12px 14px; /* Ridotto da 20px 16px */
+    margin: 8px 0; /* Ridotto da 12px */
     background: linear-gradient(135deg, #fafbfc 0%, #f8fafc 100%);
     border-radius: 8px;
     border: 1px solid #e5e7eb;
     color: #1f2937;
     font-family: 'JetBrains Mono', 'SF Mono', 'Roboto Mono', monospace;
-    min-height: 70px;
+    min-height: 50px; /* Ridotto da 70px */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -441,18 +443,114 @@ body {
     background: #f8fafc;
 }
 
-/* Classifica - più compatta */
+/* Box statistiche dettagliate - NUOVO */
+.statistiche-dettagliate {
+    margin-top: 8px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    background: #f8fafc;
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: #6b7280;
+    margin-bottom: 4px;
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.success-rate {
+    color: #059669;
+}
+
+.high-problem {
+    color: #3b82f6;
+}
+
+.extreme-problem {
+    color: #7c3aed;
+}
+
+/* Nuove classi per titoli nelle statistiche */
+.titolo-nessuno {
+    color: #6b7280;
+    font-style: italic;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background: #f3f4f6;
+}
+
+.titolo-nm {
+    color: white !important;
+    background-color: #3b82f6;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.titolo-gm {
+    color: white !important;
+    background-color: #1f2937;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+/* Badge titoli in classifica */
+.badge-titolo {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 700;
+    margin-right: 6px;
+    text-transform: uppercase;
+}
+
+.badge-nm {
+    background-color: #3b82f6;
+    color: white;
+}
+
+.badge-gm {
+    background-color: #1f2937;
+    color: white;
+}
+
+/* Classifica - MODIFICATO: più compatta e con scroll */
 .classifica-container {
-    margin-top: 12px;
+    max-height: 400px;
+    overflow-y: auto;
+    margin-top: 8px;
 }
 
 .classifica-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 14px;
+    padding: 10px 12px; /* Ridotto da 12px 14px */
     border-bottom: 1px solid #f3f4f6;
     transition: background-color 0.2s;
+    min-height: 48px; /* Ridotto */
 }
 
 .classifica-item:hover {
@@ -494,44 +592,8 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    font-size: 14px;
+    font-size: 13px; /* Ridotto leggermente */
 }
-
-/* Badge CM - Candidate Master (leggermente più grande) */
-.utente-prefisso-cm {
-    color: black;
-    background-color: white;
-    border: 1.5px solid #1f2937;
-    font-weight: 600;
-    margin-right: 6px;
-    font-size: 14px;                     /* +1px rispetto a prima */
-    padding: 2px 6px;                    /* +1px verticale */
-    border-radius: 4px;
-    display: inline-block;
-    line-height: 1.4;
-    letter-spacing: 0.3px;
-    text-transform: uppercase;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    min-width: 34px;                     /* Larghezza minima uniforme */
-    text-align: center;
-}
-
-/* Badge M - Master (leggermente più grande, stesso stile di prima) */
-.utente-prefisso {
-    color: white;
-    background-color: #3b82f6;
-    font-weight: 700;
-    margin-right: 6px;                   /* Allineato con CM */
-    font-size: 14px;                     /* Stessa dimensione di CM */
-    padding: 2px 6px;                    /* Stessa spaziatura di CM */
-    border-radius: 4px;                  /* Stesso border-radius */
-    display: inline-block;
-    line-height: 1.4;               /* Stessa altezza linea */
-    min-width: 26px;                     /* Poco meno di CM (M più stretta) */
-    text-align: center;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
 
 .utente-elo {
     font-size: 13px;
@@ -614,6 +676,40 @@ body {
     box-shadow: 0 3px 8px rgba(59, 130, 246, 0.1);
 }
 
+/* Badge CM e M (mantenuti per retrocompatibilità) */
+.utente-prefisso-cm {
+    color: black;
+    background-color: white;
+    border: 1.5px solid #1f2937;
+    font-weight: 600;
+    margin-right: 6px;
+    font-size: 14px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    display: inline-block;
+    line-height: 1.4;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    min-width: 34px;
+    text-align: center;
+}
+
+.utente-prefisso {
+    color: white;
+    background-color: #3b82f6;
+    font-weight: 700;
+    margin-right: 6px;
+    font-size: 14px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    display: inline-block;
+    line-height: 1.4;
+    min-width: 26px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     body {
@@ -640,7 +736,7 @@ body {
     }
     
     .btn.compact {
-        width: 45%; /* Mantiene la proporzione dimezzata anche su mobile */
+        width: 45%;
         padding: 10px 6px;
         font-size: 13px;
         height: 40px;
@@ -654,9 +750,10 @@ body {
     }
     
     .sequence-display {
-        font-size: 18px;
-        padding: 16px 12px;
-        min-height: 60px;
+        font-size: 16px; /* Ridotto per mobile */
+        padding: 10px 12px;
+        min-height: 45px;
+        margin: 6px 0;
     }
     
     .chart-container {
@@ -664,7 +761,8 @@ body {
     }
     
     .card {
-        padding: 16px;
+        padding: 12px; /* Ridotto per mobile */
+        margin-bottom: 10px;
     }
     
     .modal-content {
@@ -673,6 +771,33 @@ body {
     
     .login-modal {
         padding: 28px 20px;
+    }
+    
+    .elo-container {
+        padding: 6px 10px;
+        margin-bottom: 6px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .stat-item {
+        padding: 8px;
+    }
+    
+    .stat-value {
+        font-size: 16px;
+    }
+    
+    .classifica-item {
+        padding: 8px 10px;
+        min-height: 44px;
+    }
+    
+    .elo-number {
+        font-size: 16px; /* Ridotto per mobile */
     }
 }
 
@@ -686,17 +811,22 @@ body {
     }
     
     .button-row.compact {
-        flex-direction: row; /* Restano affiancati anche su mobile molto piccolo */
+        flex-direction: row;
         justify-content: space-between;
     }
     
     .btn.compact {
-        width: 48%; /* 48% per lasciare un piccolo spazio */
-        min-width: 0; /* Rimuove la larghezza minima su mobile molto piccolo */
+        width: 48%;
+        min-width: 0;
+        padding: 8px 4px;
+        font-size: 12px;
+        height: 38px;
     }
     
-    .elo-number {
-        font-size: 16px;
+    .sequence-display {
+        min-height: 40px;
+        font-size: 15px;
+        padding: 8px 10px;
     }
     
     .modal-content {
@@ -705,5 +835,31 @@ body {
     
     .login-modal {
         padding: 24px 16px;
+    }
+    
+    .card {
+        padding: 10px;
+    }
+    
+    .elo-container {
+        padding: 5px 8px;
+        min-height: 40px;
+    }
+    
+    .stats-grid {
+        gap: 6px;
+    }
+    
+    .stat-item {
+        padding: 6px;
+    }
+    
+    .stat-value {
+        font-size: 14px;
+    }
+    
+    .answer-input {
+        padding: 10px 12px;
+        font-size: 14px;
     }
 }
