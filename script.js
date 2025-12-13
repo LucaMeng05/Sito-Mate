@@ -258,7 +258,7 @@ function calcolaDeltaElo(corretto){
   
   // MODIFICA: DIMEZZA se ELO utente ≥ 2100
   if (eloUtente >= 2100) {
-    delta = Math.floor(delta *2);
+    delta = Math.floor(delta / 2);
   }
   
   return Math.round(delta * 10) / 10; // Arrotonda a 1 decimale
@@ -322,7 +322,6 @@ async function salvaProblemi() {
   });
 }
 
-// Controlla titoli NM e GM
 async function controllaTitoli() {
   console.log("🔍 Controllando titoli...");
   if (!userUid) return;
@@ -339,36 +338,54 @@ async function controllaTitoli() {
   
   console.log(`📊 Statistiche: ELO=${elo}, 2150+=${problemi2150Risolti}, 2250+=${problemi2250Risolti}, Titolo=${titoloAttuale}`);
   
-  // GM (Grandmaster) - Bianco su grigio scuro
+  // GM (Grandmaster)
   if (elo >= 2200 && problemi2250Risolti >= 3 && titoloAttuale !== "GM") {
     console.log("🎉 Assegnando titolo GM!");
     await update(userRef, { titolo: "GM" });
     
-    feedback.innerText = "🎉 Congratulazioni! Hai ottenuto il titolo GM (Grandmaster)!";
+    feedback.innerText = "🎉 Congratulazioni! Hai ottenuto il titolo GM!";
     feedback.style.color = "#ffffff";
     feedback.style.backgroundColor = "#1f2937";
     feedback.style.borderColor = "#374151";
     
     setTimeout(() => {
-      if (feedback.innerText.includes("Grandmaster")) {
+      if (feedback.innerText.includes("GM")) {
         feedback.innerText = "";
       }
     }, 5000);
-    return; // Importante: esci dopo aver assegnato GM
+    return;
   }
   
-  // NM (National Master) - Bianco su azzurro
+  // NM (National Master)
   if (elo >= 2100 && problemi2150Risolti >= 2 && titoloAttuale !== "GM" && titoloAttuale !== "NM") {
     console.log("🎉 Assegnando titolo NM!");
     await update(userRef, { titolo: "NM" });
     
-    feedback.innerText = "🎉 Congratulazioni! Hai ottenuto il titolo NM (National Master)!";
+    feedback.innerText = "🎉 Congratulazioni! Hai ottenuto il titolo NM!";
     feedback.style.color = "#ffffff";
     feedback.style.backgroundColor = "#3b82f6";
     feedback.style.borderColor = "#2563eb";
     
     setTimeout(() => {
-      if (feedback.innerText.includes("National Master")) {
+      if (feedback.innerText.includes("NM")) {
+        feedback.innerText = "";
+      }
+    }, 5000);
+    return;
+  }
+  
+  // CM (Candidate Master) - manteniamo il vecchio sistema CM se vuoi
+  if (elo >= 1900 && titoloAttuale === "") {
+    console.log("🎉 Assegnando titolo CM!");
+    await update(userRef, { titolo: "CM" });
+    
+    feedback.innerText = "🎉 Congratulazioni! Hai ottenuto il titolo CM!";
+    feedback.style.color = "#1f2937";
+    feedback.style.backgroundColor = "#f9fafb";
+    feedback.style.borderColor = "#d1d5db";
+    
+    setTimeout(() => {
+      if (feedback.innerText.includes("CM")) {
         feedback.innerText = "";
       }
     }, 5000);
